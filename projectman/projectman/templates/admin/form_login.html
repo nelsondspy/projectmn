@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+<style>
+	body {
+	  padding-top: 5%;
+	  padding-bottom: 5%;
+	  background-color: #eee;
+	}
+	
+	.form-signin {
+	  max-width: 330px;
+	  padding: 15px;
+	  margin: 0 auto;
+	}
+	.form-signin .form-control:focus {
+	  z-index: 2;
+	}
+	
+</style>
+
+    <title>Autenticación</title>
+	{% load staticfiles %}
+	
+    <!-- Bootstrap core CSS -->
+    
+    <link href="{% static "base/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+
+    <!--!
+    <link href="http://bootswatch.com/spacelab/bootstrap.css" rel="stylesheet">
+    -->    
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <form class="form-signin" action="/admin/autenticar/" method="POST">
+      {% csrf_token %}
+        <h2 class="form-signin-heading"><span class="glyphicon glyphicon-user"></span> Autenticación</h2>
+     {% if messages %}
+        <div class="alert alert-danger">
+        <ul>
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %} 
+       </ul>
+        </div>
+     {% endif %}
+        <div class="form-group">
+            <label for="username">Usuario</label>
+            <input name="username" type="text" class="form-control" placeholder="usuario" required autofocus id="username">
+        </div>
+        <div class="form-group">
+        <label for="password">password</label>
+        <input name="password" type="password" class="form-control" placeholder="contraseña" required id="password">
+        <div/>
+        
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Ingresar</button>
+      </form>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+  </body>
+</html>

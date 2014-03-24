@@ -1,0 +1,83 @@
+{% extends "__panel.html" %}
+
+{# explorador de componentes internos de un  proyecto #}
+{# lista las fases #}
+
+{% block zonatrabajo %}
+
+<style>
+.item-datos{
+width: 60%
+}
+.item-acciones{
+width: 40%
+}
+</style>
+
+<h2>Proyecto: {{ proyecto.nombre }}</h2>
+
+{# listar fases del proyecto #}
+<div class="panel panel-default">
+    <div class="panel-heading"><h3>Fases</h3></div>
+    <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'projectman.apps.admin.views.fases_abm' 'crear' proyecto.idproyecto %}">
+    <span class="glyphicon glyphicon-plus-sign"> </span> Crear Fase
+    </a>
+   
+   {% for fase in lista_fases %}
+   <ul class="panel panel-default">
+   <div class="row">
+   <div class="col-md-4">
+   
+         <a href="{% url 'projectman.apps.desarrollo.views.editor_componentes' proyecto.idproyecto fase.idfase %}">
+        {% ifequal fase.idfase idfase %}
+             <span class ="glyphicon glyphicon-folder-open"></span> 
+        {% else %}
+            <span class ="glyphicon glyphicon-folder-close"></span>
+        {% endifequal %}
+         
+        
+            {{ fase.descripcion }}
+         </a>
+   </div>
+  
+  <div>
+     <a href="/desarrollo/procesafase/eliminar/{{ fase.idfase }}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
+     <a data-target="#form_modal"  data-toggle="modal" href="/desarrollo/procesafase/editar/{{ fase.idfase }}" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-pencil"></span></a>
+  </div>
+  
+  </div>
+   
+   {# si una fase fue seleccionada entonces se imprimen sus items #}
+	
+	
+     {% ifequal idfase fase.idfase %}
+     
+     <ul>
+     
+     
+     <div class="panel panel-info">
+     <div class="panel-heading"><span class="glyphicon glyphicon-tasks"></span> Items de la fase:</div>
+     <a data-target="#form_modal"  data-toggle="modal" href="{% url 'desarrollo.views.procesa_item' 'crear' idfase %}" >Crear item</a>
+     <table class="table table-condensed">
+        
+        {% for item in lista_items %}
+        <tr>
+           <td><a href="#">{{ item.numero }} -- >{{ item.descripcion }}</a></td>
+           <td><a data-target="#form_modal"  data-toggle="modal" href="{% url 'desarrollo.views.procesa_item' 'editar' item.iditem %} " class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span>Editar</a></td>
+           <td><a href="{% url 'desarrollo.views.procesa_item' 'eliminar' item.iditem %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span>Eliminar</a></td>
+        </tr>
+        {% empty %}
+           <p> Fase aún sin items </p>
+        {% endfor %}
+       </table>
+     </div><!-- class="panel panel-info" -->   
+     </ul>
+     {% endifequal %}
+  <!--id="contenedor_fase"  -->
+  </ul>
+ {% endfor %} {# fin de listar fases #}
+ 
+</div>
+</div>
+
+{% endblock %}

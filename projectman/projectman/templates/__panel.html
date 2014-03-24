@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>{% load staticfiles %}
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="http://getbootstrap.com/assets/ico/favicon.ico">
+
+    <title>{% block titulo %}Panel de Administración{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <!-- <link href="http://bootswatch.com/spacelab/bootstrap.css" rel="stylesheet">  -->
+     <link href="{% static "base/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+    
+
+    <!-- Custom styles for this template -->
+    <link href="{% static "base/panel.css"%}" rel="stylesheet">
+
+   
+  <style type="text/css" id="holderjs-style"></style>
+  </head>
+
+  <body>
+    <!-- <div class="navbar navbar-fixed-top" role="navigation"> -->
+      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><img alt="" src="{% static "base/logos/logonav.png" %}"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Help</a></li>
+            <li><a>
+            {% if user.is_authenticated %}
+   		   <p>Bienvenido, {{ user.username }} ({{ user.id }})</p>
+           {% endif %}
+            </a></a></li>
+            <li><a href="admin/cerrar_sesion">Cerrar sesión</a></li>
+          </ul>
+          
+          
+          <form class="navbar-form navbar-right" action="{% block buscador_url %}{% endblock %}">
+            <input class="form-control" placeholder="{% block buscador_texto %}{% endblock %}" type="text">
+          </form>
+
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+      {% block menu_izquierda %}
+       {% include "menu_izq.html" %}
+        {% endblock %}
+        
+        
+        <!-- inicio zona derecha -->
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Exporador de proyectos</h1>
+          {% block zonatrabajo %}
+          <h1>Bienvenido</h1> 
+          {% endblock %}
+          <div class="row placeholders">
+            <div class="col-xs-6 col-sm-3 placeholder">
+              <h4>Label</h4>
+              <span class="text-muted">Something else</span>
+            </div>  
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- todo el javascript utlizado debe ser declarado en esta seccion  -->
+    <script src="{% static "base/jquery-1.10.2.min.js" %}"></script>
+    <script src="{% static "base/bootstrap/js/bootstrap.js" %}"></script>
+    
+	<!-- Modal crear o editar , (fases del proyecto, items de una fase ), segun la url  -->
+	<div class="modal fade" id="form_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	  <div class="modal-content">
+	  </div>
+	  </div>
+	</div>
+	<!-- fin modal -->
+	
+	<!-- modal que confirma eliminacion -->
+	<div class="modal fade" id="modal_confirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	  <div class="modal-content">
+	  <div class="modal-body">
+	  <p>¿Esta seguro que desea eliminar este elemento?</p>
+	  </div>
+	  <div class="modal-footer">
+	  <a href="#" id="boton-eliminar" class="btn btn-danger" >Eliminar</a>
+	  <a href="">Cancelar</a>
+	  </div>
+	  </div>
+	  </div>
+	</div>
+	<!-- FIN Modal confirmacion  -->
+    
+    <!-- formulario modal cuyo contenido de llena dinamicamente con una url, magia de bootstrap -->
+    <script type="text/javascript">      
+    
+    
+    /*Libera el contenedor de formulario modal, remueve los datos */
+    $('#form_modal').on('hidden.bs.modal', function (e) {
+		$(this).removeData('bs.modal');
+    }); 
+    
+    
+    /*Elementos genericos para el formulario modal de Confirmacion de  Eliminacion*/
+    //contenedor principal del mensaje pre-eliminacion
+    $('#modal_confirm').on('show.bs.modal',function(){
+    	var id = $(this).data('id'),
+    	botonEliminar = $('#boton-eliminar'),
+    	href = botonEliminar.attr('href');
+    	
+    	botonEliminar.attr('href', id );
+    	
+    });
+    
+    //clase a la que debe pertenecer el link de eliminacion
+    $('.confirm-delete').click(function(e){
+    	e.preventDefault();
+    	var id = $(this).data('id');
+    	$('#modal_confirm').data('id', id).modal('show');
+    });
+	
+    </script>
+    <!--
+      <script src="panel_files/bootstrap/docs.js"></script>
+  -->
+   
+</body></html>

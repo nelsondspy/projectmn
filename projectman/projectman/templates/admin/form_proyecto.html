@@ -1,0 +1,10 @@
+{% extends nodefault|default:"__formsolo.html" %}
+{% block zonatrabajo %}
+<form action="{% url 'projectman.apps.admin.views.proyectos_abm' %}" method="post">{% csrf_token %}
+<table class="table-responsive">
+{{ form.as_table }}
+</table>
+<input type="submit" value="Guardar">
+</form>
+
+{% endblock %}

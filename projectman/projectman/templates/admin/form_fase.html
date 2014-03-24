@@ -1,0 +1,16 @@
+{% extends nodefault|default:"__formsolo.html" %}
+{% block zonatrabajo %}
+{# formulario para agregar o modificar fases #}
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	<h4 class="modal-title" id="myModalLabel">Editando Fase</h4>
+</div>
+<div class="modal-body">
+	<form method="post" action="{% url 'projectman.apps.admin.views.fases_abm'%}" class="form-horizontal">{% csrf_token %}
+	<table>
+		{{ faseform.as_table }}
+	</table>
+	<input type="submit" class="btn btn-primary" value="Guardar">
+	</form>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+{# formulario para la carga y edicion de tipos de items #}
+{# formulario para edicion y carga de sus atributos #}
+<div id="edit_itemtipos">
+    <form>{% csrf_token %}
+        {{ tipoitemform.as_table }}
+    </form>
+</div>

@@ -1,0 +1,50 @@
+{% extends "__panel.html" %}
+
+{% block buscador_texto %}buscar proyectos {% endblock %}
+
+{% block zonatrabajo%}
+
+<div class="panel panel-default">
+<!-- 
+<h3 class="sub-header">Proyectos</h3>
+ -->
+ <div class="panel-heading">Proyectos</div>
+ <div class="panel-body">
+
+<div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Descripcion</th>
+                  <th>Fecha de inicio</th>
+                  <th>Fecha de finalización</th>
+                  <th>Acciones </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                {% for proyecto in lista_proyectos %}
+                  <td><a href="/desarrollo/componentes/{{ proyecto.idproyecto }}" >{{ proyecto.nombre }}</a></td>
+                  <td>{{ proyecto.descripcion }}</td>
+                  <td>{{ proyecto.fechainicio }}</td>
+                  <td>{{ proyecto.fechafin }}</td>
+                  <td><a href="#" data-id="{% url 'projectman.apps.admin.views.proyectos_abm' 'eliminar' proyecto.idproyecto %}" class="confirm-delete" >Eliminar</a></td>
+                  <td><a data-target="#form_modal"  data-toggle="modal" href="{% url 'projectman.apps.admin.views.proyectos_abm' 'editar' proyecto.idproyecto %}">Editar</a></td>
+                </tr>
+                 {% endfor%}
+              </tbody>
+            </table>
+</div>
+
+<!--llama al modal del formulario para la creacion -->
+<a data-target="#form_modal"  data-toggle="modal" href="{% url 'projectman.apps.admin.views.proyectos_abm' 'crear' '0' %}" >
+   <span class="glyphicon glyphicon-plus-sign"></span> Nuevo proyecto 
+</a>
+<!-- -->
+
+</div>
+</div>
+
+
+{% endblock%}

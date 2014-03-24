@@ -1,0 +1,13 @@
+{# formulario de carga y edicion de items #}
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	<h4 class="modal-title" id="myModalLabel">Editando Item</h4>
+</div>
+<div class="modal-body">
+	<form method="post" action="/desarrollo/procesaitem/" class="form-horizontal">{% csrf_token %}
+	<table>
+		{{ itemform.as_table }}
+	</table>
+	<input type="submit" class="btn btn-primary" value="Guardar">
+	</form>
+</div>
