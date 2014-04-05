@@ -8,6 +8,8 @@ from django.contrib.auth import logout
 from django.contrib import messages 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.contrib.auth.models import Permission
+from django.views.generic import ListView 
 
 from models import Proyecto
 from models import Fase 
@@ -22,6 +24,8 @@ TEMPL_LOGINFORM = 'admin/form_login.html'
 TEMPL_PROYECTOFORM = 'admin/form_proyecto.html'
 TEMPL_PROYECTOLISTA = 'admin/form_proyectoedit.html'
 TEMPL_FASEFORM ='admin/form_fase.html'
+TEMP_PERM_LIST ='admin/lista_permisos.html'
+
 ABM_ACCIONES = ('editar', 'eliminar', 'crear')
 
 @require_POST
@@ -124,3 +128,19 @@ def fases_abm(request,accion=None, idelemento=None):
         else:
             return render(request ,TEMPL_FASEFORM,{'nodefault':'__panel.html', 'faseform': faseform})
 
+"""Lista de permisos  """
+class ListaPermisosView(ListView):
+    model= Permission 
+    template_name= TEMP_PERM_LIST
+
+
+"""        
+    def get_queryset(self):
+        self.item_param = ItemTipos.objects.get(pk=self.kwargs['idtipoitem'])
+        return ItemAtributos.objects.filter(idtipoitem=self.item_param)
+    #Obtiene la fase para imprimir sus datos en el template  
+    def get_context_data(self, **kwargs):
+        context = super(ListaItemAtributoView, self).get_context_data(**kwargs)
+        context['tipoitem'] = self.item_param
+        return context
+""" 

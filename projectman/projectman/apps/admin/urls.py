@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-
+from views import ListaPermisosView
 
 urlpatterns = patterns('projectman.apps',
     url(r'^autenticar/$', 'admin.views.autenticar'),
@@ -9,6 +9,7 @@ urlpatterns = patterns('projectman.apps',
     url(r'^proyectos/(?P<idproyecto>\d+)$', 'admin.views.proyectos_abm'),
     url(r'^proyectos/(?P<accion>[a-z]+)/(?P<idproyecto>\d+)$', 'admin.views.proyectos_abm'),
     url(r'^fases/(?P<accion>[a-z]+)/(?P<idelemento>\d+)$', 'admin.views.fases_abm'),
-    url(r'^fases/$', 'admin.views.fases_abm')
+    url(r'^fases/$', 'admin.views.fases_abm'),
+    url(r'^permisos/lista$',ListaPermisosView.as_view(), name="permisos_lista")
 
 )
