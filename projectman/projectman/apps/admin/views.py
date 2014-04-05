@@ -8,6 +8,11 @@ from django.contrib.auth import logout
 from django.contrib import messages 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.views.generic.edit import CreateView #importar la clase de la que hereda
+from django.views.generic import ListView #importar la clase de la que hereda
+from django.contrib.auth.models import User
+from django.core.urlresolvers import  reverse
+
 
 from models import Proyecto
 from models import Fase 
@@ -16,14 +21,34 @@ from forms import FaseForm
 from projectman.apps.desarrollo.views import redirige_edicion_actual 
 
 from django.contrib.auth.decorators import login_required
+from forms import UserForm
 # Create your views here.
 
 TEMPL_LOGINFORM = 'admin/form_login.html'
 TEMPL_PROYECTOFORM = 'admin/form_proyecto.html'
 TEMPL_PROYECTOLISTA = 'admin/form_proyectoedit.html'
 TEMPL_FASEFORM ='admin/form_fase.html'
+TEMPL_USERFORM = 'admin/form_user.html'
+TEMPL_LIST_USER = 'admin/lista_usuarios.html'
 ABM_ACCIONES = ('editar', 'eliminar', 'crear')
 
+
+
+class CreaUsuarioView(CreateView):
+    model= User
+    template_name = TEMPL_USERFORM
+    form_class = UserForm
+    def get_success_url(self):
+        return reverse('usuario_listar')
+    
+    
+class ListarUsuarioView(ListView):
+    model= User
+    template_name = TEMPL_LIST_USER
+    #def get_queryset(self):
+        #return User.objects.all()
+    
+    
 @require_POST
 def autenticar(request):
     usuario = request.POST['username']
