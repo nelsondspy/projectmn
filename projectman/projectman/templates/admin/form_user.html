@@ -1,0 +1,5 @@
+<div id="edit_usuarios">
+    <form method="post" action="{% url 'usuario_crear' %}">{% csrf_token %}
+        {{ form.as_table }}
+    <input type="submit" value="guardar">
+    </form>
