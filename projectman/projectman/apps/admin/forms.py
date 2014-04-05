@@ -19,7 +19,7 @@ class ProyectoForm(ModelForm):
     class Meta:
         model = Proyecto
         fields = ['idproyecto','nombre', 'descripcion']
-        widgets     = {'idtipo': Select(attrs={'class': 'select'})  }
+        widgets = {'idtipo': Select(attrs={'class': 'select'})  }
 
 class FaseForm(ModelForm):
     # 
