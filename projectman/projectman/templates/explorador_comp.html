@@ -26,7 +26,8 @@ width: 40%
    {% for fase in lista_fases %}
    <ul class="panel panel-default">
    <div class="row">
-   <div class="col-md-4">
+
+   <div  class="col-md-4"> <!--    <div class="col-md-4"> -->
    
          <a href="{% url 'projectman.apps.desarrollo.views.editor_componentes' proyecto.idproyecto fase.idfase %}">
         {% ifequal fase.idfase idfase %}
@@ -34,16 +35,25 @@ width: 40%
         {% else %}
             <span class ="glyphicon glyphicon-folder-close"></span>
         {% endifequal %}
-         
-        
-            {{ fase.descripcion }}
+            {{ fase.nombre}}
          </a>
+         <p>{{ fase.descripcion}}</p>
+         
+         
    </div>
   
-  <div>
+  <div class="col-md-8">
+  {% ifequal fase.idfase idfase %}
+      {% include "admin/_opciones_fase.html" %}            
+  {% endifequal %}
+  
+   <!-- 
      <a href="/desarrollo/procesafase/eliminar/{{ fase.idfase }}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
      <a data-target="#form_modal"  data-toggle="modal" href="/desarrollo/procesafase/editar/{{ fase.idfase }}" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-pencil"></span></a>
+   -->
+  
   </div>
+   
   
   </div>
    
@@ -57,14 +67,14 @@ width: 40%
      
      <div class="panel panel-info">
      <div class="panel-heading"><span class="glyphicon glyphicon-tasks"></span> Items de la fase:</div>
-     <a data-target="#form_modal"  data-toggle="modal" href="{% url 'desarrollo.views.procesa_item' 'crear' idfase %}" >Crear item</a>
+     <a data-target="#form_modal"  data-toggle="modal" href="{% url 'projectman.apps.desarrollo.views.procesa_item' 'crear' idfase %}" >Crear item</a>
      <table class="table table-condensed">
         
         {% for item in lista_items %}
         <tr>
            <td><a href="#">{{ item.numero }} -- >{{ item.descripcion }}</a></td>
-           <td><a data-target="#form_modal"  data-toggle="modal" href="{% url 'desarrollo.views.procesa_item' 'editar' item.iditem %} " class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span>Editar</a></td>
-           <td><a href="{% url 'desarrollo.views.procesa_item' 'eliminar' item.iditem %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span>Eliminar</a></td>
+           <td><a data-target="#form_modal"  data-toggle="modal" href="{% url 'projectman.apps.desarrollo.views.procesa_item' 'editar' item.iditem %} " class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span>Editar</a></td>
+           <td><a href="{% url 'projectman.apps.desarrollo.views.procesa_item' 'eliminar' item.iditem %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span>Eliminar</a></td>
         </tr>
         {% empty %}
            <p> Fase aún sin items </p>

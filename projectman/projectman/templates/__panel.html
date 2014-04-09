@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>{% load staticfiles %}
+
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,8 +13,9 @@
     <title>{% block titulo %}Panel de Administración{% endblock %}</title>
 
     <!-- Bootstrap core CSS -->
-    <!-- <link href="http://bootswatch.com/spacelab/bootstrap.css" rel="stylesheet">  -->
-     <link href="{% static "base/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+    
+    
+    <link href="{% static "base/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet"> 
     
 
     <!-- Custom styles for this template -->
@@ -35,7 +37,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#"><img alt="" src="{% static "base/logos/logonav.png" %}"></a>
+          <a class="navbar-brand" href="#"><img alt="" src="{% static "base/images/logo_pm_nav.png" %}"> Software </a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
@@ -51,9 +53,10 @@
             <li><a href="admin/cerrar_sesion">Cerrar sesión</a></li>
           </ul>
           
-          
-          <form class="navbar-form navbar-right" action="{% block buscador_url %}{% endblock %}">
-            <input class="form-control" placeholder="{% block buscador_texto %}{% endblock %}" type="text">
+          {# bloques para definir el comportamiento del buscador( action y helptext,)  #}
+          <form class="navbar-form navbar-right" action="{% block buscador_url %}{% endblock %}" method="post">
+            {% csrf_token %}
+            <input name="busqueda" class="form-control" placeholder="{% block buscador_texto %}{% endblock %}" type="text">
           </form>
 
           
@@ -65,19 +68,41 @@
       <div class="row">
       {% block menu_izquierda %}
        {% include "menu_izq.html" %}
-        {% endblock %}
+      {% endblock %}
         
         
         <!-- inicio zona derecha -->
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Exporador de proyectos</h1>
+        
+        {% block cabecera_zonatrabajo %}
+          <ol class="breadcrumb">
+  			<li><a href="#">Home</a></li>
+  			<li><a href="#">Library</a></li>
+  			<li class="active">Data</li>
+		   </ol>
+        
+          <h1 class="page-header">{% block cabecera_pagina %}{% endblock %}</h1>
+        {% endblock %}  
+        
+        {# Zona de mensajes #}  
+        {% if messages %}
+	        <div class="alert alert-info">
+	        <ul>
+	        {% for message in messages %}
+	        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	        {% endfor %} 
+	       </ul>
+	        </div>
+        {% endif %}
+          
           {% block zonatrabajo %}
-          <h1>Bienvenido</h1> 
+           <h1>Bienvenido</h1> 
           {% endblock %}
+          
           <div class="row placeholders">
             <div class="col-xs-6 col-sm-3 placeholder">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
+              
+              
             </div>  
           </div>
         </div>

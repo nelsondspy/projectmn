@@ -1,8 +1,9 @@
 from django.db import models
 
 
-"""Modelo Proyecto"""
+
 class Proyecto (models.Model):
+    """Modelo Proyecto"""
     E_NOINICIADO='NOI'
     E_INICIADO='INI'
     E_FINALIZADO='FIN'
@@ -21,8 +22,8 @@ class Proyecto (models.Model):
     
     
 
-"""Modelo Fase"""
-class Fase(models.Model):
+class Fase(models.Model): 
+    """Modelo Fase"""
     E_INICIAL = 'INI'
     E_DESARROLLO = 'DES'
     E_COMPLETO = 'COM'
@@ -42,3 +43,14 @@ class Fase(models.Model):
     estado = models.CharField(max_length=3, choices=ESTADOS)
     fechacreacion = models.DateField(auto_now=True)
 
+    def __unicode__(self):
+        return self.nombre
+
+"""Lista estatica de Permisos """
+LISTA_PERMISOS = [('PROYECTO_CREAR','Crear Proyecto'),
+                  ('PROYECTO_MODIF','Modificar Proyecto'),
+                  ('PROYECTO_ELIM','Eliminar Proyecto'),
+                  ('FASE_CREAR','Crear Fase'),
+                  ('FASE_MODIF','Modificar Fase'),
+                  ('FASE_ELIM','Eliminar Fase'),
+                  ]

@@ -1,7 +1,14 @@
+{# lista de opciones de una fase selecionada #}
+
 <div class="dropdown">
-  <a data-toggle="dropdown" href="#">Dropdown trigger</a>
+  <a data-toggle="dropdown" href="#">Acciones</a>
   <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-  <a href="/desarrollo/procesafase/eliminar/{{ fase.idfase }}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
-  
+  <li>
+  <a href="#" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
+  </li>
+  <li>
+  <a data-target="#form_modal"  data-toggle="modal" href="#" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-pencil"></span></a> 
+  </li>
+  <li><a href="">Tipos de item</a></li>
   </ul>
 </div>

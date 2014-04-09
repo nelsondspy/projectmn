@@ -1,0 +1,38 @@
+{# lista de roles definidos en el sistema #}
+
+{% extends "__panel.html" %}
+
+{% block titulo %} Control de acceso / Roles  {% endblock %}
+ 
+{% block cabecera_pagina %}Roles <small>Administre los roles </small>{% endblock %}
+
+{% block buscador_url %}{% url 'rol_permisos_lista' %}{% endblock %}
+
+{% block buscador_texto %}Buscar Roles{% endblock %}
+
+{% block zonatrabajo %}
+
+
+<a href="{% url 'rol_permisos' %}" class="btn btn-success" data-target="#form_modal"  data-toggle="modal"> 
+  <span class="glyphicon glyphicon-plus-sign"></span> Nuevo Rol
+</a>
+
+<table class="table table-striped">
+<thead>
+<tr>
+   <th>Nombre del Rol</th>
+</tr>
+</thead>
+<tbody>
+{% for rol in object_list %}
+
+<tr>
+	<td>{{rol.name}}<td> 
+	<td><a href="{% url 'rol_permisos_edita' rol.pk %}" data-target="#form_modal"  data-toggle="modal" >Modificar</a></td>  
+	<td><a href="{% url 'rol_permisos_elimina' rol.pk %}" data-target="#form_modal"  data-toggle="modal">Eliminar</a></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}

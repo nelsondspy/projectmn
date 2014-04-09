@@ -1,5 +1,12 @@
+{% extends nodefault|default:"__formsolo.html" %}
+{% block zonatrabajo %}
 <div id="edit_usuarios">
+<h3>Usuario</h3>
     <form method="post" action="{% url 'usuario_crear' %}">{% csrf_token %}
+    <table class="table table-striped">
         {{ form.as_table }}
-    <input type="submit" value="guardar">
+    </table>
+    <input type="submit" value="Guardar" class="btn btn-primary">
     </form>
+</div>
+{% endblock %}

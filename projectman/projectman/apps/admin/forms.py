@@ -3,10 +3,11 @@ from django.forms import ModelChoiceField
 from django.forms import Select
 from django.forms import HiddenInput
 from django.forms import IntegerField
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
+from django.forms import PasswordInput
 from models  import Proyecto
 from models import Fase
-from django.contrib.auth.models import User
-from django.forms import PasswordInput
 
 class ProyectoForm(ModelForm):
     
@@ -45,5 +46,10 @@ class UserForm(ModelForm):
         model = User
         fields = ['username','password','email','first_name','last_name']
         widgets = {'password':PasswordInput()}
+
+class PermisosRolesForm(ModelForm):
+    class Meta:
+        model = Group
+        fields =['permissions']
 
 

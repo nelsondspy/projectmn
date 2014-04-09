@@ -42,7 +42,6 @@ INSTALLED_APPS = (
     'projectman.apps.desarrollo'
 )
 
- 
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -107,6 +106,14 @@ _ROOT_PATH = os.path.dirname(__file__)
 TEMPLATE_DIRS=os.path.join(_ROOT_PATH, 'templates')
                      
 STATICFILES_DIRS = (  os.path.join(BASE_DIR, 'static'),
-('base','/home/nelsonds/projectman/projectman/static'))
+('base','/home/nelsonds/projectmn/projectman/projectman/static'))
 
 LOGIN_URL = '/admin/login'
+
+
+# form error message override
+from django.forms import Field
+from django.utils.translation import ugettext_lazy
+Field.default_error_messages = {
+    'required': ugettext_lazy("Este campo es obligatorio"),
+}

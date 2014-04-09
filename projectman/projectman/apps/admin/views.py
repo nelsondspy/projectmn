@@ -11,8 +11,10 @@ from django.template import RequestContext
 
 from django.contrib.auth.models import Permission
 from django.views.generic import ListView 
-
+from django.contrib.auth.models import Group
 from django.views.generic.edit import CreateView #importar la clase de la que hereda
+from django.views.generic.edit import UpdateView
+from django.views.generic.edit import DeleteView
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import  reverse
@@ -33,31 +35,39 @@ TEMPL_LOGINFORM = 'admin/form_login.html'
 TEMPL_PROYECTOFORM = 'admin/form_proyecto.html'
 TEMPL_PROYECTOLISTA = 'admin/form_proyectoedit.html'
 TEMPL_FASEFORM ='admin/form_fase.html'
-
 TEMP_PERM_LIST ='admin/lista_permisos.html'
-
-
 TEMPL_USERFORM = 'admin/form_user.html'
 TEMPL_LIST_USER = 'admin/lista_usuarios.html'
-
+TEMPL_ROLPERMS_FORM = "admin/form_rolespermisos.html" 
+TEMPL_ROLES_LIST = "admin/lista_roles.html"
+TEMPL_DELCONFIRM = 'form_confirm_delete.html'
 ABM_ACCIONES = ('editar', 'eliminar', 'crear')
-
-
 
 class CreaUsuarioView(CreateView):
     model= User
     template_name = TEMPL_USERFORM
     form_class = UserForm
+    templ_base_error = None
+    
     def get_success_url(self):
         return reverse('usuario_listar')
+    
+    def get_context_data(self, **kwargs):
+        context = super(CreaUsuarioView, self).get_context_data(**kwargs)
+        if self.templ_base_error:
+            context['nodefault'] = self.templ_base_error
+        return context
+
+    def form_invalid(self, form):
+        self.templ_base_error = "__panel.html"
+        return CreateView.form_invalid(self, form)
     
     
 class ListarUsuarioView(ListView):
     model= User
     template_name = TEMPL_LIST_USER
-    #def get_queryset(self):
-        #return User.objects.all()
-    
+        
+
     
 @require_POST
 def autenticar(request):
@@ -159,19 +169,85 @@ def fases_abm(request,accion=None, idelemento=None):
         else:
             return render(request ,TEMPL_FASEFORM,{'nodefault':'__panel.html', 'faseform': faseform})
 
-"""Lista de permisos  """
 class ListaPermisosView(ListView):
+    """Lista de permisos  """
     model= Permission 
     template_name= TEMP_PERM_LIST
 
 
-"""        
-    def get_queryset(self):
-        self.item_param = ItemTipos.objects.get(pk=self.kwargs['idtipoitem'])
-        return ItemAtributos.objects.filter(idtipoitem=self.item_param)
-    #Obtiene la fase para imprimir sus datos en el template  
+class CreaRolPermisosView(CreateView):
+    model = Group
+    template_name = TEMPL_ROLPERMS_FORM
+    templ_base_error = None
+    
+    def get_success_url(self):
+        return reverse('rol_permisos_lista')
+    
+    def form_invalid(self, form):
+        self.templ_base_error = "__panel.html"
+        return CreateView.form_invalid(self, form)
+     
     def get_context_data(self, **kwargs):
-        context = super(ListaItemAtributoView, self).get_context_data(**kwargs)
-        context['tipoitem'] = self.item_param
+        context = CreateView.get_context_data(self, **kwargs)
+        context['action'] = reverse('rol_permisos')
+        if self.templ_base_error:
+            context['nodefault'] = self.templ_base_error
         return context
-""" 
+
+
+class EditaRolPermisosView(UpdateView):
+    """Vista que permite editar un permiso.
+    
+    
+    """
+    model = Group
+    template_name = TEMPL_ROLPERMS_FORM
+    templ_base_error = None
+    def get_success_url(self):
+        return reverse('rol_permisos_lista')
+    
+    def form_invalid(self, form):
+        self.templ_base_error = "__panel.html"
+        return UpdateView.form_invalid(self, form)
+
+    def get_context_data(self, **kwargs):
+        context = UpdateView.get_context_data(self, **kwargs)
+        context['action'] = reverse('rol_permisos_edita',kwargs={'pk':self.kwargs['pk']})
+        if self.templ_base_error:
+            context['nodefault'] = self.templ_base_error
+        return context
+
+class ListaRolPermisosView(ListView):
+    model = Group
+    template_name = TEMPL_ROLES_LIST
+ 
+    def get_queryset(self):
+        """Lista todos los roles o el resultado de la busqueda 
+        de un rol por su nombre""" 
+        try:
+            name = self.kwargs['busqueda']
+        except:
+            name = ''
+        if (name != ''):
+            object_list = self.model.objects.filter(name__icontains = name)
+            if object_list.count() < 1:
+                object_list = self.model.objects.all()
+                messages.info(self.request, "No se han encontrado coindicencias: " + name)
+            else:
+                messages.info(self.request, "resultados de la busqueda: " + name)
+        else:
+            object_list = self.model.objects.all()
+        return object_list
+
+
+class EliminaRolPermisosView(DeleteView):
+    model = Group
+    template_name = TEMPL_DELCONFIRM
+    def get_success_url(self):
+        return reverse('rol_permisos_lista')
+
+    def get_context_data(self, **kwargs):
+        context = DeleteView.get_context_data(self, **kwargs)
+        context['action'] = reverse('rol_permisos_elimina',kwargs={'pk':self.kwargs['pk']})
+        return context
+

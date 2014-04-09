@@ -1,6 +1,35 @@
-<ul>
-  {% for usuario in object_list %}
-    <li>{{ usuario.nombre }},{{ usuario.first_name }},{{ usuario.last_name }},{{ usuario.email }}
-    </li>
-    {% endfor %}
-</ul>
+{% extends "__panel.html" %}
+
+{% block titulo %} Control de acceso {% endblock %} 
+{% block cabecera_pagina %}Usuarios{% endblock %}
+
+{% block zonatrabajo %}
+
+ <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'usuario_crear' %}">
+ <span class="glyphicon glyphicon-plus-sign"> </span> Nuevo Usuario
+ </a>
+
+<table class="table table-striped">
+
+<tr>
+	<th>Nombre</th>
+	<th>Apellidos</th>
+	<th>Email</th>
+	<th>Super Usuario</th>
+	<th>Acciones</th>
+</tr>
+
+{% for usuario in object_list %}
+<tr>
+	<td>{{ usuario.first_name }}</td>
+	<td>{{ usuario.last_name }}</td>
+	<td>{{ usuario.email }}</td>
+	<td></td>
+	<td>Modificar</td>
+	<td>Eliminar</td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}

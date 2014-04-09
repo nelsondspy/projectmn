@@ -4,9 +4,9 @@
             <li class="active"><a href="/admin/proyectos"><span class="glyphicon glyphicon-briefcase"> </span> Gestión de Proyectos</a></li>
             <li>
                 <a href="#">Control de acceso </a>
-                <ul><a href="#">Roles</a></ul>
-                <ul><a href="#">Usuarios</a></ul>
-                <ul><a href="#">Asignar Roles</a></ul>              
+                <ul><a href="{% url 'usuario_listar' %}">Usuarios</a></ul>
+                <ul><a href="{% url 'rol_permisos_lista' %}">Roles</a></ul>
+
             </li>
             
             
