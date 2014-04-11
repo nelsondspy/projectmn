@@ -1,0 +1,9 @@
+{# formulario que asigna roles a un usuario #}
+<h3>Asignar roles al usuario</h3>
+<form action="{% url 'usuario_editaroles' idgrupo %}" method="post">
+{% csrf_token %}
+<table >
+ {{ form.as_table }}
+</table>
+<input type="submit" value="Guardar">
+</form>

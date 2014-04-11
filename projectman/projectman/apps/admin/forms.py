@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from django.forms import ModelChoiceField
+
 from django.forms import Select
 from django.forms import HiddenInput
 from django.forms import IntegerField
@@ -44,8 +44,26 @@ class FaseForm(ModelForm):
 class UserForm(ModelForm):
     class Meta:
         model = User
-        fields = ['username','password','email','first_name','last_name']
+        fields = ['username','password','email','first_name','last_name','is_active' ]
         widgets = {'password':PasswordInput()}
+        
+        labels = {
+            'username': 'Usuario',
+            'password ':'Contrasenha',
+            'email' : 'Email',
+            'first_name' : 'Nombre' ,
+            'last_name' : 'Apellido' ,
+            'is_active' : 'Activo'
+        }
+        help_texts = {
+            'username': '',
+            'password ':'',
+            'email' : '',
+            'first_name' : '' ,
+            'last_name' : '' ,
+            'is_active' : ''
+        }
+
 
 class PermisosRolesForm(ModelForm):
     class Meta:
@@ -53,3 +71,20 @@ class PermisosRolesForm(ModelForm):
         fields =['permissions']
 
 
+class UsuarioRolForm(ModelForm):
+    class Meta:
+        model = User
+        fields =['groups']
+
+
+class ConsultaUsuarioForm(ModelForm):
+    class Meta:
+        model = User
+        exclude = ['password']
+        
+        labels = {
+            'username': 'Nombre',
+        }
+        help_texts = {
+            'username': 'Nombre del usuario ',
+        }

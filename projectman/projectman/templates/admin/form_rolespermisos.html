@@ -1,10 +1,12 @@
 {# permisos de un rol ( grupo en especifico ) #}
 
 {% extends nodefault|default:"__formsolo.html" %}
+
 {% block zonatrabajo %}
 
 <h3>Rol</h3>
-{% url 'rol_permisos' %}
+
+<p class="errorlist"> {{ errormensaje }} </p>
 
 <form action="{{ action }}" method="post">{% csrf_token %}
 <table class="table table-striped"> 

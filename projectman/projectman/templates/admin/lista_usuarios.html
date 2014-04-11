@@ -1,7 +1,11 @@
 {% extends "__panel.html" %}
 
-{% block titulo %} Control de acceso {% endblock %} 
-{% block cabecera_pagina %}Usuarios{% endblock %}
+{% block titulo %} Control de acceso- Usuarios {% endblock %} 
+{% block cabecera_pagina %}Usuarios {% endblock %}
+
+{# buscador configurado para usuarios  #}
+  {% block buscador_url %}{% url 'usuario_listar' %}{% endblock %}
+  {% block buscador_texto %}Buscar usuarios{% endblock %}
 
 {% block zonatrabajo %}
 
@@ -12,21 +16,27 @@
 <table class="table table-striped">
 
 <tr>
+    <th>Usuario</th>
 	<th>Nombre</th>
 	<th>Apellidos</th>
 	<th>Email</th>
+	<th>Activo</th>
 	<th>Super Usuario</th>
-	<th>Acciones</th>
+	<th colspan="2">Acciones</th>
 </tr>
-
 {% for usuario in object_list %}
 <tr>
+	<td>{{ usuario.username }}</td>
 	<td>{{ usuario.first_name }}</td>
 	<td>{{ usuario.last_name }}</td>
 	<td>{{ usuario.email }}</td>
-	<td></td>
-	<td>Modificar</td>
-	<td>Eliminar</td>
+	<td>{% if usuario.is_active %} <span class="glyphicon glyphicon-ok"></span> {% endif %} </td>
+	<td>{% if usuario.is_superuser %} <span class="glyphicon glyphicon-ok"></span> {% endif %} </td>
+	
+	<td><a href="{% url 'usuario_edita' usuario.pk %}" data-target="#form_modal"  data-toggle="modal" ><span class="glyphicon glyphicon-edit"></span> Modificar</a></td>
+	<td><a href="{% url 'usuario_elimina' usuario.pk %}"  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Eliminar </a></td>
+	<td><a href="{% url 'usuario_editaroles' usuario.pk %}"  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Asignar Roles </a></td>
+	
 </tr>
 {% endfor %}
 
