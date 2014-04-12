@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admindocs',
     'projectman.apps.admin',
     'projectman.apps.desarrollo'
 )
@@ -111,9 +112,11 @@ STATICFILES_DIRS = (  os.path.join(BASE_DIR, 'static'),
 LOGIN_URL = '/admin/login'
 
 
-# form error message override
+# Sobreescritura del mensaje general de campo requerido 
 from django.forms import Field
 from django.utils.translation import ugettext_lazy
 Field.default_error_messages = {
     'required': ugettext_lazy("Este campo es obligatorio"),
 }
+
+SITE_ID = 1 

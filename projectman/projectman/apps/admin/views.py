@@ -1,37 +1,31 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render
-from django.shortcuts import redirect
-from django.views.decorators.http import require_POST 
-from django.views.decorators.http import require_GET
-from django.contrib.auth import authenticate, login
-from django.contrib.auth import logout 
+from django.shortcuts import render, redirect, render_to_response
 from django.contrib import messages 
-from django.shortcuts import render_to_response
+from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
-
-from django.contrib.auth.models import Permission
-from django.views.generic import ListView 
+from django.views.decorators.http import require_POST, require_GET
+from django.contrib.auth import authenticate, login ,logout
+#Models del modulo de autenticacion de django
 from django.contrib.auth.models import Group
-from django.views.generic.edit import CreateView #importar la clase de la que hereda
-from django.views.generic.edit import UpdateView
-from django.views.generic.edit import DeleteView
-
-
+from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
+# Views de tipo clase de django
+from django.views.generic import ListView 
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.core.urlresolvers import  reverse
 from django.db.models import Q
-
-
+#Modelos y formularios propios de la aplicacion
 from models import Proyecto
 from models import Fase 
 from forms import ProyectoForm
 from forms import FaseForm
 from forms import UsuarioRolForm
 from forms import ConsultaUsuarioForm
+from forms import UserForm
 from projectman.apps.desarrollo.views import redirige_edicion_actual 
 
-from django.contrib.auth.decorators import login_required
-from forms import UserForm
+
+
 # Create your views here.
 
 TEMPL_LOGINFORM = 'admin/form_login.html'
@@ -48,6 +42,11 @@ TEMPL_DELCONFIRM = 'form_confirm_delete.html'
 ABM_ACCIONES = ('editar', 'eliminar', 'crear')
 
 class CreaUsuarioView(CreateView):
+    """
+    Despliega el formulario para la carga de usuarios y 
+    persiste un nuevo usuario.
+    
+    """
     model= User
     template_name = TEMPL_USERFORM
     form_class = UserForm
@@ -66,15 +65,24 @@ class CreaUsuarioView(CreateView):
     def form_invalid(self, form):
         self.templ_base_error = "__panel.html"
         return CreateView.form_invalid(self, form)
-    
+        
+    def form_valid(self, form):
+        #user = User.objects.create_user('x', 'x.com', self.request.POST.get('password'))
+        form.instance.set_password(self.request.POST.get('password'))
+        return CreateView.form_valid(self, form)
     
 class ListarUsuarioView(ListView):
+    """
+    Despliega una lista de usuarios cargados en el sistema.
+     
+    Puede emitir una lista completa o bien una lista acotada por la busqueda 
+    de usuarios por nombre y apellido.
+    
+    """
     model= User
     template_name = TEMPL_LIST_USER
 
     def get_queryset(self):
-        """Lista todos los usuarios o el resultado de la busqueda  
-        por nombre o apellido """ 
         busqueda = self.request.GET.get('busqueda','')
         if (busqueda != ''):
             
@@ -88,6 +96,11 @@ class ListarUsuarioView(ListView):
 
 
 class EliminarUsuarioView(DeleteView):
+    """
+    
+    Solicita confirmacion para eliminar y elimina el usuario
+    
+    """
     model = User
     template_name = TEMPL_DELCONFIRM
     
@@ -101,7 +114,10 @@ class EliminarUsuarioView(DeleteView):
 
 
 class EditaUsuarioView(UpdateView):
-    """Vista que permite editar un usuario.
+    """
+    
+    Permite modificar los atributos del usuario.
+    
     """
     model = User
     form_class = UserForm
@@ -123,12 +139,23 @@ class EditaUsuarioView(UpdateView):
         return context
 
 class ConsultaUsuarioView(UpdateView):
+    """
+    
+    Consulta los datos de un usuario.
+    Que Roles posee , y que permisos tiene asignados por medio de esos roles. 
+    
+    """
     model = User
     template_name = 'admin/detalle_usuario.html'
     form_class= ConsultaUsuarioForm
-    
+
 
 class EditaUsuarioRoles(UpdateView):
+    """
+    
+    Permite asignar o desasignar roles a un usuario.
+    
+    """
     model = User
     form_class = UsuarioRolForm
     template_name = TEMPL_ASIG_ROL_USER
@@ -141,8 +168,14 @@ class EditaUsuarioRoles(UpdateView):
         context['idgrupo'] = self.kwargs['pk']
         return context
 
+
 @require_POST
 def autenticar(request):
+    """
+    
+    Autentica a un usuario con el par (username, password).
+    
+    """
     usuario = request.POST['username']
     contrasenha = request.POST['password']
     usuario = authenticate(username=usuario, password = contrasenha)
@@ -157,20 +190,30 @@ def autenticar(request):
         messages.error(request, 'Contreña o usuario , incorrecto')
         return render(request,TEMPL_LOGINFORM)
 
+
 @require_GET
 def login_form(request):
     return render(request,TEMPL_LOGINFORM, {'mensaje_error':''})
 
+
 @login_required
 def cerrar_sesion(request):
+    """
+    
+    Cierra la sesion del usuario.
+    
+    """
     logout(request)
     return redirect('/admin/login/')
-        
 
 
-"""Punto de entrada para crear , modificar o borrar proyectos """
 @login_required
 def proyectos_abm(request, accion=None,idproyecto=None ):
+    """
+    
+    Punto de entrada para crear , modificar o borrar proyectos. 
+    
+    """
     form = ProyectoForm()
     if accion in ABM_ACCIONES :
         if accion == 'crear':
@@ -202,12 +245,17 @@ def proyectos_abm(request, accion=None,idproyecto=None ):
         else:
             return render(request,TEMPL_PROYECTOFORM, {'nodefault':'__panel.html','form':form})
     return render(request,TEMPL_PROYECTOLISTA, { 'lista_proyectos' : lista_proyectos })
-    
-    
-"""Acepta peticiones de Agregar , modificar y eliminar una fase, 
-   y mostrar el template con el formulario para el efecto """
+
+
 @login_required
 def fases_abm(request,accion=None, idelemento=None):
+    """
+    
+    Acepta peticiones de Agregar , modificar y eliminar una fase, 
+    y mostrar el template con el formulario para el efecto 
+    
+    """
+
     if accion in ABM_ACCIONES:
         if accion == 'eliminar':
             fase = Fase.objects.get(pk=idelemento) 
@@ -241,8 +289,13 @@ def fases_abm(request,accion=None, idelemento=None):
         else:
             return render(request ,TEMPL_FASEFORM,{'nodefault':'__panel.html', 'faseform': faseform})
 
+
 class ListaPermisosView(ListView):
-    """Lista de permisos  """
+    """
+    
+    Lista los permisos que corresponden a una rol en particular
+    
+    """
     model= Permission 
     template_name= TEMP_PERM_LIST
 
@@ -253,6 +306,11 @@ class ListaPermisosView(ListView):
 
 
 class CreaRolPermisosView(CreateView):
+    """
+    
+    Crea un Rol nuevo permitiendo asignar los permisos a este nuevo rol.
+    
+    """
     model = Group
     template_name = TEMPL_ROLPERMS_FORM
     templ_base_error = None
@@ -275,7 +333,10 @@ class CreaRolPermisosView(CreateView):
 
 
 class EditaRolPermisosView(UpdateView):
-    """Vista que permite editar un permiso.
+    """
+    
+    Permite editar un Rol en particular.
+    Permite asignar y desasignar permisos 
         
     """
     model = Group
@@ -297,13 +358,18 @@ class EditaRolPermisosView(UpdateView):
 import logging
 logger = logging.getLogger(__name__)
 
+
 class ListaRolPermisosView(ListView):
+    """
+    
+    Lista todos los roles o el resultado de una busqueda. 
+    La busqueda se realiza por el nombre del rol 
+    
+    """
     model = Group
     template_name = TEMPL_ROLES_LIST
 
     def get_queryset(self):
-        """Lista todos los roles o el resultado de la busqueda 
-        de un rol por su nombre""" 
         busqueda = self.request.GET.get('busqueda','')
         if (busqueda != ''):
             object_list = self.model.objects.filter(name__icontains=busqueda)
@@ -317,7 +383,14 @@ class ListaRolPermisosView(ListView):
         context = ListView.get_context_data(self, **kwargs)
         return context
 
+
 class EliminaRolPermisosView(DeleteView):
+    """
+    
+    Permite eliminar un rol , previa solicitud de confirmacion.
+    
+    """
+    
     model = Group
     template_name = TEMPL_DELCONFIRM
     def get_success_url(self):

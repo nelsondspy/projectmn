@@ -75,16 +75,38 @@ class UsuarioRolForm(ModelForm):
     class Meta:
         model = User
         fields =['groups']
+        labels = {
+                  'groups':'Roles'
+                  }
+        help_texts = {
+                      'groups':''
+                    }
+
 
 
 class ConsultaUsuarioForm(ModelForm):
     class Meta:
         model = User
-        exclude = ['password']
+        exclude = ['password', 'user_permissions','is_staff','groups']
         
         labels = {
-            'username': 'Nombre',
+            'username' :'Usuario',
+            'last_login':'Ultimo acceso',
+            'is_superuser':'Super usuario',
+            'first_name':'Nombres' , 
+            'last_name':'Apellidos', 
+            'email': 'Email', 
+            'is_active':'Activo',
+            'date_joined': 'Fecha alta'
+            
         }
         help_texts = {
-            'username': 'Nombre del usuario ',
+             'username' :'',
+            'last_login':'',
+            'is_superuser':'',
+            'first_name':'' , 
+            'first_name':'', 
+            'email': '', 
+            'is_active':'',
+            'date_joined': ''
         }

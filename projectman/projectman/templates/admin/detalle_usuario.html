@@ -1,1 +1,33 @@
+{# lista de roles definidos en el sistema #}
+
+{% extends "__panel.html" %}
+
+{% block titulo %} Perfil del usuario  {% endblock %}
+ 
+{% block cabecera_pagina %}Perfil de Usuario <small>Datos del usuario, roles y permisos asignados </small>{% endblock %}
+
+
+{% block zonatrabajo %}
+<table class="table table-striped">
 {{ form.as_table }}
+
+<tr>
+	<th>Roles y Permisos</th>
+	<td>
+	{% for g in user.groups.all%}
+	
+	 <p><strong>{{ g }}</strong></p>
+     {% for p in g.permissions.all %}
+     <li>{{ p.name }}</li>
+     {% endfor %}
+    </li>
+     {% endfor %}
+	
+</tr>
+</table>
+
+
+
+
+{% endblock %}
+

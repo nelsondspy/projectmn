@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url,include
 
 from views import ListaPermisosView
 from views import CreaUsuarioView
@@ -13,6 +13,8 @@ from views import EditaUsuarioRoles
 from views import ConsultaUsuarioView
 
 urlpatterns = patterns('projectman.apps',
+    url(r'^doc/', include('django.contrib.admindocs.urls')),
+    
     url(r'^autenticar/$', 'admin.views.autenticar'),
     url(r'^cerrar_sesion/$', 'admin.views.cerrar_sesion', name='cerrar_sesion'),
     url(r'^login/$', 'admin.views.login_form'),

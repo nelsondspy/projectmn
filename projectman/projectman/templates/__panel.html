@@ -41,22 +41,23 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">Help</a></li>
-            <li><a>
-            {% if user.is_authenticated %}
-   		   <p>Bienvenido, {{ user.username }} ({{ user.id }})</p>
-           {% endif %}
-            </a></a></li>
-            <li><a href="admin/cerrar_sesion">Cerrar sesión</a></li>
+            
+            <li><a href="{% url 'usuario_detalle' user.id %}">Perfil</a></li>
+            <li><a href="#">Mensajes</a></li>
+            <li><a href="#">Opciones</a></li>
+            <li><a href="#">Ayuda</a></li>
+            <li><a href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
+          </ul>
+          
+          <ul class="nav navbar-nav navbar-left">
+            <li><a >{% if user.is_authenticated %}<p>Bienvenido {{ user.username }} !</p>{% endif %}</a></li>
           </ul>
           
           {# bloques para definir el comportamiento del buscador( action y helptext,)  #}
-          <form class="navbar-form navbar-right" action="{% block buscador_url %}{% endblock %}" method="post">
+          <form class="navbar-form navbar-right" action="{% block buscador_url %}{% endblock %}" method="get">
             {% csrf_token %}
             <input name="busqueda" class="form-control" placeholder="{% block buscador_texto %}{% endblock %}" type="text">
+           
           </form>
 
           
@@ -75,18 +76,21 @@
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         
         {% block cabecera_zonatrabajo %}
+        
+        <!--
           <ol class="breadcrumb">
   			<li><a href="#">Home</a></li>
   			<li><a href="#">Library</a></li>
   			<li class="active">Data</li>
 		   </ol>
+        -->
         
           <h1 class="page-header">{% block cabecera_pagina %}{% endblock %}</h1>
         {% endblock %}  
         
         {# Zona de mensajes #}  
         {% if messages %}
-	        <div class="alert alert-info">
+	        <div class="text-warning">
 	        <ul>
 	        {% for message in messages %}
 	        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>

@@ -1,7 +1,7 @@
 {% extends "__panel.html" %}
 
 {% block titulo %} Control de acceso- Usuarios {% endblock %} 
-{% block cabecera_pagina %}Usuarios {% endblock %}
+{% block cabecera_pagina %}Usuarios <small> Administración de Usuarios </small> {% endblock %}
 
 {# buscador configurado para usuarios  #}
   {% block buscador_url %}{% url 'usuario_listar' %}{% endblock %}

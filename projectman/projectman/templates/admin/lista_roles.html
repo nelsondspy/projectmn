@@ -4,11 +4,12 @@
 
 {% block titulo %} Control de acceso / Roles  {% endblock %}
  
-{% block cabecera_pagina %}Roles <small>Administre los roles </small>{% endblock %}
+{% block cabecera_pagina %}Roles <small>Administración de Roles </small>{% endblock %}
 
-{% block buscador_url %}{% url 'rol_permisos_lista' %}{% endblock %}
+{# buscador, configurado para roles  #}
+  {% block buscador_url %}{% url 'rol_permisos_lista' %}{% endblock %}
+  {% block buscador_texto %}Buscar Roles{% endblock %}
 
-{% block buscador_texto %}Buscar Roles{% endblock %}
 
 {% block zonatrabajo %}
 
@@ -28,6 +29,8 @@
 
 <tr>
 	<td>{{rol.name}}<td> 
+	
+	<td><a href="{% url 'permisos_lista' rol.pk %}" data-target="#form_modal"  data-toggle="modal" >Ver Permisos</a></td>
 	<td><a href="{% url 'rol_permisos_edita' rol.pk %}" data-target="#form_modal"  data-toggle="modal" >Modificar</a></td>  
 	<td><a href="{% url 'rol_permisos_elimina' rol.pk %}" data-target="#form_modal"  data-toggle="modal">Eliminar</a></td>
 </tr>

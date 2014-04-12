@@ -1,13 +1,7 @@
-{% extends "__panel.html" %}
-{% block zonatrabajo %}
- 
-
-<h1></h1>
-<h3>lista de permisos </h3>
+<h3>Lista de permisos </h3>
  {% for permiso in object_list %}
     <li>
     {{permiso.name}}
     </li>
   {% endfor %}
-  
-{% endblock %}
+
