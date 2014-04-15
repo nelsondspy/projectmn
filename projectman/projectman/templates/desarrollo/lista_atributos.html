@@ -1,0 +1,8 @@
+<h1>Atributos de  {{ tipoitem.nombre }}</h1>
+<a href="{% url 'itematributo_crear' tipoitem.idtipoitem %}">Crear</a>
+<ul>
+  {% for atributo in object_list %}
+    <li>{{ atributo.nombre }},{{atributo.descripcion}},{{ atributo.tipodato }}
+    </li>
+  {% endfor %}
+</ul>

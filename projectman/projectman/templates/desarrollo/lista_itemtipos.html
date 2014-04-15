@@ -1,0 +1,10 @@
+<h1>Itemtipo  de {{ fase.nombre }}</h1>
+<a href="{% url 'tipoitem_crear' fase.idfase %}">Crear</a>
+<ul>
+  {% for itemtipo in object_list %}
+    <li>{{ itemtipo.nombre }},{{ itemtipo.descripcion}},{{ itemtipo.idfase_id }}
+    <a href="{% url 'itematributo_lista' itemtipo.idtipoitem %}">Atributos</a>
+    <a href="{% url 'tipoitem_editar' itemtipo.idtipoitem %}">Editar</a>
+    </li>
+  {% endfor %}
+</ul>

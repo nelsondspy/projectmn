@@ -1,20 +1,27 @@
-from django.shortcuts import render
-from django.shortcuts import redirect
-from django.shortcuts import render_to_response
-from django.views.generic import View
+from django.shortcuts import render, redirect, render_to_response
+from django.template import RequestContext
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView 
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
  
-from models import Fase , Item  
-from projectman.apps.admin.models import  Proyecto
-from forms import ItemForm
-from models import ItemTipos
-from forms import ItemTiposForm 
-from django.template import RequestContext
+from projectman.apps.admin.models import  Proyecto, Fase
 
+from models import ItemTipos, Item , ItemAtributos
+ 
+from forms import ItemTiposForm, ItemForm, AtributosTiposForm
+
+#nombres de variables de sesion 
 SESS_IDPROYECTO = 'idproyecto'
 SESS_IDFASE = 'idfase'
+
+#nombres de templates 
 TEMPL_PANEL = '__panel.html'
 TEMPL_EXPLORADOR = 'explorador_comp.html'
+TEMPL_ITEMTIPFORM = 'desarrollo/form_itemtipos.html'
+TEMPL_ITEMTIPO_LIST = 'desarrollo/lista_itemtipos.html'
+TEMPL_ATRIBUTOSFORM = 'desarrollo/form_atributos.html'
+TEMPL_ATRIBUTOS_LIST = 'desarrollo/lista_atributos.html'
 
 @login_required
 def mostrar_panel(request):
@@ -22,10 +29,14 @@ def mostrar_panel(request):
 
 
 
-"""Redirige a la vista que muestra el proyecto/fase/item que se esta editando
-actualmente, segun las variables de sesion, por niveles de url 
-"""
 def redirige_edicion_actual(request, nivel=0):
+    """
+    
+    Redirige a la vista que muestra el proyecto/fase/item que se esta editando
+    actualmente, segun las variables de sesion, por niveles de url 
+    
+    """
+
     #por defecto el nivel 0 es el proyecto
     url_redirigir = '/desarrollo/componentes/'+ request.session[SESS_IDPROYECTO]
     #el nivel 1 es la fase
@@ -35,10 +46,17 @@ def redirige_edicion_actual(request, nivel=0):
     return redirect(url_redirigir)
 
 
-""""Explorador de componentes de forma jerarquica permitira listar fases, los items de una fase
-los astributos de una fase """
 @login_required
 def editor_componentes(request, idproyecto=None, idfase=None):
+    """"
+    
+    Explorador de componentes de forma jerarquica permitira 
+    -Listar fases, 
+    -Los items de una fase
+    -Los valores de atributos del item seleccionado 
+    
+    """
+
     proyecto = Proyecto.objects.get(pk=idproyecto)
     request.session[SESS_IDPROYECTO] = idproyecto
     request.session[SESS_IDFASE] = None
@@ -89,27 +107,74 @@ def procesa_item(request, accion=None,idelemento=None):
             return redirige_edicion_actual(request, nivel=1)
 
 
-class EditForm(View):
-    template = ""
-    formulario = None
-    modelo = None
-    claveform = ""
-    modelo_foraneo = None
-    atributo_foraneo = ''
-    LSACCIONES = ('crear' , 'editar', 'eliminar')
+class ListaItemTipoView(ListView):
+    """Lista tipos de items """
+    model= ItemTipos
+    template_name= TEMPL_ITEMTIPO_LIST
+    fase_param = None
     
-    
-    def get(self, request, accion=None, idelemento=None):
-        if accion in self.LSACCIONES:
-            #editar 
-            if accion == self.LSACCIONES[1]:               
-                elemento = self.modelo(pk=idelemento)
-                form = self.formulario(elemento)
+    def get_queryset(self):
+        self.fase_param = Fase.objects.get(pk=self.kwargs['idfase'])
+        return ItemTipos.objects.filter(idfase=self.fase_param)
+    #Obtiene la fase para imprimir sus datos en el template  
+    def get_context_data(self, **kwargs):
+        context = super(ListaItemTipoView, self).get_context_data(**kwargs)
+        context['fase'] = self.fase_param
+        return context
 
-            #accion crear
-            if accion == self.LSACCIONES[0]:
-                objetoforaneo = self.modelo_foraneo.objects.get(pk=idelemento)
-                elemento = self.modelo()
-                setattr(elemento, self.atributo_foraneo , objetoforaneo )
-                 
-            return render(request, self.template, {self.claveform :form })
+
+class CreaItemTipoView(CreateView):
+    """Crea un tipo de item """
+    model= ItemTipos
+    template_name = TEMPL_ITEMTIPFORM
+    form_class = ItemTiposForm
+    fase_param = None
+    def get_success_url(self):
+        return reverse('tipoitem_lista',kwargs={'idfase':self.kwargs['idfase']})
+    def get_initial(self):
+        fase = Fase.objects.get(pk=self.kwargs['idfase'])
+        return { 'idfase': fase }
+
+
+class EditaItemTipoView(UpdateView):
+    """Edita un tipo de item"""
+    model= ItemTipos
+    template_name = TEMPL_ITEMTIPFORM
+    form_class = ItemTiposForm
+    def get_success_url(self):
+        return reverse('tipoitem_lista',kwargs={'idfase':self.kwargs['idfase']})
+
+
+class EliminarItemTipoView(DeleteView):
+    model= ItemTipos
+    #success_url = reverse_lazy('author-list')
+    success_url = '/'
+
+
+class CreaItemAtributoView(CreateView):
+    """Crea un atributo en un tipo de item """
+    model = ItemAtributos
+    template_name = TEMPL_ATRIBUTOSFORM
+    form_class = AtributosTiposForm
+    def get_success_url(self):
+        return reverse('itematributo_lista',kwargs={'idtipoitem':self.kwargs['idtipoitem']})
+    def get_initial(self):
+        itemtipo = ItemTipos.objects.get(pk=self.kwargs['idtipoitem'])
+        return { 'idtipoitem': itemtipo }
+
+
+class ListaItemAtributoView(ListView):
+    """Lista los atributos de un tipo de item """
+    model= ItemAtributos 
+    template_name= TEMPL_ATRIBUTOS_LIST
+    item_param = None
+    
+    def get_queryset(self):
+        self.item_param = ItemTipos.objects.get(pk=self.kwargs['idtipoitem'])
+        return ItemAtributos.objects.filter(idtipoitem=self.item_param)
+    #Obtiene la fase para imprimir sus datos en el template  
+    def get_context_data(self, **kwargs):
+        context = super(ListaItemAtributoView, self).get_context_data(**kwargs)
+        context['tipoitem'] = self.item_param
+        return context
+    

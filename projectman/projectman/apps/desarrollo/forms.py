@@ -1,26 +1,31 @@
 
+
 from django.forms import HiddenInput
 from django.forms import IntegerField
  
 from django.forms import ModelForm 
 from models import ItemTipos
-from models import AtributoTipos
+from models import ItemAtributos
 from models import Item
-from models import Fase
-""" Formulario de Carga y edicion de tipos de item 
- """
+
+ 
+
+
 class ItemTiposForm(ModelForm):
+    """ Formulario de Carga y edicion de tipos de item """
+    #idfase = IntegerField(widget=HiddenInput)
     fields = ['nombre', 'descripcion']
+    
     class Meta:
         model = ItemTipos
-
-
+        widgets = {"idfase": HiddenInput()}
 
 """Formulario de carga y edicion de """
 class AtributosTiposForm(ModelForm):
     fields =['nombre','descripcion', 'tipodato' ]
     class Meta:
-        model = AtributoTipos
+        model = ItemAtributos
+
 
 """Formulario del modelo Item 
 preve la creacion condicional de controles para crear nuevos items en una fase
@@ -40,5 +45,4 @@ class ItemForm(ModelForm):
         if instance and instance.idfase:
             self.fields['idfase']=IntegerField(widget=HiddenInput)
             self.fields['idfase'].initial=(instance.idfase).idfase 
-
 

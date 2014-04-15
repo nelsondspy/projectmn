@@ -1,0 +1,8 @@
+{# formulario para la carga y edicion de atibutos que pertenecen a tipos de items  #}
+<div id="edit_atributos">
+    <form action="{% url 'itematributo_crear' '1' %}" method="POST">{% csrf_token %}
+        {{ form.as_table }}
+    <input type="submit" value="Guardar">
+    </form>
+    
+</div>
