@@ -1,10 +1,71 @@
-<h1>Itemtipo  de {{ fase.nombre }}</h1>
-<a href="{% url 'tipoitem_crear' fase.idfase %}">Crear</a>
-<ul>
-  {% for itemtipo in object_list %}
-    <li>{{ itemtipo.nombre }},{{ itemtipo.descripcion}},{{ itemtipo.idfase_id }}
-    <a href="{% url 'itematributo_lista' itemtipo.idtipoitem %}">Atributos</a>
-    <a href="{% url 'tipoitem_editar' itemtipo.idtipoitem %}">Editar</a>
-    </li>
-  {% endfor %}
-</ul>
+{% extends "__panel.html" %}
+{# lista de tipos de item #}
+
+{% block titulo %} Fase {{ fase.nombre }} / Tipos de items   {% endblock %} 
+
+{% block cabecera_pagina %}Tipos de Ítem <small> Gestione los tipos de item de {{ fase.nombre }} </small> {% endblock %}
+
+{% block zonatrabajo %}
+
+
+
+ <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'tipoitem_crear' fase.idfase %}">
+ <span class="glyphicon glyphicon-plus-sign"> </span> Nuevo Tipo de Item
+ </a>
+
+
+<table class="table table-striped">
+
+<tr>
+    <th>Nombre del Tipo</th>
+	<th>Descripción</th>
+	<th colspan="2">Acciones</th>
+</tr>
+{% for itemtipo in object_list %}
+<tr class={% if itemtipo.idtipoitem == idtipoitem %}"success"{% endif %} >
+	<td><a href="{% url 'tipoitem_attr' fase.pk itemtipo.pk %}" >
+	   <span class={% if itemtipo.idtipoitem == idtipoitem %} "glyphicon glyphicon-chevron-down" {% else %} "glyphicon glyphicon-chevron-right" {% endif %}></span>
+	    {{ itemtipo.nombre }}</a>
+	</td>
+	<td>{{ itemtipo.descripcion }}</td>
+	<td>
+	  <a class="txt-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'itematributo_crear' itemtipo.idtipoitem %}">
+       <span class="glyphicon glyphicon-plus-sign"> </span>Nuevo Atributo</a>
+    </td>
+	<td><a href="{% url 'tipoitem_editar' itemtipo.idtipoitem %}" data-target="#form_modal"  data-toggle="modal"><span class="glyphicon glyphicon-edit"></span> Modificar</a></td>
+	
+    <td>
+      <a href="{% url 'tipoitem_eliminar' itemtipo.idtipoitem %}" data-target="#form_modal"  data-toggle="modal"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+    </td>
+</tr>
+<tr>
+  <td></td>
+  {% if itemtipo.idtipoitem == idtipoitem %}
+	<td><table class="table table-condensed" title="Atributos" >
+		<tr>
+		<th>Atributo</th>
+		<th>Descr.</th>
+		<th>Tipo</th>
+		<th>Acciones</th>
+		</tr>
+       {% for atributo in ls_atributos %}
+		<tr>
+		<td>{{ atributo.nombre }}</td>
+		<td>{{ atributo.descripcion }}</td>
+		<td>{{ atributo.tipodato }}</td>
+		<td><a href="{% url 'itematributo_editar' atributo.pk %}" data-target="#form_modal"  data-toggle="modal">Modif.</a></td>
+		<td><a href="{% url 'itematributo_eliminar' atributo.pk %}" data-target="#form_modal" data-toggle="modal">Eliminar</a></td>
+		</tr>
+		{% empty %}
+		 <td class="danger">Aún sin atributos</td>
+       {% endfor %}
+       </table>
+    </td>
+    <td></td>   
+    {% endif %}
+{% endfor %}
+</tr>
+</table>
+
+{% endblock %}
+	

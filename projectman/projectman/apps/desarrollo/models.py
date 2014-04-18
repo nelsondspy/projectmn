@@ -46,6 +46,8 @@ class ItemAtributos(models.Model):
     #relaciones 
     idtipoitem = models.ForeignKey(ItemTipos)
 
+    def __unicode__(self):
+        return self.nombre
 
 
 
