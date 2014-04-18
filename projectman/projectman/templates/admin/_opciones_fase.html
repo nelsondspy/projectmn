@@ -4,11 +4,11 @@
   <a data-toggle="dropdown" href="#">Acciones</a>
   <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
   <li>
-  <a href="#" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
+  <a href="{% url 'fases_eliminar' idfase %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
   </li>
   <li>
-  <a data-target="#form_modal"  data-toggle="modal" href="#" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-pencil"></span></a> 
+  <a data-target="#form_modal"  data-toggle="modal" href="{% url 'fases_editar' idfase %}" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-pencil"></span></a> 
   </li>
-  <li><a href="">Tipos de item</a></li>
+  <li><a href="{% url 'tipoitem_lista' idfase %}">Tipos de item</a></li>
   </ul>
 </div>

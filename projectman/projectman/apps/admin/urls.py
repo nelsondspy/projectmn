@@ -23,7 +23,12 @@ urlpatterns = patterns('projectman.apps',
     url(r'^proyectos/(?P<idproyecto>\d+)$', 'admin.views.proyectos_abm'),
     url(r'^proyectos/(?P<accion>[a-z]+)/(?P<idproyecto>\d+)$', 'admin.views.proyectos_abm'),
     url(r'^fases/(?P<accion>[a-z]+)/(?P<idelemento>\d+)$', 'admin.views.fases_abm'),
-    url(r'^fases/$', 'admin.views.fases_abm'),
+
+    url(r'^fases/eliminar/(?P<idelemento>\d+)$', 'admin.views.fases_abm', name="fases_eliminar"),
+    url(r'^fases/editar/(?P<idelemento>\d+)$', 'admin.views.fases_abm', name="fases_editar"),
+    url(r'^fases/crear/(?P<idelemento>\d+)$', 'admin.views.fases_abm', name="fases_crear"),
+
+    url(r'^fases/$', 'admin.views.fases_abm', name="fases_abm"),
     url(r'^permisos/lista/(?P<pk>\d+)$',ListaPermisosView.as_view(), name="permisos_lista"),
     
     url(r'^usuario/crear$', CreaUsuarioView.as_view(), name='usuario_crear'),
