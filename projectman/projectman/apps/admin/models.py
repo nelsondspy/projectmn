@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission
 
 
 
@@ -19,7 +22,11 @@ class Proyecto (models.Model):
     fechainicio = models.DateField(verbose_name='Fecha Inicio', null=True)
     fechafin = models.DateField(verbose_name='Fecha finalizacion',null=True)
     estado = models.CharField(max_length=3, choices=ESTADOS)
+
+    def __unicode__(self):
+        return self.nombre
     
+
     
 
 class Fase(models.Model): 
@@ -47,10 +54,78 @@ class Fase(models.Model):
         return self.nombre
 
 """Lista estatica de Permisos """
-LISTA_PERMISOS = [('PROYECTO_CREAR','Crear Proyecto'),
-                  ('PROYECTO_MODIF','Modificar Proyecto'),
-                  ('PROYECTO_ELIM','Eliminar Proyecto'),
-                  ('FASE_CREAR','Crear Fase'),
-                  ('FASE_MODIF','Modificar Fase'),
-                  ('FASE_ELIM','Eliminar Fase'),
-                  ]
+LISTA_PERMISOS = [
+                  #permisos no asociados a objetos particulares
+                  ('usuario_crear', 'Crear Usuario', 0),
+                  ('usuario_modif', 'Modificar datos del usuario', 0),
+                  ('usuario_elim', 'Eliminar usuario', 0),
+                  ('rol_crear', 'Crear Rol', 0),
+                  ('rol_elim', 'Eliminar Rol', 0),
+                  ('rol_modif', 'Modificar Rol', 0),
+                  ('rol_asignar', 'Asignar Rol', 0),
+                  ('proyecto_crear', 'Crear Proyecto', 0),
+                  #permisos asociados a proyectos especificos 
+                  ('proyecto_modif', 'Modificar Proyecto', 1),
+                  ('proyecto_elim', 'Eliminar Proyecto', 1),
+                  ('proyecto_iniciar', 'Iniciar Proyecto', 1),
+                  ('fase_crear', 'Crear Fase', 1),
+                  #permisos asociados a fases especificas
+                  ('fase_modif', 'Modificar Fase', 2),
+                  ('fase_elim', 'Eliminar Fase', 2)
+                  ] 
+
+
+class RolProyecto(models.Model):
+    """
+    
+    Almacena informacion de los roles asignados a proyectos y fases.
+    La aplicacion de django-auth es insuficiente ya que no provee seguridad
+    a nivel a instancias particulares de objetos.
+    
+    """
+    idrolproyecto = models.AutoField(primary_key=True)
+    rol = models.ForeignKey(Group)
+    usuario = models.ForeignKey(User)
+    proyecto = models.ForeignKey(Proyecto)
+
+        
+    def __unicode__(self):
+        return ('usuario:'+ self.usuario.__unicode__() + 
+                ', rol: ' + self.rol.__unicode__() + 
+                ', proyecto:'+ self.proyecto.__unicode__())
+    
+    
+    
+class RolFases(models.Model):
+    """
+    Fases sobre las que se asignan los permisos por roles
+    
+    """
+    idrolfase = models.AutoField(primary_key=True)
+    fase = models.ForeignKey(Fase)
+    idrolproyecto = models.ForeignKey(RolProyecto)
+
+
+def exist_permiso_proyecto(idusuario, idproyecto, idpermiso ):
+    """
+    
+    Verifica la existencia de una permiso para un usuario y proyecto. 
+    
+    """
+    #django crea un atributo para cada clave foranea con el sujito _id 
+    relacion = RolProyecto.objects.filter(usuario_id=idusuario).filter(proyecto_id=idproyecto)
+    permisos = Permission.objects.filter(group__rolproyecto__in=relacion).filter(codename=idpermiso)
+    return (permisos.count() > 0)
+
+
+def exist_permiso(idusuario, idpermiso):
+    """
+    
+    Verifica la existencia de una permiso para un usuario. 
+    
+    """
+    #django crea un atributo para cada clave foranea con el sujito _id 
+    relacion = RolProyecto.objects.filter(usuario_id=idusuario)
+    permisos = Permission.objects.filter(group__rolproyecto__in=relacion).filter(codename=idpermiso)
+    return (permisos.count() > 0)
+
