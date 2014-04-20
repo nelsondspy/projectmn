@@ -1,0 +1,34 @@
+{% extends "__panel.html" %}
+
+{% block titulo %} Control de acceso- Rol por proyecto y usuario  {% endblock %} 
+{% block cabecera_pagina %}Asignar Roles  <small> Asigne roles a proyectos por usuario </small> {% endblock %}
+
+
+{% block zonatrabajo %}
+
+ <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'rol_proyecto_crear' %}">
+ <span class="glyphicon glyphicon-plus-sign"> </span> Nueva asignación
+ </a>
+
+<table class="table table-striped">
+
+<tr>
+    <th>El usuario </th>
+	<th>tiene el rol</th>
+	<th>en el proyecto</th>
+	<th colspan="1">Acciones</th>
+</tr>
+{% for asignacion in object_list %}
+<tr>
+	<td>{{ asignacion.usuario }}</td>
+	<td>{{ asignacion.rol }}</td>
+	<td>{{ asignacion.proyecto }}</td>
+
+	<td><a href="{% url 'rol_proyecto_eliminar' asignacion.pk %}"  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Desasignar  </a></td>
+	
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}

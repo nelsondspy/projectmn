@@ -1,0 +1,89 @@
+{% extends "__panel.html" %}
+
+{% load tags %}
+
+{% block buscador_texto %}buscar proyectos {% endblock %}
+
+{% block zonatrabajo%}
+
+<div class="panel panel-default">
+<!-- 
+<h3 class="sub-header">Proyectos</h3>
+ -->
+ <div class="panel-heading">Proyectos</div>
+ <div class="panel-body">
+
+<div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Descripcion</th>
+                  <th>Fecha de inicio</th>
+                  <th>Fecha de finalización</th>
+                  <th>Acciones </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for proyecto in object_list %}
+                
+                {# verifica los permisos correspondientes a nivel de proyecto #}
+                {# el tag se llama perm_proy  y recibe como parametros : #} 
+                	{# el id del usuario, el id del proyecto  y el id del permiso  #}
+                	{# y en "as " , setea una variable que tiene true o false  #}
+                	{# para que facil de leer le puse el mismo nombre que el del permiso #}
+                	
+                {% perm_proy user.pk proyecto.idproyecto 'proyecto_elim' as proyecto_elim %}
+                
+                {% perm_proy user.pk proyecto.idproyecto 'proyecto_modif' as proyecto_modif %}
+                
+                <tr>
+                  <td><a href="/desarrollo/componentes/{{ proyecto.idproyecto }}" >{{ proyecto.nombre }}</a></td>
+                  <td>{{ proyecto.descripcion }}</td>
+                  <td>{{ proyecto.fechainicio }}</td>
+                  <td>{{ proyecto.fechafin }}</td>
+                  <td>
+	                  {% if proyecto_modif %}
+	                  <a data-target="#form_modal"  data-toggle="modal" href="{% url 'proyecto_editar' proyecto.idproyecto %}"><span class="glyphicon glyphicon-edit"></span> Editar</a>
+	                  {% else %}
+	                     
+	                     {# esto es simplemente para que imprima un texto #}
+	                         {#con el estilo para los elementos bloqueados (en gris y con el icono de bloqueado) #}
+	                     
+	                     {% include "_msg_noperm.html" with msg="Editar" %}
+	                  {% endif %}
+                  </td>
+                  <td>
+	                  {% if proyecto_elim %}
+	                    <a href="#" data-id="{% url 'proyecto_eliminar' proyecto.idproyecto %}" class="confirm-delete" ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+	                  {% else %}
+	                   	 {% include "_msg_noperm.html" with msg="Eliminar" %}
+	                  {% endif %}
+                  </td>
+
+                </tr>
+                 {% endfor%}
+              </tbody>
+            </table>
+</div>
+
+{# verifica si existe en permiso a nivel general #}
+{# el tag se llama permiso_gral y recibe como parametros el usuario y el codigo del permiso #}
+
+{% permiso_gral user.pk 'proyecto_crear' as proyecto_crear %}
+{% if proyecto_crear %}
+<!--llama al modal del formulario para la creacion -->
+<a data-target="#form_modal"  data-toggle="modal" href="{% url 'projectman.apps.admin.views.proyectos_abm' 'crear' '0' %}" >
+   <span class="glyphicon glyphicon-plus-sign"></span> Nuevo proyecto 
+</a>
+{% else %}
+
+	{% include "_msg_noperm.html" with msg="Nuevo proyecto" %}
+
+{% endif %}
+
+</div>
+</div>
+
+
+{% endblock%}

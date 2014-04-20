@@ -1,5 +1,7 @@
 {% extends "__panel.html" %}
 
+{% load tags %}
+
 {% block titulo %} Control de acceso- Usuarios {% endblock %} 
 {% block cabecera_pagina %}Usuarios <small> Administración de Usuarios </small> {% endblock %}
 
@@ -9,9 +11,17 @@
 
 {% block zonatrabajo %}
 
- <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'usuario_crear' %}">
- <span class="glyphicon glyphicon-plus-sign"> </span> Nuevo Usuario
- </a>
+{# consulta la existencia del permiso crear usuario para el usuario autenticado #}
+
+{% permiso_gral user.pk 'usuario_crear' as usuario_crear %}
+
+{% if usuario_crear %}
+ 	<a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'usuario_crear' %}">
+	<span class="glyphicon glyphicon-plus-sign"> </span> Nuevo Usuario
+	</a>
+ {% else %}
+ 	{% include "_msg_noperm.html" with msg="carga de usuarios deshabilitada" %}
+{% endif %}
 
 <table class="table table-striped">
 
@@ -33,9 +43,24 @@
 	<td>{% if usuario.is_active %} <span class="glyphicon glyphicon-ok"></span> {% endif %} </td>
 	<td>{% if usuario.is_superuser %} <span class="glyphicon glyphicon-ok"></span> {% endif %} </td>
 	
-	<td><a href="{% url 'usuario_edita' usuario.pk %}" data-target="#form_modal"  data-toggle="modal" ><span class="glyphicon glyphicon-edit"></span> Modificar</a></td>
-	<td><a href="{% url 'usuario_elimina' usuario.pk %}"  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Eliminar </a></td>
-	<td><a href="{% url 'usuario_editaroles' usuario.pk %}"  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Asignar Roles </a></td>
+	
+	<td>
+	   {# corregi este companhero, otro level ya somos , tenemos nuestros propios tags #}
+	   {% if 'admin.usuario_modif' in perms %}
+		<a href="{% url 'usuario_edita' usuario.pk %}" data-target="#form_modal"  data-toggle="modal" ><span class="glyphicon glyphicon-edit"></span> Modificar</a>
+       {% else %}
+       {% include "_msg_noperm.html" with msg="Modificar" %}     
+       {% endif %}
+	</td>
+	
+	<td>
+		<a href="{% url 'usuario_elimina' usuario.pk %}"  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Eliminar </a>
+	</td>
+	<td>
+		<!-- 
+		<a href="{% url 'usuario_editaroles' usuario.pk %}"  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Asignar Roles </a>
+		 -->
+	</td>
 	
 </tr>
 {% endfor %}

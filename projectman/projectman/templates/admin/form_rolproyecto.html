@@ -1,17 +1,20 @@
 {% extends nodefault|default:"__formsolo.html" %}
+
+{# formulario que permite asignar un rol a un usuario para un proyecto #}
+
 {% block zonatrabajo %}
-{# formulario para agregar o modificar fases #}
 <div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	<h4 class="modal-title">Fase</h4>
+	<h3 class="modal-title">Asignar roles y proyectos </h3>
 </div>
 <div class="modal-body">
-	<form method="post" action="{% url 'projectman.apps.admin.views.fases_abm'%}" class="form-horizontal">
-	{% csrf_token %}
+<form method="post" action="{% url 'rol_proyecto_crear' %}">
+{% csrf_token %}
 	<table>
-		{{ faseform.as_table }}
+	{{ form.as_table }}
+	
 	</table>
 	<input type="submit" class="btn btn-primary" value="Guardar">
-	</form>
+</form>
 </div>
 {% endblock %}
