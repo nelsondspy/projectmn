@@ -15,7 +15,11 @@
     <!-- Bootstrap core CSS -->
     
     
+    
+    
     <link href="{% static "base/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet"> 
+
+    
     
 
     <!-- Custom styles for this template -->
@@ -88,16 +92,10 @@
           <h1 class="page-header">{% block cabecera_pagina %}{% endblock %}</h1>
         {% endblock %}  
         
-        {# Zona de mensajes #}  
-        {% if messages %}
-	        <div class="text-warning">
-	        <ul>
-	        {% for message in messages %}
-	        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-	        {% endfor %} 
-	       </ul>
-	        </div>
-        {% endif %}
+          {# MENSAJES #}
+          {% if messages %}
+		  {% include "_messages.html" with messages=messages %}
+          {% endif %}
           
           {% block zonatrabajo %}
            <h1>Bienvenido</h1> 

@@ -38,13 +38,11 @@ width: 40%
             {{ fase.nombre}}
          </a>
          <p>{{ fase.descripcion}}</p>
-         
-         
    </div>
   
   <div class="col-md-8">
   {% ifequal fase.idfase idfase %}
-      {% include "admin/_opciones_fase.html" %}            
+      {% include "admin/_opciones_fase.html" with idfase=fase.idfase %}            
   {% endifequal %}
   
    <!-- 

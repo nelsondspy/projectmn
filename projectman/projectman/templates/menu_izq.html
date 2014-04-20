@@ -1,15 +1,13 @@
 {% block menu_izquierda %}
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar" contextmenu=""> <!-- <ul class="nav nav-sidebar"> -->
-            <li class="active"><a href="/admin/proyectos"><span class="glyphicon glyphicon-briefcase"> </span> Gestión de Proyectos</a></li>
+            <li class="active"><a href="{% url 'proyectos_asignados' %}"><span class="glyphicon glyphicon-briefcase"> </span> Gestión de Proyectos</a></li>
             <li>
                 <a href="#">Control de acceso </a>
                 <ul><a href="{% url 'usuario_listar' %}">Usuarios</a></ul>
                 <ul><a href="{% url 'rol_permisos_lista' %}">Roles y Permisos</a></ul>
-
+                <ul><a href="{% url 'rol_proyecto_listar' %}">Asignación de Roles</a> </ul>
             </li>
-            
-            
             <li><a href="#">Gestion del cambio</a></li>
           </ul>
         </div>

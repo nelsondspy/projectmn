@@ -1,0 +1,32 @@
+
+        {# Zona de mensajes #}  
+        {% if messages %}
+	    <div >
+	        
+	        {% for message in messages %}
+	        
+	        {% if message.tags == 'error' %}
+	        	<div class="alert alert-danger">{{ message }}
+	        	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	        	</div>
+	        {% endif %}
+	        {% if message.tags == 'warning' %}
+	        	<div class="alert alert-warning">{{ message }}
+	        	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	        	</div>
+	        {% endif %}
+	        {% if message.tags == 'info' %}
+	        	<div class="alert alert-info">{{ message }}
+	        	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	        	</div>
+	        {% endif %}
+	        
+	        {% if not message.tags %}
+	        <div class="">{{ message }}
+	        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	        </div>
+	        {% endif %}
+	        {% endfor %} 
+	       
+	     </div>
+        {% endif %}
