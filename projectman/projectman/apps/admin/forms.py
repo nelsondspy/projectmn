@@ -8,6 +8,7 @@ from django.contrib.auth.models import Group
 from django.forms import PasswordInput
 from models  import Proyecto
 from models import Fase
+from models import RolProyecto
 
 class ProyectoForm(ModelForm):
     
@@ -110,3 +111,13 @@ class ConsultaUsuarioForm(ModelForm):
             'is_active':'',
             'date_joined': ''
         }
+
+
+class RolProyectoForm(ModelForm):
+    class Meta:
+        model = RolProyecto
+        fields = ['rol','usuario','proyecto' ]
+        labels = {'rol': 'Rol',
+                  'usuario':'usuario',
+                  'proyecto': 'Proyecto'
+                  }
