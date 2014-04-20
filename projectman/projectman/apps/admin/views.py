@@ -17,11 +17,13 @@ from django.db.models import Q
 #Modelos y formularios propios de la aplicacion
 from models import Proyecto
 from models import Fase 
+from models import RolProyecto
 from forms import ProyectoForm
 from forms import FaseForm
 from forms import UsuarioRolForm
 from forms import ConsultaUsuarioForm
 from forms import UserForm
+from forms import RolProyectoForm 
 from projectman.apps.desarrollo.views import redirige_edicion_actual 
 
 
@@ -40,6 +42,9 @@ TEMPL_ROLES_LIST = "admin/lista_roles.html"
 TEMPL_ASIG_ROL_USER = 'admin/form_asignarol.html'
 TEMPL_DELCONFIRM = 'form_confirm_delete.html'
 ABM_ACCIONES = ('editar', 'eliminar', 'crear')
+#nombre de la variable de sesion que almacena los permisos
+SESS_PERMS = 'permisos'
+
 
 class CreaUsuarioView(CreateView):
     """
@@ -355,8 +360,6 @@ class EditaRolPermisosView(UpdateView):
         if self.templ_base_error:
             context['nodefault'] = self.templ_base_error
         return context
-import logging
-logger = logging.getLogger(__name__)
 
 
 class ListaRolPermisosView(ListView):
@@ -390,14 +393,104 @@ class EliminaRolPermisosView(DeleteView):
     Permite eliminar un rol , previa solicitud de confirmacion.
     
     """
-    
     model = Group
     template_name = TEMPL_DELCONFIRM
+
     def get_success_url(self):
         return reverse('rol_permisos_lista')
 
     def get_context_data(self, **kwargs):
         context = DeleteView.get_context_data(self, **kwargs)
-        context['action'] = reverse('rol_permisos_elimina',kwargs={'pk':self.kwargs['pk']})
+        context['action'] = reverse('tipoitem_eliminar',kwargs={'pk':self.kwargs['pk']})
         return context
 
+
+class AsignaRolProyectoView(CreateView):
+    """
+    
+    Permite asignar un rol a un proyecto y a un usuario.
+    
+    """
+    model = RolProyecto
+    form_class = RolProyectoForm
+    template_name = 'admin/form_rolproyecto.html'
+    templ_base_error = None
+    
+    def get_success_url(self):
+        return reverse('rol_proyecto_listar')
+    
+    def get_context_data(self, **kwargs):
+        context = CreateView.get_context_data(self, **kwargs)
+        context['action'] = reverse('rol_proyecto_crear')
+        if self.templ_base_error:
+            context['nodefault'] = self.templ_base_error
+        return context
+    
+    def form_valid(self, form):
+        #verificamos que ya aun no este asignado:
+        #el usuario , el rol, y el  proyecto
+        qs = RolProyecto.objects.filter(usuario=form.instance.usuario
+                                   ).filter(proyecto=form.instance.proyecto
+                                   ).filter(rol=form.instance.rol)
+        #si ya esta asignado enviamos un mensaje de error
+        if (qs.count() > 0):
+            messages.error(self.request, 'Esta asignacion ya existe ')
+            self.templ_base_error = "__panel.html"
+            return self.form_invalid(form)
+        return CreateView.form_valid(self, form)
+    
+    def form_invalid(self, form):
+        self.templ_base_error = "__panel.html"
+        return CreateView.form_invalid(self, form)
+
+
+class ListaRolProyectoView(ListView):
+
+    model = RolProyecto
+    template_name = 'admin/lista_rolesproyectos.html'
+
+
+class EliminaRolProyectoView(DeleteView):
+    """
+    
+    Permite borrar una asignacion de : un rol a un proyecto y a un usuario.
+    Recibe como parametro el identificador de la asignacion
+    
+    """
+    model = RolProyecto
+    template_name = TEMPL_DELCONFIRM
+
+    def get_success_url(self):
+        return reverse('rol_proyecto_listar')
+
+    def get_context_data(self, **kwargs):
+        context = DeleteView.get_context_data(self, **kwargs)
+        context['action'] = reverse('rol_proyecto_eliminar',
+                                    kwargs={'pk':self.kwargs['pk']})
+        return context
+
+
+class ListaProyectosUsuario(ListView):
+    """ 
+    
+    Lista solo los proyectos permitidos para el usuario 
+    
+    """
+    model = RolProyecto
+    template_name = 'admin/lista_proyectos.html'
+    sess_perms = SESS_PERMS
+    
+
+    def get_context_data(self, **kwargs):
+        context = ListView.get_context_data(self, **kwargs)
+        return context
+
+    def get_queryset(self):
+        #obtiene todos los proyectos asignados al usuario
+        proyectos = Proyecto.objects.filter(rolproyecto__usuario=self.request.user)
+        
+        if proyectos.count() < 1 :
+            messages.info(self.request,'No tiene asignado proyecto alguno,\
+                contacte con el administrador')
+        object_list = proyectos
+        return object_list
