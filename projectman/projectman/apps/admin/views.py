@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect, render_to_response
+from django.shortcuts import render, redirect, render_to_response, get_object_or_404
 from django.contrib import messages 
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
@@ -18,12 +18,14 @@ from django.db.models import Q
 from models import Proyecto
 from models import Fase 
 from models import RolProyecto
+from models import RolFases
 from forms import ProyectoForm
 from forms import FaseForm
 from forms import UsuarioRolForm
 from forms import ConsultaUsuarioForm
 from forms import UserForm
 from forms import RolProyectoForm 
+from forms import RolFaseForm
 from projectman.apps.desarrollo.views import redirige_edicion_actual 
 
 
@@ -427,14 +429,14 @@ class AsignaRolProyectoView(CreateView):
         return context
     
     def form_valid(self, form):
-        #verificamos que ya aun no este asignado:
-        #el usuario , el rol, y el  proyecto
+        #verificamos que aun no este asignado:
+        #el usuario  a un  proyecto con algun rol
         qs = RolProyecto.objects.filter(usuario=form.instance.usuario
-                                   ).filter(proyecto=form.instance.proyecto
-                                   ).filter(rol=form.instance.rol)
+                                   ).filter(proyecto=form.instance.proyecto)
         #si ya esta asignado enviamos un mensaje de error
         if (qs.count() > 0):
-            messages.error(self.request, 'Esta asignacion ya existe ')
+            messages.error(self.request, 'Esta asignacion ya existe, solo puede asignar \
+            un rol a un usuario para un proyecto.')
             self.templ_base_error = "__panel.html"
             return self.form_invalid(form)
         return CreateView.form_valid(self, form)
@@ -448,6 +450,25 @@ class ListaRolProyectoView(ListView):
 
     model = RolProyecto
     template_name = 'admin/lista_rolesproyectos.html'
+    lista_fases = None
+     
+    
+    def get_context_data(self, **kwargs):
+        context = ListView.get_context_data(self, **kwargs)
+        context['lista_fases'] = self.lista_fases
+        if self.kwargs.get('idrolproyecto'):
+            context['idrolproyecto'] = int(self.kwargs.get('idrolproyecto'))
+        return context
+    
+    def get_queryset(self):
+        if self.kwargs.get('idrolproyecto'):
+            relacion_proy = get_object_or_404(RolProyecto,\
+                                              pk=self.kwargs.get('idrolproyecto'))
+            relacion_fase = RolFases.objects.filter(rolproyecto=relacion_proy)
+            self.lista_fases = Fase.objects.filter(rolfases__in=relacion_fase)
+        return ListView.get_queryset(self)
+
+
 
 
 class EliminaRolProyectoView(DeleteView):
@@ -493,4 +514,87 @@ class ListaProyectosUsuario(ListView):
             messages.info(self.request,'No tiene asignado proyecto alguno,\
                 contacte con el administrador')
         object_list = proyectos
+        return object_list
+
+
+class AsignaFaseRolView(CreateView):
+    """
+    
+    Asigna un (rol , usuario , proyecto) a una fase del proyecto.
+    
+    """
+    model = RolFases
+    form_class = RolFaseForm
+    templ_base_error = None
+    rolproyecto = None 
+    template_name = 'admin/form_rolfase.html'
+    
+    def get_initial(self):
+        #consulta la relacion rolproyecto por medio de su id
+        self.rolproyecto = get_object_or_404(RolProyecto,pk=self.kwargs['idrolproyecto']) 
+        return { 'rolproyecto': self.rolproyecto }
+
+    def form_invalid(self, form):
+        self.templ_base_error = "__panel.html"
+        return CreateView.form_invalid(self, form)
+    
+    def get_context_data(self, **kwargs):
+        context = CreateView.get_context_data(self, **kwargs)
+        context['action'] = reverse('rol_fase_crear',\
+                                kwargs={'idrolproyecto':self.kwargs['idrolproyecto'] })
+        if self.templ_base_error:
+            context['nodefault']= self.templ_base_error
+        return context
+    
+    def get_form(self, form_class):
+        form = CreateView.get_form(self, form_class)
+        #obtiene el proyecto
+        self.rolproyecto = get_object_or_404(RolProyecto, pk=self.kwargs['idrolproyecto'])
+        #obtiene solo las fases que tiene el proyecto. en lugar de todas las fases.
+        proyecto = get_object_or_404(Proyecto,pk=self.rolproyecto.proyecto_id )
+        form.fields['fase'].queryset = Fase.objects.filter(idproyecto=proyecto)
+        return form
+    
+    def get_success_url(self):
+        return reverse('rol_proyecto_fase',kwargs={'idrolproyecto':self.kwargs['idrolproyecto']})
+    
+
+class EliminaRolFaseView(DeleteView):
+    """
+    
+    Recibe como parametro el identificador de la asignacion de asignacion a nivel de fase.
+    
+    """
+    model = RolFases
+    template_name = TEMPL_DELCONFIRM
+
+    def get_success_url(self):
+        return reverse('rol_proyecto_listar')
+
+    def get_context_data(self, **kwargs):
+        context = DeleteView.get_context_data(self, **kwargs)
+        context['action'] = reverse('rol_fase_eliminar',
+                                    kwargs={'pk':self.kwargs['pk']})
+        return context
+
+
+class ListaRolFasesView(ListView):
+    """ 
+    
+     
+    
+    """
+    model = RolFases
+    template_name = 'admin/lista_rolesfases.html'
+
+    def get_context_data(self, **kwargs):
+        context = ListView.get_context_data(self, **kwargs)
+        return context
+
+    def get_queryset(self):
+        #obtiene primero la relacion entre el proyecto el usuario y el rol
+        rolproyp = get_object_or_404(RolProyecto, pk=self.kwargs['idrolproyecto'])
+        #consulta las fases que pertenecen a la relacion 
+        fases = Fase.objects.filter(rolfases__rolproyecto=rolproyp)
+        object_list = fases
         return object_list

@@ -9,6 +9,7 @@ from django.forms import PasswordInput
 from models  import Proyecto
 from models import Fase
 from models import RolProyecto
+from models import RolFases
 
 class ProyectoForm(ModelForm):
     
@@ -121,3 +122,15 @@ class RolProyectoForm(ModelForm):
                   'usuario':'usuario',
                   'proyecto': 'Proyecto'
                   }
+
+
+class RolFaseForm(ModelForm):
+    """
+    
+    Formulario para la asignacion de fases a permisos por proyectos y usuarios.
+
+    """
+    class Meta:
+        model = RolFases
+        fields = ['fase', 'rolproyecto']
+        widgets ={'rolproyecto':HiddenInput()}

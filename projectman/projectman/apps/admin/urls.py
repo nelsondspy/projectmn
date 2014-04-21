@@ -15,6 +15,9 @@ from views import AsignaRolProyectoView
 from views import ListaRolProyectoView
 from views import EliminaRolProyectoView
 from views import ListaProyectosUsuario
+from views import AsignaFaseRolView
+from views import EliminaRolFaseView
+from views import ListaRolFasesView
 
 urlpatterns = patterns('projectman.apps',
     url(r'^doc/', include('django.contrib.admindocs.urls')),
@@ -53,9 +56,12 @@ urlpatterns = patterns('projectman.apps',
     
     url(r'^rol/asignar/$', AsignaRolProyectoView.as_view(), name='rol_proyecto_crear'),
     url(r'^rol/listaasignados/$', ListaRolProyectoView.as_view(), name='rol_proyecto_listar'),
+    url(r'^rol/listaasignados/(?P<idrolproyecto>\d+)$', ListaRolProyectoView.as_view(), name='rol_proyecto_fase'),
+    
     url(r'^rol/desasignar/(?P<pk>\d+)$', EliminaRolProyectoView.as_view(), name='rol_proyecto_eliminar'),
+    url(r'^rol/asignarfase/(?P<idrolproyecto>\d+)$', AsignaFaseRolView.as_view(), name='rol_fase_crear'), 
+    url(r'^rol/eliminarfase/(?P<pk>\d+)$', EliminaRolFaseView.as_view(), name='rol_fase_eliminar'),
+    url(r'^rol/listarfases/(?P<idrolproyecto>\d+)$', ListaRolFasesView.as_view(), name='rol_fase_listar'), 
     #lista los proyectos asignados al usuario
     url (r'^proyectos/listaasig$', ListaProyectosUsuario.as_view(), name='proyectos_asignados'),
-
-    
 )

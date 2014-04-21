@@ -1,0 +1,20 @@
+{#lista de fases asignadas al proyecto, usuari, rol #}
+
+<table class="table table-striped">
+<thead>
+<tr>
+   <th>Nombre </th>
+   <th>Descripcion </th>
+</tr>
+</thead>
+<tbody>
+{% for fase in object_list %}
+<tr>
+	<td>{{ fase.nombre }} <td> 
+	<td>{{ fase.descripcion }}<td>
+</tr>
+{% endfor %}
+
+
+</tbody>
+</table>

@@ -1,5 +1,5 @@
 from django import template
-from projectman.apps.admin.models import exist_permiso_proyecto, exist_permiso
+from projectman.apps.admin.models import exist_permiso_proyecto, exist_permiso, exist_permiso_fase
 register = template.Library()
 
 @register.filter(name='cut')
@@ -29,5 +29,18 @@ def permiso_gral(idusuario, idpermiso):
     """
     try:
         return exist_permiso(idusuario, idpermiso)
+    except Exception :
+        return False
+
+
+@register.assignment_tag
+def perm_fase(idusuario, idfase, idpermiso):
+    """
+    tag que verifica la existencia de una permiso para un usuario y una fase.
+    Setea una variable con true si existe el permiso , caso contrario false.
+    
+    """
+    try :
+        return exist_permiso_fase(idusuario, idfase, idpermiso)
     except Exception :
         return False

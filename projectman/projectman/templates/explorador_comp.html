@@ -44,12 +44,7 @@ width: 40%
   {% ifequal fase.idfase idfase %}
       {% include "admin/_opciones_fase.html" with idfase=fase.idfase %}            
   {% endifequal %}
-  
-   <!-- 
-     <a href="/desarrollo/procesafase/eliminar/{{ fase.idfase }}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
-     <a data-target="#form_modal"  data-toggle="modal" href="/desarrollo/procesafase/editar/{{ fase.idfase }}" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-pencil"></span></a>
-   -->
-  
+   
   </div>
    
   
@@ -57,9 +52,7 @@ width: 40%
    
    {# si una fase fue seleccionada entonces se imprimen sus items #}
 	
-	
      {% ifequal idfase fase.idfase %}
-     
      <ul>
      
      

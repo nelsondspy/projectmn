@@ -1,14 +1,31 @@
 {# lista de opciones de una fase selecionada #}
 
+{% load tags %}
+
+{% perm_fase user.pk idfase 'fase_modif' as fase_modif %}
+{% perm_fase user.pk idfase 'fase_elim' as fase_elim %}
+
 <div class="dropdown">
   <a data-toggle="dropdown" href="#">Acciones</a>
-  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">  
+  
   <li>
-  <a href="{% url 'fases_eliminar' idfase %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
+  {% if fase_modif %}
+  <a data-target="#form_modal"  data-toggle="modal" href="{% url 'fases_editar' idfase %}" ><span class="glyphicon glyphicon-pencil"></span>Editar</a> 
+  {% else %}
+ 		{% include "_msg_noperm.html" with msg="Editar" %}
+  {% endif %}
   </li>
+
   <li>
-  <a data-target="#form_modal"  data-toggle="modal" href="{% url 'fases_editar' idfase %}" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-pencil"></span></a> 
+  {% if fase_elim %}
+  <a href="{% url 'fases_eliminar' idfase %}" ><span class="glyphicon glyphicon-remove">Eliminar</span></a>
+  {% else %}
+  		{% include "_msg_noperm.html" with msg="Eliminar" %}
+  {% endif %}
   </li>
+  
   <li><a href="{% url 'tipoitem_lista' idfase %}">Tipos de item</a></li>
+  
   </ul>
 </div>

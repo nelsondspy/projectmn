@@ -95,15 +95,15 @@ class RolProyecto(models.Model):
                 ', proyecto:'+ self.proyecto.__unicode__())
     
     
-    
 class RolFases(models.Model):
     """
+
     Fases sobre las que se asignan los permisos por roles
     
     """
     idrolfase = models.AutoField(primary_key=True)
     fase = models.ForeignKey(Fase)
-    idrolproyecto = models.ForeignKey(RolProyecto)
+    rolproyecto = models.ForeignKey(RolProyecto)
 
 
 def exist_permiso_proyecto(idusuario, idproyecto, idpermiso ):
@@ -123,9 +123,21 @@ def exist_permiso(idusuario, idpermiso):
     
     Verifica la existencia de una permiso para un usuario. 
     
-    """
+    """ 
     #django crea un atributo para cada clave foranea con el sujito _id 
     relacion = RolProyecto.objects.filter(usuario_id=idusuario)
     permisos = Permission.objects.filter(group__rolproyecto__in=relacion).filter(codename=idpermiso)
     return (permisos.count() > 0)
 
+
+def exist_permiso_fase(idusuario, idfase, idpermiso):
+    """
+    
+    Verifica la existencia de una permiso para un usuario y una fase
+    
+    """
+    relacion = RolProyecto.objects.filter(usuario_id=idusuario).filter(
+                            rolfases__fase_id=idfase)
+    permisos = Permission.objects.filter(group__rolproyecto__in=relacion).filter(codename=idpermiso)
+
+    return (permisos.count() > 0)
