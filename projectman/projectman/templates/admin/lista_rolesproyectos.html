@@ -13,6 +13,8 @@
  <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'rol_proyecto_crear' %}">
  <span class="glyphicon glyphicon-plus-sign"> </span> Nueva asignación
  </a>
+ {% else %}
+ <td>{% include "_msg_noperm.html" with msg="Nueva asignación" %}</td>
 {% endif %}
 
 <table class="table table-striped">
@@ -32,13 +34,12 @@
 	<td>{{ asignacion.rol }}</td>
 	<td>{{ asignacion.proyecto }}</td>
 
-	{% if 'admin.usuario_modif' in perms or user.is_superuser %}
+	{% if usuario_modif or user.is_superuser %}
 
 	<td><a href="{% url 'rol_proyecto_eliminar' asignacion.pk %}"  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Desasignar  </a></td>
 	
 	{% else %}
-
-	<td><a href="" ><span class="glyphicon glyphicon-remove"></span> Desasignar  </a></td>
+	<td>{% include "_msg_noperm.html" with msg="Desasignar" %}</td>
 
 	{% endif %}
 	

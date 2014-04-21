@@ -27,28 +27,27 @@
 </tr>
 </thead>
 <tbody>
+
+{% permiso_gral user.pk 'rol_modif' as rol_modif %}
+{% permiso_gral user.pk 'rol_elim' as rol_elim %}
+
 {% for rol in object_list %}
 
 <tr>
 	<td>{{rol.name}}<td> 
-
-
-	<td><a href="{% url 'permisos_lista' rol.pk %}" data-target="#form_modal"  data-toggle="modal" >Ver Permisos</a></td>
     
-
-    {% permiso_gral user.pk 'rol_modif' as rol_modif %}
-    {% if 'admin.rol_modif' in perms or user.is_superuser %}
-	   <td><a href="{% url 'rol_permisos_edita' rol.pk %}" data-target="#form_modal"  data-toggle="modal" >Modificar</a></td>  
+    <td><a href="{% url 'permisos_lista' rol.pk %}" data-target="#form_modal"  data-toggle="modal" >Ver Permisos</a></td>
+    
+    {% if rol_modif or user.is_superuser %}
+	  <td><a href="{% url 'rol_permisos_edita' rol.pk %}" data-target="#form_modal"  data-toggle="modal" >Modificar</a></td>  
     {% else %}
-       {% include "_msg_noperm.html" with msg="Modificar" %}     
+    <td>{% include "_msg_noperm.html" with msg="Modificar" %}</td>
     {% endif %}
 
-    
-    {% permiso_gral user.pk 'rol_elim' as rol_elim %}
-    {% if 'admin.rol_elim' in perms or user.is_superuser %}
+    {% if rol_elim or user.is_superuser %}
 	   <td><a href="{% url 'rol_permisos_elimina' rol.pk %}" data-target="#form_modal"  data-toggle="modal">Eliminar</a></td>
     {% else %}
-       {% include "_msg_noperm.html" with msg="Eliminar" %}     
+    <td>{% include "_msg_noperm.html" with msg="Eliminar" %}</td>
     {% endif %}
 	
 </tr>
