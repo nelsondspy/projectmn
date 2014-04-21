@@ -52,17 +52,18 @@
 	{% if idrolproyecto == asignacion.pk %}
 	<td><table class="table table-condensed" title="Atributos" >
 		<tr>
-		<th>Nombre Fase</th>
-		<th>Descr.</th>
+		<th>Fase</th>
 		<th>Acciones</th>
 		</tr>
-		{% for fase in lista_fases %}
+		{% for fase_perm in lista_fases %}
 		<tr>
-		<td>{{ fase.nombre }}</td>
-		<td>{{ fase.descripcion }}</td>
+		<td>{{ fase_perm.fase }}</td>
 		<td>
-		<a href="{% url 'rol_fase_eliminar' fase.idfase %}" data-target="#form_modal" data-toggle="modal">
-		<span class="glyphicon glyphicon-remove-circle"></span> Eliminar</a></td>
+		<a href="{% url 'rol_fase_eliminar' fase_perm.pk %}" data-target="#form_modal" data-toggle="modal">
+		<span class="glyphicon glyphicon-remove-circle"></span> Denegar</a></td>
+		
+		{% empty %}
+			<td class="danger">No tiene fases permitidas</td> 
 		</tr>
 		{% endfor %}
 	</table>

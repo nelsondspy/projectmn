@@ -461,13 +461,15 @@ class ListaRolProyectoView(ListView):
         return context
     
     def get_queryset(self):
+        #obtiene las relaciones con el modelo rolproyecto
         if self.kwargs.get('idrolproyecto'):
             relacion_proy = get_object_or_404(RolProyecto,\
                                               pk=self.kwargs.get('idrolproyecto'))
             relacion_fase = RolFases.objects.filter(rolproyecto=relacion_proy)
-            self.lista_fases = Fase.objects.filter(rolfases__in=relacion_fase)
+            #self.lista_fases = Fase.objects.filter(rolfases__in=relacion_fase)
+            self.lista_fases = relacion_fase
+            
         return ListView.get_queryset(self)
-
 
 
 
@@ -509,7 +511,10 @@ class ListaProyectosUsuario(ListView):
     def get_queryset(self):
         #obtiene todos los proyectos asignados al usuario
         proyectos = Proyecto.objects.filter(rolproyecto__usuario=self.request.user)
-        
+        busqueda = self.request.GET.get('busqueda','')
+        if busqueda:
+            proyectos = proyectos.filter(nombre__icontains=busqueda)
+            messages.info(self.request, 'Resultados..nombres con : ' + busqueda)
         if proyectos.count() < 1 :
             messages.info(self.request,'No tiene asignado proyecto alguno,\
                 contacte con el administrador')
@@ -538,6 +543,7 @@ class AsignaFaseRolView(CreateView):
         self.templ_base_error = "__panel.html"
         return CreateView.form_invalid(self, form)
     
+
     def get_context_data(self, **kwargs):
         context = CreateView.get_context_data(self, **kwargs)
         context['action'] = reverse('rol_fase_crear',\
@@ -557,7 +563,21 @@ class AsignaFaseRolView(CreateView):
     
     def get_success_url(self):
         return reverse('rol_proyecto_fase',kwargs={'idrolproyecto':self.kwargs['idrolproyecto']})
-    
+
+    def form_valid(self, form):
+        #verificamos que aun no este asignado:
+        #el usuario  a un  proyecto con algun rol
+        
+        qs = RolFases.objects.filter(pk=self.kwargs['idrolproyecto']).\
+            filter(fase=form.instance.fase)
+            
+        #si ya esta asignado enviamos un mensaje de error
+        if (qs.count() > 0):
+            messages.error(self.request, 'Este permiso para la fase ya existe, para este usuario')
+            self.templ_base_error = "__panel.html"
+            return self.form_invalid(form)
+        return CreateView.form_valid(self, form)
+
 
 class EliminaRolFaseView(DeleteView):
     """

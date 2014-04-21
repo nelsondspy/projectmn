@@ -105,6 +105,9 @@ class RolFases(models.Model):
     fase = models.ForeignKey(Fase)
     rolproyecto = models.ForeignKey(RolProyecto)
 
+    def __unicode__(self):
+        return ('Permisos a la fase : '+ self.fase.__unicode__())
+
 
 def exist_permiso_proyecto(idusuario, idproyecto, idpermiso ):
     """
