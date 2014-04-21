@@ -15,7 +15,7 @@
 
 {% permiso_gral user.pk 'usuario_crear' as usuario_crear %}
 
-{% if usuario_crear %}
+{% if usuario_crear or user.is_superuser %}
  	<a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'usuario_crear' %}">
 	<span class="glyphicon glyphicon-plus-sign"> </span> Nuevo Usuario
 	</a>
@@ -46,6 +46,7 @@
 	
 	<td>
 	   {# corregi este companhero, otro level ya somos , tenemos nuestros propios tags #}
+	   {% permiso_gral user.pk 'usuario_modif' as usuario_modif %}
 	   {% if 'admin.usuario_modif' in perms %}
 		<a href="{% url 'usuario_edita' usuario.pk %}" data-target="#form_modal"  data-toggle="modal" ><span class="glyphicon glyphicon-edit"></span> Modificar</a>
        {% else %}
