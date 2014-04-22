@@ -60,7 +60,11 @@
 	
 	<td>
 		{% if usuario_elim or user.is_superuser %}
-		<a href="{% url 'usuario_elimina' usuario.pk %}"  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Eliminar </a>
+		  {% if usuario.pk != user.pk %}
+		    <a href="{% url 'usuario_elimina' usuario.pk %}"  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Eliminar </a>
+		  {% else %}
+		       {% include "_msg_noperm.html" with msg="(Logueado)" %}  
+		  {% endif %}
 		{% else %}
         {% include "_msg_noperm.html" with msg="Eliminar" %}     
         {% endif %}

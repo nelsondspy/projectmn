@@ -71,7 +71,7 @@
 {# el tag se llama permiso_gral y recibe como parametros el usuario y el codigo del permiso #}
 
 {% permiso_gral user.pk 'proyecto_crear' as proyecto_crear %}
-{% if proyecto_crear %}
+{% if proyecto_crear or user.is_superuser %}
 <!--llama al modal del formulario para la creacion -->
 <a data-target="#form_modal"  data-toggle="modal" href="{% url 'projectman.apps.admin.views.proyectos_abm' 'crear' '0' %}" >
    <span class="glyphicon glyphicon-plus-sign"></span> Nuevo proyecto 

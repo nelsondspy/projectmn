@@ -34,7 +34,7 @@ from projectman.apps.desarrollo.views import redirige_edicion_actual
 
 TEMPL_LOGINFORM = 'admin/form_login.html'
 TEMPL_PROYECTOFORM = 'admin/form_proyecto.html'
-TEMPL_PROYECTOLISTA = 'admin/form_proyectoedit.html'
+TEMPL_PROYECTOLISTA = 'admin/lista_proyectos.html'
 TEMPL_FASEFORM ='admin/form_fase.html'
 TEMP_PERM_LIST ='admin/lista_permisos.html'
 TEMPL_USERFORM = 'admin/form_user.html'
@@ -403,7 +403,7 @@ class EliminaRolPermisosView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = DeleteView.get_context_data(self, **kwargs)
-        context['action'] = reverse('tipoitem_eliminar',kwargs={'pk':self.kwargs['pk']})
+        context['action'] = reverse('rol_permisos_elimina',kwargs={'pk':self.kwargs['pk']})
         return context
 
 
@@ -568,11 +568,11 @@ class AsignaFaseRolView(CreateView):
         #verificamos que aun no este asignado:
         #el usuario  a un  proyecto con algun rol
         
-        qs = RolFases.objects.filter(pk=self.kwargs['idrolproyecto']).\
+        qs = RolFases.objects.filter(rolproyecto_id=self.kwargs['idrolproyecto']).\
             filter(fase=form.instance.fase)
             
         #si ya esta asignado enviamos un mensaje de error
-        if (qs.count() > 0):
+        if (qs.count() != 0):
             messages.error(self.request, 'Este permiso para la fase ya existe, para este usuario')
             self.templ_base_error = "__panel.html"
             return self.form_invalid(form)
