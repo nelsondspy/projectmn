@@ -1,15 +1,17 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
-from views import CreaItemTipoView, EditaItemTipoView, ListaItemTipoView, EliminaItemTipoView
-from views import CreaItemAtributoView, ListaItemAtributoView, EditaItemAtributoView, EliminaItemAtributoView
+
+from views.view_itemtipo import CreaItemTipoView,EditaItemTipoView, ListaItemTipoView, EliminaItemTipoView
+
+from views.view_itematributo import CreaItemAtributoView, ListaItemAtributoView, EditaItemAtributoView, EliminaItemAtributoView
 
 
 urlpatterns = patterns('projectman.apps',
-    url(r'^$', 'desarrollo.views.mostrar_panel'),
-    url(r'^componentes/(?P<idproyecto>\d+)/$', 'desarrollo.views.editor_componentes', name='editor_componentes'),
-    url(r'^componentes/(?P<idproyecto>\d+)/(?P<idfase>\d+)$', 'desarrollo.views.editor_componentes'),
-    url(r'^procesaitem/(?P<accion>[a-z]+)/(?P<idelemento>\d+)$', 'desarrollo.views.procesa_item'),
-    url(r'^procesaitem/$', 'desarrollo.views.procesa_item'),
+    url(r'^$', 'desarrollo.views.view_oth.mostrar_panel'),
+    url(r'^componentes/(?P<idproyecto>\d+)/$', 'desarrollo.views.view_oth.editor_componentes', name='editor_componentes'),
+    url(r'^componentes/(?P<idproyecto>\d+)/(?P<idfase>\d+)$', 'desarrollo.views.view_oth.editor_componentes', name='expl_nivelfase'),
+    url(r'^procesaitem/(?P<accion>[a-z]+)/(?P<idelemento>\d+)$', 'desarrollo.views.view_item.procesa_item', name='expl_nivelitem'),
+    
     #gestion de tipos de items 
     url(r'^tipoitem/editar/(?P<pk>\d+)$', login_required(EditaItemTipoView.as_view()), name="tipoitem_editar"),
     url(r'^tipoitem/crear/(?P<idfase>\d+)$', login_required(CreaItemTipoView.as_view()), name="tipoitem_crear"),

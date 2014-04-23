@@ -26,7 +26,7 @@ from forms import ConsultaUsuarioForm
 from forms import UserForm
 from forms import RolProyectoForm 
 from forms import RolFaseForm
-from projectman.apps.desarrollo.views import redirige_edicion_actual 
+from projectman.apps.desarrollo.views.view_oth import redirige_edicion_actual 
 
 
 

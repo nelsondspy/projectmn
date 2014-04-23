@@ -29,7 +29,7 @@ width: 40%
 
    <div  class="col-md-4"> <!--    <div class="col-md-4"> -->
    
-         <a href="{% url 'projectman.apps.desarrollo.views.editor_componentes' proyecto.idproyecto fase.idfase %}">
+         <a href="{% url 'expl_nivelfase' proyecto.idproyecto fase.idfase %}">
         {% ifequal fase.idfase idfase %}
              <span class ="glyphicon glyphicon-folder-open"></span> 
         {% else %}
@@ -55,17 +55,14 @@ width: 40%
      {% ifequal idfase fase.idfase %}
      <ul>
      
-     
      <div class="panel panel-info">
      <div class="panel-heading"><span class="glyphicon glyphicon-tasks"></span> Items de la fase:</div>
-     <a data-target="#form_modal"  data-toggle="modal" href="{% url 'projectman.apps.desarrollo.views.procesa_item' 'crear' idfase %}" >Crear item</a>
+     <a data-target="#form_modal"  data-toggle="modal" href="{{ idfase }}" >Crear item</a>
      <table class="table table-condensed">
         
         {% for item in lista_items %}
         <tr>
            <td><a href="#">{{ item.numero }} -- >{{ item.descripcion }}</a></td>
-           <td><a data-target="#form_modal"  data-toggle="modal" href="{% url 'projectman.apps.desarrollo.views.procesa_item' 'editar' item.iditem %} " class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span>Editar</a></td>
-           <td><a href="{% url 'projectman.apps.desarrollo.views.procesa_item' 'eliminar' item.iditem %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span>Eliminar</a></td>
         </tr>
         {% empty %}
            <p> Fase aún sin items </p>

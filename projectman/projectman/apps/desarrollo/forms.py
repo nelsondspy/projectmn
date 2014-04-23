@@ -20,11 +20,14 @@ class ItemTiposForm(ModelForm):
         model = ItemTipos
         widgets = {"idfase": HiddenInput()}
 
-"""Formulario de carga y edicion de """
+
 class AtributosTiposForm(ModelForm):
-    fields =['nombre','descripcion', 'tipodato' ]
+    """Formulario de carga y edicion de """
+    
     class Meta:
         model = ItemAtributos
+        fields =['nombre','descripcion', 'tipodato', 'idtipoitem' ]
+        widgets ={'idtipoitem':HiddenInput()}
 
 
 """Formulario del modelo Item 
