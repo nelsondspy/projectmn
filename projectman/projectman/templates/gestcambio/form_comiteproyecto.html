@@ -1,2 +1,18 @@
-crear comite 
-{{ form.as_table }}
+{% extends nodefault|default:"__formsolo.html" %}
+{% block zonatrabajo %}
+{# formulario para agregar o modificar comites #}
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	<h4 class="modal-title">Fase</h4>
+</div>
+<div class="modal-body">
+	<form method="post" action="{{ action }}" class="form-horizontal">
+	{% csrf_token %}
+	<table class="table table-striped">
+		{{ form.as_table }}
+	</table>
+	<input type="submit" class="btn btn-primary" value="Guardar">
+	</form>
+</div>
+{% endblock %}
+	

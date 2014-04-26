@@ -1,16 +1,16 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
-
 from views.view_itemtipo import CreaItemTipoView,EditaItemTipoView, ListaItemTipoView, EliminaItemTipoView
-
 from views.view_itematributo import CreaItemAtributoView, ListaItemAtributoView, EditaItemAtributoView, EliminaItemAtributoView
-
+from views.view_item import CreaItemView
+from views.view_itemvalores import AsignaValoresItem
 
 urlpatterns = patterns('projectman.apps',
     url(r'^$', 'desarrollo.views.view_oth.mostrar_panel'),
     url(r'^componentes/(?P<idproyecto>\d+)/$', 'desarrollo.views.view_oth.editor_componentes', name='editor_componentes'),
     url(r'^componentes/(?P<idproyecto>\d+)/(?P<idfase>\d+)$', 'desarrollo.views.view_oth.editor_componentes', name='expl_nivelfase'),
     url(r'^procesaitem/(?P<accion>[a-z]+)/(?P<idelemento>\d+)$', 'desarrollo.views.view_item.procesa_item', name='expl_nivelitem'),
+    url(r'^item/crear/(?P<idfase>\d+)$', login_required(CreaItemView.as_view()), name='item_crear' ), 
     
     #gestion de tipos de items 
     url(r'^tipoitem/editar/(?P<pk>\d+)$', login_required(EditaItemTipoView.as_view()), name="tipoitem_editar"),
@@ -22,5 +22,11 @@ urlpatterns = patterns('projectman.apps',
     url(r'^atributos/crear/(?P<idtipoitem>\d+)$', login_required(CreaItemAtributoView.as_view()),name="itematributo_crear"),
     url(r'^atributos/editar/(?P<pk>\d+)$', login_required(EditaItemAtributoView.as_view()),name="itematributo_editar"),
     url(r'^atributos/lista/(?P<idtipoitem>\d+)$', login_required(ListaItemAtributoView.as_view()),name="itematributo_lista"),
-    url(r'^atributos/eliminar/(?P<pk>\d+)$', login_required(EliminaItemAtributoView.as_view()),name="itematributo_eliminar")
+    url(r'^atributos/eliminar/(?P<pk>\d+)$', login_required(EliminaItemAtributoView.as_view()),name="itematributo_eliminar") ,
+    
+#    url(r'^item/asignarvalores/(?P<iditem>\d+)$', 'desarrollo.views.view_itemvalores.asignar_valores',name="valores_asignar") ,
+    url(r'^item/asignarvalores/(?P<iditem>\d+)$', AsignaValoresItem.as_view(), name="valores_asignar") ,
+    
+    
 )
+

@@ -1,0 +1,39 @@
+{% extends "__panel.html" %}
+
+{% load tags %}
+
+{% block titulo %} Comite de cambios {% endblock %} 
+{% block cabecera_pagina %}Comite de cambios <small> Agregue o remueva miembros del comite </small> {% endblock %}
+
+{% block zonatrabajo %}
+
+
+
+<a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'comite_crear' idproyecto %}">
+<span class="glyphicon glyphicon-plus-sign"> </span> Nuevo Usuario
+</a>
+
+<table class="table table-striped">
+
+<tr>
+    <th>Usuario</th>
+	<th>Proyecto</th>
+	<th colspan="2">Acciones</th>
+</tr>
+
+
+{% for miembro in object_list %}
+<tr>
+	<td>{{ miembro.usuario }}</td>
+	<td>{{ miembro.proyecto }}</td>
+	
+	<td>
+		<a href="url 'usuario_elimina' usuario.pk "  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Eliminar </a>
+	</td>
+	
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}

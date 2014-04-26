@@ -10,14 +10,16 @@ class ItemTipos(models.Model):
     
     Modelo ItemTipos : agrupan tipos de atributos. 
     -un tipo de item depende de la existencia de una fase
-    
+
     """
 
     idtipoitem = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=40 , blank=False , help_text='Nombre', null=False)
     descripcion = models.CharField(max_length=80, null=True, blank=True ,help_text='Descripcion')
-    #claves foraneas    
-    idfase = models.ForeignKey(Fase)
+    es_supertipo = models.BooleanField( default=False)
+    #claves foraneas    null=False, blank=False 
+    idfase = models.ForeignKey(Fase, blank=False, null=True )
+    
     
     def __unicode__(self):
         return self.nombre
@@ -77,7 +79,7 @@ class Item(models.Model):
     estado = models.CharField(max_length=3)
     version = models.IntegerField()
     #relaciones 
-    idfase = models.ForeignKey(Fase)
+    idfase = models.ForeignKey(Fase) #idfase_id 
     idtipoitem = models.ForeignKey(ItemTipos)
     
     
@@ -99,7 +101,6 @@ class ItemAtributosValores(models.Model):
     Su existencia depende tanto del item como del atributo 
     
     """
-
     idvalor =  models.AutoField(primary_key=True)
     valor = models.CharField(max_length=50) 
     usoactual = models.BooleanField()
@@ -108,5 +109,22 @@ class ItemAtributosValores(models.Model):
     #relaciones 
     iditem = models.ForeignKey(Item)
     idatributo = models.ForeignKey(ItemAtributos)
+
+#
+
+def carga_atributos_comunes():
+    #los atributos comunes a todos los items son de un tipo de item SIN fase
+    tipo_defecto = ItemTipos()
+    tipo_defecto.nombre='Default'
+    tipo_defecto.descripcion='Atributos por defecto'
+    tipo_defecto.es_supertipo=True
+    tipo_defecto.save()
+    #atributos de item
+    attr1 = ItemAtributos(nombre='complejidad',tipodato='N',idtipoitem=tipo_defecto)
+    attr1.save()
+    
+    attr2= ItemAtributos(nombre='prioridad',tipodato='N',idtipoitem=tipo_defecto)
+    attr2.save()
+
 
 

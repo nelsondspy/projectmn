@@ -1,5 +1,6 @@
 from django.db import models
-from ..admin.models import Proyecto 
+from ..admin.models import Proyecto
+from  ..admin.models import Fase
 from django.contrib.auth.models import User
 
 class ComiteProyecto(models.Model):
@@ -15,8 +16,15 @@ class ComiteProyecto(models.Model):
     
 
 #LineaBase
+class LineaBase(models.Model):
+    idlineabase = models.AutoField(primary_key=True)
+    descripcion = models.CharField(max_length=80, null=True, blank=True)
+    fase = models.ForeignKey(Fase)
+    
 
-#LineaBaseItem
+class LineaBaseItem(models.Model):
+    idlbitem = models.AutoField(primary_key=True)
+    lineabase = models.ForeignKey(LineaBase)
 
 #Solicitud
 

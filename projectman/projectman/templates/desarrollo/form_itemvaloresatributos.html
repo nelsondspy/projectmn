@@ -1,0 +1,20 @@
+
+<form method="post" action="">{% csrf_token %}
+{{ formset.management_form }}
+<table border="1">
+    <tr>
+    <th>Atributo</th>
+    <th>Valor</th>
+    </tr>
+    {% for form in formset %}
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+     <tr>
+     <td>{{ form.idatributo.label }}</td>
+     <td>{{ form.valor }}</td>
+     </tr>
+    {% endfor %}
+</table>    
+	<input type="submit" value="Guardar" class="btn btn-primary">
+</form>

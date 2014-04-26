@@ -5,7 +5,7 @@ from django.forms import IntegerField
 from django.forms import ModelForm 
 
 from models import ComiteProyecto 
-
+from models import LineaBaseItem
 
 class ComiteProyectoForm(ModelForm):
     """ 
@@ -17,4 +17,9 @@ class ComiteProyectoForm(ModelForm):
     
     class Meta:
         model = ComiteProyecto
+        fields = ['proyecto', 'usuario']
 
+
+class LineaBaseItemForm(ModelForm):
+    class Meta:
+        model = LineaBaseItem

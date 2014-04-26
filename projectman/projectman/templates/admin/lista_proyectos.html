@@ -60,6 +60,14 @@
 	                   	 {% include "_msg_noperm.html" with msg="Eliminar" %}
 	                  {% endif %}
                   </td>
+                  <td>
+	                  {# % if proyecto_elim % #}
+	                    <a href="#"><span class=""></span>Comite</a>
+	                  {# % else % #}
+	                   	 {# % include "_msg_noperm.html" with msg="Eliminar" % #}
+	                  {# % endif %  #}
+                  </td>
+                  
 
                 </tr>
                  {% endfor%}
