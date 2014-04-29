@@ -1,11 +1,14 @@
 
 from django.forms import HiddenInput
 from django.forms import IntegerField
- 
+from django.forms import CheckboxSelectMultiple 
+from django.forms import ModelMultipleChoiceField
 from django.forms import ModelForm 
-
+from django.forms.models import inlineformset_factory 
 from models import ComiteProyecto 
-from models import LineaBaseItem
+
+from models import LineaBase
+
 
 class ComiteProyectoForm(ModelForm):
     """ 
@@ -20,6 +23,16 @@ class ComiteProyectoForm(ModelForm):
         fields = ['proyecto', 'usuario']
 
 
-class LineaBaseItemForm(ModelForm):
+class LineaBaseForm(ModelForm):
+    """
+
+    Formulario que permite cargar los datos del modelo LineaBase
+
+    """
+    
     class Meta:
-        model = LineaBaseItem
+        model = LineaBase
+        fields = ['descripcion', 'fase', 'items']
+        widgets= {'fase' : HiddenInput(), 'items':CheckboxSelectMultiple() }
+        
+
