@@ -1,0 +1,21 @@
+
+{# formulario para la carga de linea base #}
+
+{% block zonatrabajo %}
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	<h4 class="modal-title">Linea Base</h4>
+</div>
+<div class="modal-body">
+	<form method="post" action="{{ action }}" enctype="multipart/form-data" class="form-horizontal">
+	{% csrf_token %}
+	<table>
+    {{ form.as_table }}
+    
+    {{ form_itemslb.as_table }}
+
+	</table>
+	<input type="submit" class="btn btn-primary" value="Guardar">
+	</form>
+</div>
+{% endblock %}
