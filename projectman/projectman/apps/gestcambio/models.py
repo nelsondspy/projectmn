@@ -1,6 +1,7 @@
 from django.db import models
 from ..admin.models import Proyecto
 from  ..admin.models import Fase
+from  ..desarrollo.models import Item
 from django.contrib.auth.models import User
 
 class ComiteProyecto(models.Model):
@@ -17,14 +18,18 @@ class ComiteProyecto(models.Model):
 
 #LineaBase
 class LineaBase(models.Model):
-    idlineabase = models.AutoField(primary_key=True)
-    descripcion = models.CharField(max_length=80, null=True, blank=True)
-    fase = models.ForeignKey(Fase)
+    """
     
+    Modelo cabecera de la linea base. 
+    
+    """
+    idlineabase = models.AutoField(primary_key=True)
+    descripcion = models.CharField(max_length=80, null=True, blank=False)
+    fase = models.ForeignKey(Fase)
+    #genera una segunda tabla para las relaciones con el item
+    items = models.ManyToManyField(Item)
+    fechacreacion = models.DateField(auto_now=True, null=True )
 
-class LineaBaseItem(models.Model):
-    idlbitem = models.AutoField(primary_key=True)
-    lineabase = models.ForeignKey(LineaBase)
 
 #Solicitud
 
