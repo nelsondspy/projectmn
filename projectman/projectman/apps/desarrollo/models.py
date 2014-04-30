@@ -158,3 +158,9 @@ class ItemRelacion(models.Model):
     destino = models.ForeignKey(Item,related_name="destino")
     tipo=models.CharField(max_length=3, choices=TIPOS)
     estado = models.CharField(max_length=3, default=E_ACTIVO, choices=ESTADOS)
+    
+    def set_tipo(self):
+        if self.origen.idfase_id == self.destino.idfase_id:
+            self.tipo = self.E_INT
+        else:
+            self.tipo = self.E_EXT
