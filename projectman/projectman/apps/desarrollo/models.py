@@ -35,6 +35,9 @@ class ItemAtributos(models.Model):
     -un tipo de atributo depende de un tipo de item
     
     """
+    T_CHAR ='C'
+    T_NUM ='N'
+    T_DATE='D'
 
     TIPOS_DATOS = (
         ('C', 'caracter'),
@@ -63,7 +66,9 @@ class Item(models.Model):
     E_DESAPROBADO = 'DES'
     E_APROBADO = 'APR'
     E_REVISION = 'REV'
-    E_BLOQUEADO = 'BLO'
+    E_BLOQUEADO = 'BLO',
+    E_ELIMINADO = 'ELI'
+    
     
     ESTADOS = (
                (E_DESAPROBADO, 'Desaprobado'),
@@ -76,7 +81,7 @@ class Item(models.Model):
     numero = models.IntegerField()
     nombre = models.CharField(max_length=40, null=False)
     descripcion = models.CharField(max_length=80, null=True, blank=True)
-    estado = models.CharField(max_length=3)
+    estado = models.CharField(max_length=3, default=E_DESAPROBADO)
     version = models.IntegerField()
     #relaciones 
     idfase = models.ForeignKey(Fase) #idfase_id 
@@ -91,6 +96,8 @@ class Item(models.Model):
         else:
             self.numero = 1
 
+    def __unicode__(self):
+        return self.nombre
 
 
 class ItemAtributosValores(models.Model):
@@ -105,15 +112,15 @@ class ItemAtributosValores(models.Model):
     valor = models.CharField(max_length=50) 
     usoactual = models.BooleanField()
     creacion = models.DateField(auto_now=True)
-    
     #relaciones 
     iditem = models.ForeignKey(Item)
     idatributo = models.ForeignKey(ItemAtributos)
+    
 
-#
+
 
 def carga_atributos_comunes():
-    #los atributos comunes a todos los items son de un tipo de item SIN fase
+    #Los atributos comunes a todos los items son de un tipo de item SIN fase
     tipo_defecto = ItemTipos()
     tipo_defecto.nombre='Default'
     tipo_defecto.descripcion='Atributos por defecto'
@@ -128,3 +135,26 @@ def carga_atributos_comunes():
 
 
 
+class ItemRelacion(models.Model):
+    """
+    
+    :Model: ItemRelacion 
+    Modelo que permite almacenar las relaciones entre items.
+    Items de una misma fase.
+    Items de fases antecesoras.
+    
+    """
+    #Estado de una relacion 
+    E_ELIMINADO = 'DEL'
+    E_ACTIVO = 'ACT'
+    ESTADOS = ((E_ELIMINADO, 'Eliminado'),(E_ACTIVO, 'Activo'))
+    #Tipo de relacion : interno (Intrafase) o externa(InterFase)
+    E_INT = 'I'
+    E_EXT = 'E'
+    TIPOS = ((E_INT,'Padre -> Hijo'),(E_EXT,'Antecesor -->> Sucesor'))
+    
+    idrelacion = models.AutoField(primary_key=True)
+    origen = models.ForeignKey(Item, related_name="origen")
+    destino = models.ForeignKey(Item,related_name="destino")
+    tipo=models.CharField(max_length=3, choices=TIPOS)
+    estado = models.CharField(max_length=3, default=E_ACTIVO, choices=ESTADOS)
