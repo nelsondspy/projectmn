@@ -5,51 +5,61 @@
 
 {% block zonatrabajo %}
 
-<style>
-.item-datos{
-width: 60%
-}
-.item-acciones{
-width: 40%
-}
-</style>
 
-<h2>Proyecto: {{ proyecto.nombre }}</h2>
+<h2>Proyecto: {{ proyecto.nombre|title}}</h2>
+<h3>Fases <small> Gestione las fases del proyecto</small></h3>
+<p>Acciones Generales :</p> 
+
+
+<div class="panel panel-default">
+<div class="panel-body">
+	<div class="btn-group">
+	{% if proyecto.estado != 'INI' %}
+	 <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'projectman.apps.admin.views.fases_abm' 'crear' proyecto.idproyecto %}">
+	 <span class="glyphicon glyphicon-plus-sign"></span> Crear Fase
+	 </a>
+	{% else %}
+	<a class="">
+	 {% include "_msg_noperm.html" with msg="Nueva Fase(Proyecto iniciado)" %}
+	{% endif %}
+	</a>
+	<a class="btn btn-default"><span class="glyphicon glyphicon-random"></span> Relacionar Items</a>
+	</div>
+</div>
+</div>
+
+
+<hr>
 
 {# listar fases del proyecto #}
 <div class="panel panel-default">
-    <div class="panel-heading"><h3>Fases</h3></div>
-    <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'projectman.apps.admin.views.fases_abm' 'crear' proyecto.idproyecto %}">
-    <span class="glyphicon glyphicon-plus-sign"> </span> Crear Fase
-    </a>
    
    {% for fase in lista_fases %}
    <ul class="panel panel-default">
    <div class="row">
 
-   <div  class="col-md-4"> <!--    <div class="col-md-4"> -->
-   
-         <a href="{% url 'expl_nivelfase' proyecto.idproyecto fase.idfase %}">
+   <div  class="col-md-8">
+        <a href="{% url 'expl_nivelfase' proyecto.idproyecto fase.idfase %}">
         {% ifequal fase.idfase idfase %}
              <span class ="glyphicon glyphicon-folder-open"></span> 
+             <strong>
+             {{ fase.nombre}}
+             </strong>
         {% else %}
             <span class ="glyphicon glyphicon-folder-close"></span>
+            {{ fase.nombre }}
         {% endifequal %}
-            {{ fase.nombre}}
          </a>
          <p>{{ fase.descripcion}}</p>
    </div>
   
-  <div class="col-md-8">
+  <div class="col-md-4">
   {% ifequal fase.idfase idfase %}
       {% include "admin/_opciones_fase.html" with idfase=fase.idfase %}            
   {% endifequal %}
-   
   </div>
    
-  
   </div>
-   
    {# si una fase fue seleccionada entonces se imprimen sus items #}
 	
      {% ifequal idfase fase.idfase %}
@@ -57,18 +67,31 @@ width: 40%
      
      <div class="panel panel-info">
      <div class="panel-heading"><span class="glyphicon glyphicon-tasks"></span> Items de la fase:</div>
-     <a data-target="#form_modal"  data-toggle="modal" href="{{ idfase }}" >Crear item</a>
+     <a class="btn btn-success btn-sm" data-target="#form_modal"data-toggle="modal" 
+     	href="{% url 'item_crear' idfase %}"><span class="glyphicon glyphicon-plus-sign"></span> Crear item
+     </a>
+     
      <table class="table table-condensed">
-        
+     <tr>
+	     <th>#</th>
+	     <th>Nombre</th>
+	     <th>Descripcion</th>
+	     <th>Estado</th>
+	     <th>Acciones</th>
+     </tr>
         {% for item in lista_items %}
         <tr>
-           <td><a href="#">{{ item.numero }} -- >{{ item.nombre }}</a></td>
+           <td>{{ item.numero }}</td>
+           <td>{{ item.nombre }}</td>
+           <td>{{ item.estado }}</td>
+           <td>{{ item.descricion }}</td>
+           <td> {% include "desarrollo/_opciones_item.html" with iditem=item.pk %}</td>
         </tr>
         {% empty %}
            <p> Fase aún sin items </p>
         {% endfor %}
        </table>
-     </div><!-- class="panel panel-info" -->   
+     </div> 
      </ul>
      {% endifequal %}
   <!--id="contenedor_fase"  -->
@@ -76,6 +99,6 @@ width: 40%
  {% endfor %} {# fin de listar fases #}
  
 </div>
-</div>
+
 
 {% endblock %}
