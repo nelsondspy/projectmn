@@ -1,8 +1,9 @@
 from django.views.generic import View
 
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render,redirect
 from django.shortcuts import get_object_or_404
 from django.forms.models import modelformset_factory
+from django.core.urlresolvers import reverse
 from django.db.models import Q
 
 from ..models import ItemAtributosValores
@@ -11,27 +12,8 @@ from ..models import ItemAtributos
 from ..forms import ItemValoresForm
 from ..models import Item
 
+
 TEMPL_FORMASIG='desarrollo/form_itemvaloresatributos.html'
-
-def asignar_valores(request,iditem):
-
-    if request.method == "GET" : 
-        item = get_object_or_404(Item, pk=iditem)
-        #primero intancia valores de supertipos, los supertipos son 
-        tipo_default = ItemTipos.objects.filter(es_supertipo=True)
-        atributos = ItemAtributos.objects.filter(idtipoitem=tipo_default)
-        for atrr in atributos:
-            atributovalor = ItemAtributosValores()
-            atributovalor.idatributo = atrr 
-            atributovalor.iditem = item
-            atributovalor.valor = '0'
-            atributovalor.usoactual = True
-            atributovalor.save()
-        ValoresFormSet = modelformset_factory(model=ItemAtributosValores, form=ItemValoresForm)
-        formset = ValoresFormSet(queryset=ItemAtributosValores.objects.filter(iditem=iditem))
-        
-        return render_to_response(TEMPL_FORMASIG,{'formset': formset})
-
 
 
 class AsignaValoresItem(View):
@@ -59,7 +41,11 @@ class AsignaValoresItem(View):
         lista_valores = ItemAtributosValores.objects.filter(iditem=item)
         formset = self.ValoresFormSet(queryset=lista_valores)
         #return render_to_response(TEMPL_FORMASIG,{'formset': formset})
-        return render(request, TEMPL_FORMASIG, {'formset': formset })
+        
+        return render(request, TEMPL_FORMASIG, {'formset': formset, \
+                                                'action': reverse('valores_asignar',\
+                                                                  kwargs={'iditem':iditem} ) 
+                                                })
     
     def post(self, request, *args, **kwargs):
         """
@@ -70,5 +56,15 @@ class AsignaValoresItem(View):
         formset = self.ValoresFormSet(request.POST)
         if formset.is_valid():
             formset.save()
-        return render(request, TEMPL_FORMASIG, {'formset': formset })
+        else:
+            return render(request, TEMPL_FORMASIG, {'formset': formset, \
+                        'action': reverse('valores_asignar',\
+                        kwargs={'iditem':kwargs['iditem']}),\
+                        'nodefault':'__panel.html'  })
+ 
+        return redirect(request.META['HTTP_REFERER'])
+        #return render(request, TEMPL_FORMASIG, {'formset': formset })
 
+
+
+    
