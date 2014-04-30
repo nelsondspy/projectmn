@@ -1,0 +1,40 @@
+{% extends "__panel.html" %}
+
+{# lista relaciones por fase o por item #}
+
+{% block titulo %} Relaciones {% endblock %} 
+
+{% block cabecera_pagina %}Relaciones  <small> Gestione las relaciones de ..</small> {% endblock %}
+
+{% block zonatrabajo %}
+
+
+
+ <a class="btn btn-success" data-target="#form_modal"  
+ data-toggle="modal" href="{% url 'relacion_crear' idproyecto %}">
+ <span class="glyphicon glyphicon-plus-sign"> </span> Nueva Relacion
+ </a>
+
+
+<table class="table table-striped">
+
+<tr>
+    <th>Tipo </th>
+	<th>Origen</th>
+	<th>Destino</th>
+	<th colspan="2">Acciones</th>
+</tr>
+{% for relacion in object_list %}
+<tr>
+	<td>{{ relacion.tipo }}</td>
+	<td>{{ relacion.origen }}</td>
+	<td>{{ relacion.destino }}</td>
+	<td><a href="" data-target="#form_modal"  data-toggle="modal"><span class="glyphicon glyphicon-edit"></span> Modificar</a></td>
+    <td></td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}
+	

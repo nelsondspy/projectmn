@@ -1,0 +1,20 @@
+{# formulario para la carga y edicion de tipos de items #}
+{# formulario para edicion y carga de sus atributos #}
+{% extends nodefault|default:"__formsolo.html" %}
+{% block zonatrabajo %}
+
+<div id="edit_itemtipos">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3 class="modal-title">Relaciones entre ítems</h3>
+	</div>
+	<div class="modal-body">
+	    <form action="{{ action }}" method="POST">{% csrf_token %}
+	        <table class="table table-striped">
+	        {{ form.as_table }}
+	       </table> 
+	    <input type="submit" value="Guardar" class="btn btn-primary">
+	    </form>
+	</div>
+</div>
+{% endblock %}
