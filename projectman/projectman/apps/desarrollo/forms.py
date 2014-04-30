@@ -2,6 +2,7 @@ from django.forms import HiddenInput
 from django.forms import IntegerField
 from django.forms import CharField
 from django.forms import ValidationError
+#from django.forms.widgets import 
 import re
 from datetime import datetime 
 from django.forms import ModelForm 
@@ -11,6 +12,7 @@ from models import Item
 from models import ItemAtributosValores
 from models import ItemRelacion
 from projectman.apps.admin.models import  Fase
+from django.forms.widgets import Select
 
 
 class ItemTiposForm(ModelForm):
@@ -65,7 +67,11 @@ class ItemFormN(ModelForm):
 
 
 class ItemValoresForm(ModelForm):
+    """
     
+    Formulario para la carga de valores de un item 
+    
+    """
     tipodato = CharField (widget=HiddenInput())
     
     def __init__(self, *args, **kwargs):
@@ -99,18 +105,17 @@ class ItemValoresForm(ModelForm):
         model = ItemAtributosValores
         fields = ['iditem', 'idatributo', 'valor']
         widgets ={'iditem':HiddenInput(), 'idatributo':HiddenInput()}
-        
+
 
 
 class ItemRelacionForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(ItemRelacionForm, self).__init__(*args, **kwargs)
-        instance = getattr(self,'instance',None)
-        if instance :
-            items = Item.objects.all()
-            self.fields['origen'].choices = [(item.pk,'['+ item.idfase.__str__()+'] ' + item.nombre\
-                                              ) for item in items]
+    """
     
+    Formulario que permite la carga de relaciones items. 
+    
+    """
     class Meta:
         model = ItemRelacion
-        fields = ['tipo','origen','destino']
+        fields = ['origen', 'destino']
+        widgets ={'origen': Select(attrs={'size': 10}),\
+                  'destino': Select(attrs={'size': 10})}
