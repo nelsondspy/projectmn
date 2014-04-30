@@ -1,0 +1,40 @@
+{# opciones de un item  #}
+{% load tags %}
+
+{% perm_fase user.pk idfase 'tipoitem_gestion' as tipoitem_gestion %}
+
+<div class="dropdown">
+  
+  <a id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="#">
+  <span class="glyphicon glyphicon-wrench"></span>
+    Acciones <span class="caret"></span>
+  </a>
+  
+  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">  
+  
+  <li>
+  {% if tipoitem_gestion or user.is_superuser %}
+  <a data-target="#form_modal"  data-toggle="modal" href="{#url 'fases_editar' idfase #}" ><span class="glyphicon glyphicon-pencil"></span>Editar</a> 
+  {% else %}
+ 		{% include "_msg_noperm.html" with msg="Editar" %}
+  {% endif %}
+  </li>
+
+  <li>
+  {% if tipoitem_gestion %}
+  <a href="{% url 'item_eliminar' iditem %}" ><span class="glyphicon glyphicon-remove"></span>Eliminar</a>
+  {% else %}
+  		{% include "_msg_noperm.html" with msg="Eliminar" %}
+  {% endif %}
+  </li>
+ 
+ <li>
+  {% if tipoitem_gestion or user.is_superuser %}
+	  <a href="{% url 'valores_asignar' iditem %}" data-target="#form_modal"  data-toggle="modal" >
+	  <span class=""></span>Asignar Valores</a>
+  {% endif %}
+ </li>
+ 
+  </ul>
+  
+</div>
