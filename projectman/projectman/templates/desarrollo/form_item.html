@@ -6,7 +6,7 @@
 	<h4 class="modal-title" id="myModalLabel">Editando Item</h4>
 </div>
 <div class="modal-body">
-	<form method="post" action="{% url 'item_crear' idfase %}" class="form-horizontal">{% csrf_token %}
+	<form method="post" action="{{ action }}" class="form-horizontal">{% csrf_token %}
 	<table>
 		{{ form.as_table }}
 	</table>
