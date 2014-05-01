@@ -1,13 +1,18 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from projectman.apps.admin.models import  Fase
-from ..models import Item
-from ..forms import ItemForm, ItemFormN
-from django.views.generic.edit import CreateView # , UpdateView, DeleteView
-from view_oth import redirige_edicion_actual
+from django.views.generic.edit import CreateView  , UpdateView, DeleteView
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
+#modelos 
+from projectman.apps.admin.models import  Fase
+from ..models import Item , ItemTipos
+#formularios
+from ..forms import ItemForm, ItemFormN
+from view_oth import redirige_edicion_actual
+from view_oth import SESS_IDFASE, SESS_IDPROYECTO 
+from twisted.python.hook import POST
+
 
 TEMPL_ITEMFORM = 'desarrollo/'
 
@@ -46,6 +51,11 @@ def procesa_item(request, accion=None,idelemento=None):
 
 
 class CreaItemView(CreateView):
+    """
+    
+    Carga de datos basicos del Item 
+    
+    """
     model = Item
     form_class = ItemFormN
     template_name = 'desarrollo/form_item.html'
@@ -78,3 +88,39 @@ class CreaItemView(CreateView):
         return reverse('expl_nivelfase',kwargs={'idproyecto':idproyecto , 
                                                 'idfase' : self.kwargs['idfase'] })
 
+    def get_form(self, form_class):
+        form = CreateView.get_form(self, form_class)
+        #obtiene solo los tipos de item que pertenecen a la fase 
+        fase = get_object_or_404(Fase, pk=self.kwargs['idfase'])
+        form.fields['idtipoitem'].queryset = ItemTipos.objects.filter(idfase=fase)
+        return form
+
+
+class SetEliminadoItemView(UpdateView):
+    """
+    
+    Vista que permite cambiar es estado a un item a eliminado.
+    
+    """
+    model = Item
+    template_name = 'form_confirm_delete.html'
+    
+    
+    def post(self, request, *args, **kwargs):
+        #establece el estado de item  a eliminado
+        item_eliminar = get_object_or_404(Item, pk=self.kwargs['pk'])
+        item_eliminar.estado = Item.E_ELIMINADO
+        item_eliminar.save()
+        
+        #Utiliza las variables de sesion cargadas en la navegacion
+        #para redireccionar al proyecto y la fase.  
+        idproyecto = int(self.request.session[SESS_IDPROYECTO])
+        idfase = int(self.request.session[SESS_IDFASE])
+ 
+        return redirect (reverse('expl_nivelfase',kwargs={'idproyecto':idproyecto , 
+                                                'idfase' : idfase}))
+
+    def get_context_data(self, **kwargs):
+        context = UpdateView.get_context_data(self, **kwargs)
+        context['action'] = reverse('item_eliminar' , kwargs={'pk':self.kwargs['pk']} )
+        return context
