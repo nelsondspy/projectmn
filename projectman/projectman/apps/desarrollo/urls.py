@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 from views.view_itemtipo import CreaItemTipoView,EditaItemTipoView, ListaItemTipoView, EliminaItemTipoView
 from views.view_itematributo import CreaItemAtributoView, ListaItemAtributoView, EditaItemAtributoView, EliminaItemAtributoView
-from views.view_item import CreaItemView, SetEliminadoItemView
+from views.view_item import CreaItemView, SetEliminadoItemView, EditItemView
 from views.view_itemvalores import AsignaValoresItem
 from views.view_itemrelacion import CreaRelacionView, ListaRelacionesView
 
@@ -14,7 +14,8 @@ urlpatterns = patterns('projectman.apps',
    
     #
     url(r'^item/crear/(?P<idfase>\d+)$', login_required(CreaItemView.as_view()), name='item_crear' ),
-    url(r'^item/eliminar/(?P<pk>\d+)$', login_required(SetEliminadoItemView.as_view()), name='item_eliminar' ),  
+    url(r'^item/eliminar/(?P<pk>\d+)$', login_required(SetEliminadoItemView.as_view()), name='item_eliminar' ), 
+     url(r'^item/modificar/(?P<pk>\d+)$', login_required(EditItemView.as_view()), name='item_editar' ), 
     
     #gestion de tipos de items 
     url(r'^tipoitem/editar/(?P<pk>\d+)$', login_required(EditaItemTipoView.as_view()), name="tipoitem_editar"),
@@ -34,4 +35,3 @@ urlpatterns = patterns('projectman.apps',
     url(r'^relaciones/listar/(?P<idproyecto>\d+)$', ListaRelacionesView.as_view(), name="relacion_listar")
     
 )
-
