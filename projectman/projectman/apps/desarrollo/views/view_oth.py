@@ -53,10 +53,11 @@ def editor_componentes(request, idproyecto=None, idfase=None):
     #lista las fases del proyecto  
     lista_fases = Fase.objects.filter(idproyecto=idproyecto)
     #lista de items de una fase seleccionada ( recibida como parametro) 
+    # cuyo estado no sea eliminado 
     lista_items = None
     if idfase:
         request.session[SESS_IDFASE] = idfase
-        lista_items = Item.objects.filter(idfase=idfase)
+        lista_items = Item.objects.filter(idfase=idfase).exclude(estado=Item.E_ELIMINADO )
         idfase = int(idfase) # en la plantilla se requier el valor entero no el unicode
         
     return render(request , TEMPL_EXPLORADOR , {'proyecto': proyecto , 'idfase':idfase,
