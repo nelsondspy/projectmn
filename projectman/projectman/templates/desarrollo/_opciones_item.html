@@ -1,7 +1,11 @@
-{# opciones de un item  #}
+{# opciones de un item , requiere el identificador de fase  #}
 {% load tags %}
 
-{% perm_fase user.pk idfase 'tipoitem_gestion' as tipoitem_gestion %}
+{# permisos del item #}
+{% perm_fase user.pk idfase 'item_modif' as item_modif %}
+{% perm_fase user.pk idfase 'item_elim' as item_elim %}
+
+
 
 <div class="dropdown">
   
@@ -13,7 +17,7 @@
   <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">  
   
   <li>
-  {% if tipoitem_gestion or user.is_superuser %}
+  {% if item_modif or user.is_superuser %}
   <a data-target="#form_modal"  data-toggle="modal" href="{#url 'fases_editar' idfase #}" ><span class="glyphicon glyphicon-pencil"></span>Editar</a> 
   {% else %}
  		{% include "_msg_noperm.html" with msg="Editar" %}
@@ -21,15 +25,16 @@
   </li>
 
   <li>
-  {% if tipoitem_gestion %}
-  <a href="{% url 'item_eliminar' iditem %}" ><span class="glyphicon glyphicon-remove"></span>Eliminar</a>
+  {% if item_elim or user.is_superuser%}
+	  <a href="{% url 'item_eliminar' iditem %}" data-target="#form_modal"  data-toggle="modal" >
+	  <span class="glyphicon glyphicon-remove"></span>Eliminar</a>
   {% else %}
   		{% include "_msg_noperm.html" with msg="Eliminar" %}
   {% endif %}
   </li>
  
  <li>
-  {% if tipoitem_gestion or user.is_superuser %}
+  {% if user.is_superuser %}
 	  <a href="{% url 'valores_asignar' iditem %}" data-target="#form_modal"  data-toggle="modal" >
 	  <span class=""></span>Asignar Valores</a>
   {% endif %}
