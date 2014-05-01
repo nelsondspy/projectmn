@@ -111,11 +111,11 @@ class CreaRelacionView(CreateView):
         Retorna True si existe el camino. 
         
         """
-        a = self.__lista_antecesores(idorigen)
-        b = self.__lista_sucesores(iddestino)
         # caso autociclo
         if idorigen == iddestino:
             return True
+        a = self.__lista_antecesores(idorigen)
+        b = self.__lista_sucesores(iddestino)
         # caso sencillo 1->2, 2->1
         for ante in a:
             if str(ante) == str(iddestino):
@@ -179,4 +179,25 @@ class ListaRelacionesView(ListView):
         context = ListView.get_context_data(self, **kwargs)
         context['idproyecto'] = self.kwargs.get('idproyecto')
         return context 
+
+
+class EliminaRelacionView(DeleteView):
+    """
+    
+    Permite eliminar una relacion
+    
+    """
+    model = ItemRelacion
+    template_name = 'form_confirm_delete.html'
+    
+    def get_context_data(self, **kwargs):
+        context = DeleteView.get_context_data(self, **kwargs)
+        context['action'] = reverse('relacion_eliminar',\
+                                    kwargs = {'pk': self.kwargs['pk']})
+        return context
+    
+    def get_success_url(self):
+        return self.request.META['HTTP_REFERER']
+    
+    
 
