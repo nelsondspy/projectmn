@@ -18,7 +18,7 @@
   
   <li>
   {% if item_modif or user.is_superuser %}
-  <a data-target="#form_modal"  data-toggle="modal" href="{#url 'fases_editar' idfase #}" ><span class="glyphicon glyphicon-pencil"></span>Editar</a> 
+  <a data-target="#form_modal"  data-toggle="modal" href="{% url 'item_editar' iditem %}" ><span class="glyphicon glyphicon-pencil"></span>Editar</a> 
   {% else %}
  		{% include "_msg_noperm.html" with msg="Editar" %}
   {% endif %}
