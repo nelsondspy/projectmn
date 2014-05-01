@@ -1,20 +1,21 @@
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from django.views.generic.edit import CreateView  , UpdateView, DeleteView
+from django.views.generic.edit import CreateView  , UpdateView
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
+from django.forms.widgets import HiddenInput
 #modelos 
 from projectman.apps.admin.models import  Fase
 from ..models import Item , ItemTipos
 #formularios
 from ..forms import ItemForm, ItemFormN
 from view_oth import redirige_edicion_actual
-from view_oth import SESS_IDFASE, SESS_IDPROYECTO 
-from twisted.python.hook import POST
+
+from view_oth import get_url_edicion_actual
 
 
-TEMPL_ITEMFORM = 'desarrollo/'
+TEMPL_ITEMFORM = 'desarrollo/form_item.html'
 
 @login_required
 def procesa_item(request, accion=None,idelemento=None):
@@ -71,6 +72,7 @@ class CreaItemView(CreateView):
     def get_context_data(self, **kwargs):
         context = CreateView.get_context_data(self, **kwargs)
         context['idfase'] = self.kwargs['idfase']
+        context['action'] = reverse('item_crear', kwargs={'idfase': self.kwargs['idfase']})
         if self.ocurrio_error :
             context['nodefault'] = '__panel.html'
         return context
@@ -105,22 +107,54 @@ class SetEliminadoItemView(UpdateView):
     model = Item
     template_name = 'form_confirm_delete.html'
     
-    
     def post(self, request, *args, **kwargs):
         #establece el estado de item  a eliminado
         item_eliminar = get_object_or_404(Item, pk=self.kwargs['pk'])
         item_eliminar.estado = Item.E_ELIMINADO
         item_eliminar.save()
         
-        #Utiliza las variables de sesion cargadas en la navegacion
-        #para redireccionar al proyecto y la fase.  
-        idproyecto = int(self.request.session[SESS_IDPROYECTO])
-        idfase = int(self.request.session[SESS_IDFASE])
- 
-        return redirect (reverse('expl_nivelfase',kwargs={'idproyecto':idproyecto , 
-                                                'idfase' : idfase}))
+        return redirect(get_url_edicion_actual(request, nivel=1))
 
     def get_context_data(self, **kwargs):
         context = UpdateView.get_context_data(self, **kwargs)
         context['action'] = reverse('item_eliminar' , kwargs={'pk':self.kwargs['pk']} )
         return context
+
+
+class EditItemView(UpdateView):
+    """
+    
+    Modifica de datos basicos del Item.
+    La modificacion del tipo de item no esta soportada.
+    
+    """
+    model = Item
+    form_class = ItemFormN
+    template_name = 'desarrollo/form_item.html'
+    fase_ob = None
+    ocurrio_error = False
+
+    def get_context_data(self, **kwargs):
+        context = UpdateView.get_context_data(self, **kwargs)
+        context['pk'] = self.kwargs['pk']
+        context['action'] = reverse('item_editar', kwargs={'pk':self.kwargs['pk']})
+        if self.ocurrio_error :
+            context['nodefault'] = '__panel.html'
+        return context
+    
+    def form_invalid(self, form):
+        self.ocurrio_error = True
+        return UpdateView.form_invalid(self, form)
+    
+    def get_success_url(self):
+        return get_url_edicion_actual(self.request,nivel=1)
+
+    def get_form(self, form_class):
+        form = UpdateView.get_form(self, form_class)
+        #por el momento no esta permitido el cambio de tipo de item
+        form.fields['idtipoitem'].widget = HiddenInput()
+        return form
+    
+    def get_initial(self):
+        return UpdateView.get_initial(self)
+    
