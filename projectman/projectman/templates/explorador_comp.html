@@ -10,24 +10,32 @@
 <h3>Fases <small> Gestione las fases del proyecto</small></h3>
 <p>Acciones Generales :</p> 
 
-
+<!-- Cuadro de opciones generales a nivel de proyecto  -->
 <div class="panel panel-default">
 <div class="panel-body">
 	<div class="btn-group">
+	{# se condiciona que el estafdo #}
 	{% if proyecto.estado != 'INI' %}
 	 <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'projectman.apps.admin.views.fases_abm' 'crear' proyecto.idproyecto %}">
 	 <span class="glyphicon glyphicon-plus-sign"></span> Crear Fase
 	 </a>
 	{% else %}
-	<a class="">
-	 {% include "_msg_noperm.html" with msg="Nueva Fase(Proyecto iniciado)" %}
+	
+     <a class="btn btn-default" disabled="disabled" >
+	 <span class="glyphicon glyphicon-ban-circle"></span> Crear Fase
+	 </a>
+	
 	{% endif %}
-	</a>
-	<a class="btn btn-default"><span class="glyphicon glyphicon-random"></span> Relacionar Items</a>
+	
+	
+	<a class="btn btn-default" href ="{% url 'relacion_listar' proyecto.idproyecto %}">
+	    <span class="glyphicon glyphicon-random"></span> 
+	    Relacionar Items
+	    </a>
 	</div>
 </div>
 </div>
-
+<!-- FIN  de Cuadro de opciones generales a nivel de proyecto  -->
 
 <hr>
 
@@ -85,7 +93,7 @@
            <td>{{ item.nombre }}</td>
            <td>{{ item.estado }}</td>
            <td>{{ item.descricion }}</td>
-           <td> {% include "desarrollo/_opciones_item.html" with iditem=item.pk %}</td>
+           <td>{% include "desarrollo/_opciones_item.html" with iditem=item.pk idfase=fase.pk %}</td>
         </tr>
         {% empty %}
            <p> Fase aún sin items </p>
