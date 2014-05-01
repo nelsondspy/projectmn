@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from projectman.apps.admin.models import  Proyecto, Fase
 from ..models import  Item
@@ -34,6 +35,26 @@ def redirige_edicion_actual(request, nivel=0):
         url_redirigir  += '/'+request.session[SESS_IDFASE]
     #el nivel 2 es el item 
     return redirect(url_redirigir)
+
+
+def get_url_edicion_actual(request, nivel=0):
+    """
+    
+    Retorna la url que corresponde de la edicion actual del proyecto.
+    Utiliza la variables de sesion para determinar el proyecto con el cual esta trabajando
+    
+    """
+    #Utiliza las variables de sesion cargadas en la navegacion
+    #para redireccionar al proyecto y la fase.  
+    idproyecto = int(request.session[SESS_IDPROYECTO])
+    idfase = int(request.session[SESS_IDFASE])
+    
+    if nivel == 0:
+        return reverse('editor_componentes',kwargs={'idproyecto': idproyecto })
+
+    if nivel == 1:
+        return reverse('expl_nivelfase',kwargs={'idproyecto': idproyecto , 
+                                                'idfase' : idfase})
 
 
 @login_required
