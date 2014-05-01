@@ -1,5 +1,7 @@
 {% extends "__panel.html" %}
 
+{% load staticfiles %}
+
 {# lista relaciones por fase o por item #}
 
 {% block titulo %} Relaciones {% endblock %} 
@@ -16,18 +18,26 @@
  </a>
 
 
-<table class="table table-striped">
+<table class="table table-condensed">
 
 <tr>
-    <th>Tipo </th>
+    
 	<th>Origen</th>
+	<th>Tipo </th>
 	<th>Destino</th>
 	<th colspan="2">Acciones</th>
 </tr>
 {% for relacion in object_list %}
 <tr>
-	<td>{{ relacion.tipo }}</td>
 	<td>{{ relacion.origen }}</td>
+	<td>
+		{% if relacion.tipo == 'E'%}
+		<img src="{% static "base/images/flecha_extra.png" %}"/>
+		{% else %}
+		<img src="{% static "base/images/flecha_intra.png" %}"/>
+		{% endif %}
+	</td>
+	
 	<td>{{ relacion.destino }}</td>
 	<td><a href="" data-target="#form_modal"  data-toggle="modal"><span class="glyphicon glyphicon-edit"></span> Modificar</a></td>
     <td></td>
