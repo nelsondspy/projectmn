@@ -68,6 +68,13 @@ class CreaRelacionView(CreateView):
             self.valido = False
             return self.form_invalid(form)
         
+        if self.valid_existe_ciclo(form.instance.origen_id, form.instance.destino_id):
+            messages.error(self.request, 'se ha detectado un ciclo: ' + \
+                origen.__str__()+ ' --> '+ destino.__str__())
+
+            self.valido = False
+            return self.form_invalid(form)
+        
         return CreateView.form_valid(self, form)
     
     def form_invalid(self, form):
@@ -75,6 +82,52 @@ class CreaRelacionView(CreateView):
         return CreateView.form_invalid(self, form)
     
     
+    def __lista_antecesores(self,idItem):
+        #retorno = list(db.session.query(Relacion).filter(Relacion.idSucesor == idItem ).all())
+        retorno = ItemRelacion.objects.filter(destino_id=idItem)
+        antecesores = []
+        for r in retorno:
+            antecesores.append(r.origen_id)
+            antecesores += self.__lista_antecesores(r.origen_id)
+        return antecesores
+    
+    def __lista_sucesores(self,idItem):
+        #retorno = list(db.session.query(Relacion).filter(Relacion.idAntecesor == idItem ).all())
+        retorno = ItemRelacion.objects.filter(origen_id=idItem)
+        sucesores = []
+        for r in retorno:
+            sucesores.append(r.destino_id)
+            sucesores += self.__lista_sucesores(r.destino_id)
+        return sucesores
+    
+    def valid_existe_ciclo(self, idorigen, iddestino):
+        """
+        
+        Destecta un ciclo en un par de items (origen , destino).
+        
+        Se carga listas todos los de origenes posibles y destinos posibles
+        Se itera para verificar si existe alguna forma de llegar 
+        al origen por medio del destino
+        Retorna True si existe el camino. 
+        
+        """
+        a = self.__lista_antecesores(idorigen)
+        b = self.__lista_sucesores(iddestino)
+        # caso autociclo
+        if idorigen == iddestino:
+            return True
+        # caso sencillo 1->2, 2->1
+        for ante in a:
+            if str(ante) == str(iddestino):
+                return True
+        #otros casos
+        for isgte in a:
+            for iant in b:
+                if( isgte == iant):
+                    return True
+        
+        return False 
+
 
 
 def valid_relacion_unica(porigen, pdestino):
@@ -87,7 +140,6 @@ def valid_relacion_unica(porigen, pdestino):
     return relacion.count()
                                 
                                 
-
 
 
 class ListaRelacionesView(ListView):
