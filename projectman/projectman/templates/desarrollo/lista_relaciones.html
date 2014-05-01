@@ -6,7 +6,7 @@
 
 {% block titulo %} Relaciones {% endblock %} 
 
-{% block cabecera_pagina %}Relaciones  <small> Gestione las relaciones de ..</small> {% endblock %}
+{% block cabecera_pagina %}Relaciones  <small> Gestione las relaciones del proyecto </small> {% endblock %}
 
 {% block zonatrabajo %}
 
@@ -39,7 +39,9 @@
 	</td>
 	
 	<td>{{ relacion.destino }}</td>
-	<td><a href="" data-target="#form_modal"  data-toggle="modal"><span class="glyphicon glyphicon-edit"></span> Modificar</a></td>
+	<td><a href="{% url 'relacion_eliminar' relacion.pk %}" data-target="#form_modal"  data-toggle="modal">
+		<span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+	</td>
     <td></td>
 </tr>
 {% endfor %}
