@@ -26,6 +26,7 @@ from forms import ConsultaUsuarioForm
 from forms import UserForm
 from forms import RolProyectoForm 
 from forms import RolFaseForm
+from forms import ProyectoIniciarForm
 from projectman.apps.desarrollo.views.view_oth import redirige_edicion_actual 
 
 
@@ -47,7 +48,33 @@ ABM_ACCIONES = ('editar', 'eliminar', 'crear')
 #nombre de la variable de sesion que almacena los permisos
 SESS_PERMS = 'permisos'
 
+class IniciarProyecto(UpdateView):
+    model = Proyecto
+    form_class = ProyectoIniciarForm
+    template_name = 'admin/form_confirm_iniciar.html'
+    templ_base_error = None
+    
+    def post(self, request, *args, **kwargs):
+        proy_iniciar = get_object_or_404(Proyecto, idproyecto=self.kwargs['pk'])
+        proy_iniciar.estado = Proyecto.E_INICIADO
+        proy_iniciar.save()
+        return redirect (reverse('proyectos_asignados'))
+         
+         
+    def get_context_data(self, **kwargs):
+        context = UpdateView.get_context_data(self, **kwargs)
+        context['action'] = reverse('iniciar_proyecto' , kwargs={'pk':self.kwargs['pk']} )
+        return context
+    
+    def form_invalid(self, form):
+        self.templ_base_error = "__panel.html"
+        return IniciarProyecto.form_invalid(self, form)
 
+    #def form_valid(self, form):
+        #form.instance.fechainicio = self.request.POST.get('fechainicio')
+        #form.instance.estado = 'INI'
+        #return IniciarProyecto.form_valid(self, form)
+    
 class CreaUsuarioView(CreateView):
     """
     Despliega el formulario para la carga de usuarios y 
@@ -618,3 +645,5 @@ class ListaRolFasesView(ListView):
         fases = Fase.objects.filter(rolfases__rolproyecto=rolproyp)
         object_list = fases
         return object_list
+    
+
