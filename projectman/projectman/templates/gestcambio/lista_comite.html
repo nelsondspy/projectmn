@@ -28,7 +28,7 @@
 	<td>{{ miembro.proyecto }}</td>
 	
 	<td>
-		<a href="url 'usuario_elimina' usuario.pk "  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Eliminar </a>
+		<a href="{% url 'comite_eliminar' miembro.pk %}"  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Eliminar </a>
 	</td>
 	
 </tr>
