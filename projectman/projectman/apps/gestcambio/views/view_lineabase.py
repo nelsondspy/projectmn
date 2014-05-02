@@ -22,7 +22,7 @@ class CreaLineaBase(View):
         form = LineaBaseForm(instance=lineabase)
         #lista solo los items que pertenecen a la fase
         form.fields['items'].queryset = Item.objects.filter(idfase_id=idfase).\
-            exclude(estado=Item.E_BLOQUEADO)
+            exclude(estado=Item.E_BLOQUEADO).exclude(estado=Item.E_ELIMINADO)
         return render(request,TEMPL_FORM_LBITEM,\
                        {'form': form, #'form_itemslb': form_itemslb ,\
                         'action': reverse('linea_base_item_crear', kwargs={'idfase': idfase}) })
