@@ -30,10 +30,8 @@ class CreaLineaBase(View):
         if form.is_valid():
             lineabase = form.save(commit=False)
             lineabase.save()
-            form.save_m2m() # needed since using commit=False
+            form.save_m2m() # es necesarfio que el padre tenga commit=false  
         else:
             form = LineaBaseForm()
-
         #'action': reverse('linea_base_item_crear', kwargs={'idfase': sefl.kwargs[]}
         return render(request,TEMPL_FORM_LBITEM, {'form': form })
-    
