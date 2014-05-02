@@ -11,7 +11,7 @@
   
   <li>
   {% if fase_modif %}
-  <a data-target="#form_modal"  data-toggle="modal" href="{% url 'fases_editar' idfase %}" ><span class="glyphicon glyphicon-pencil"></span>Editar</a> 
+  <a data-target="#form_modal" data-toggle="modal" href="{% url 'fases_editar' idfase %}" ><span class="glyphicon glyphicon-edit"></span> Editar</a> 
   {% else %}
  		{% include "_msg_noperm.html" with msg="Editar" %}
   {% endif %}
@@ -19,15 +19,19 @@
 
   <li>
   {% if fase_elim %}
-  <a href="{% url 'fases_eliminar' idfase %}" ><span class="glyphicon glyphicon-remove">Eliminar</span></a>
+  <a href="{% url 'fases_eliminar' idfase %}" ><span class="glyphicon glyphicon-remove"></span>Eliminar</a>
   {% else %}
   		{% include "_msg_noperm.html" with msg="Eliminar" %}
   {% endif %}
   </li>
   
-  <li><a href="{% url 'tipoitem_lista' idfase %}">Tipos de item</a></li>
+  <li><a href="{% url 'tipoitem_lista' idfase %}"><span class="glyphicon glyphicon-th"></span> Tipos de item</a></li>
   
-  <li><a data-target="#form_modal"  data-toggle="modal" href="{% url 'item_crear' idfase %}">Crear Item</a></li>
+  <li><a data-target="#form_modal"  data-toggle="modal" href="{% url 'item_crear' idfase %}">
+  <span class="glyphicon glyphicon-list-alt"></span> Crear Item</a></li>
+ 
+  <li><a href="{% url 'lineabase_listar' idfase %}">
+  <span class="glyphicon glyphicon-lock"></span> Líneas Bases</a></li>
   </ul>
-  
+   
 </div>
