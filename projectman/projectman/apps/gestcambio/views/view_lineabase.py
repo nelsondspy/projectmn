@@ -5,6 +5,8 @@ from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from ..models import LineaBase
 from ...admin.models import Fase 
+from django.views.generic import ListView 
+
 
 from ..forms import LineaBaseForm
 from ...desarrollo.models import Item
@@ -35,3 +37,27 @@ class CreaLineaBase(View):
             form = LineaBaseForm()
         #'action': reverse('linea_base_item_crear', kwargs={'idfase': sefl.kwargs[]}
         return render(request,TEMPL_FORM_LBITEM, {'form': form })
+
+class ListarLineaBaseView(ListView):
+    """
+    Despliega una lista de LineasBase del sistema.
+    
+    """
+    model= LineaBase
+    template_name = 'gestcambio/form_listarlineabase.html'
+
+    def get_queryset(self):
+        """
+        busqueda = self.request.GET.get('busqueda','')
+        
+        if (busqueda != ''):
+            
+            object_list = self.model.objects.filter(Q(descripcion__icontains=busqueda) | 
+                                              Q(idlineabase__icontains=busqueda))
+            if object_list.count > 1:
+                messages.info(self.request, 'Resultados con : ' + busqueda)
+        else:
+
+        """
+        object_list = self.model.objects.all()
+        return object_list

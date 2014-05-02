@@ -1,0 +1,33 @@
+{% extends "__panel.html" %}
+
+{% load tags %}
+
+{% block titulo %} Gestion de Cambios - Linea Base {% endblock %} 
+{% block cabecera_pagina %}Líneas Base <small> Administración de Líneas Base </small> {% endblock %}
+
+{% block zonatrabajo %}
+
+<table class="table table-striped">
+
+<tr>
+    <th>Id</th>
+	<th>Descripción</th>
+	<th>Fase</th>
+	<th>Fecha de Creación</th>
+	<th>Activo</th>
+	<th colspan="2">Acciones</th>
+</tr>
+
+{% for lineabase in object_list %}
+<tr>
+	<td>{{ lineabase.idlineabase }}</td>
+	<td>{{ lineabase.descripcion }}</td>
+	<td>{{ lineabase.fase }}</td>
+	<td>{{ lineabase.fechacreacion}}</td>
+	
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}
