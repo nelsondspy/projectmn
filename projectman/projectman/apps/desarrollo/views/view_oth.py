@@ -82,4 +82,5 @@ def editor_componentes(request, idproyecto=None, idfase=None):
         idfase = int(idfase) # en la plantilla se requier el valor entero no el unicode
         
     return render(request , TEMPL_EXPLORADOR , {'proyecto': proyecto , 'idfase':idfase,
-                    'lista_fases':lista_fases , 'lista_items':lista_items})
+                    'lista_fases':lista_fases ,\
+                     'lista_items':lista_items ,'I_BLOQ':Item.E_BLOQUEADO })
