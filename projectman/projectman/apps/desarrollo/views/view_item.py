@@ -155,6 +155,3 @@ class EditItemView(UpdateView):
         form.fields['idtipoitem'].widget = HiddenInput()
         return form
     
-    def get_initial(self):
-        return UpdateView.get_initial(self)
-    
