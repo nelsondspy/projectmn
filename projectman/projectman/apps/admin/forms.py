@@ -11,6 +11,12 @@ from models import Fase
 from models import RolProyecto
 from models import RolFases
 
+class ProyectoIniciarForm(ModelForm):
+    class Meta:
+        model = Proyecto
+        fields = ['fechainicio', 'estado']
+        #widgets = {"estado": HiddenInput()}
+        
 class ProyectoForm(ModelForm):
     
     #si existe alguna instancia para el form , crea un InputField con el valor del id
