@@ -21,6 +21,7 @@
                   <th>Descripcion</th>
                   <th>Fecha de inicio</th>
                   <th>Fecha de finalización</th>
+                  <th>Estado </th>
                   <th>Acciones </th>
                 </tr>
               </thead>
@@ -37,11 +38,13 @@
                 
                 {% perm_proy user.pk proyecto.idproyecto 'proyecto_modif' as proyecto_modif %}
                 
+                {% perm_proy user.pk proyecto.idproyecto 'proyecto_iniciar' as proyecto_ini %}
                 <tr>
                   <td><a href="/desarrollo/componentes/{{ proyecto.idproyecto }}" >{{ proyecto.nombre }}</a></td>
                   <td>{{ proyecto.descripcion }}</td>
                   <td>{{ proyecto.fechainicio }}</td>
                   <td>{{ proyecto.fechafin }}</td>
+                  <td>{{ proyecto.estado }}</td>
                   <td>
 	                  {% if proyecto_modif %}
 	                  <a data-target="#form_modal"  data-toggle="modal" href="{% url 'proyecto_editar' proyecto.idproyecto %}"><span class="glyphicon glyphicon-edit"></span> Editar</a>
@@ -61,16 +64,23 @@
 	                  {% endif %}
                   </td>
                   <td>
-	                  {# % if proyecto_elim % #}
+	                  {% if proyecto_elim %}
 	                    <a href="#"><span class=""></span>Comite</a>
-	                  {# % else % #}
-	                   	 {# % include "_msg_noperm.html" with msg="Eliminar" % #}
-	                  {# % endif %  #}
+	                  {% else %}
+	                   	 {% include "_msg_noperm.html" with msg="Eliminar" %}
+	                  {% endif %}
+                  </td>
+                  <td>
+	                  {% if proyecto_ini %}
+	                    <a data-target="#form_modal"  data-toggle="modal" href="{% url 'iniciar_proyecto' proyecto.idproyecto %}" > Iniciar</a>
+	                  {% else %}
+	                   	 {% include "_msg_noperm.html" with msg="Iniciar" %}
+	                  {% endif %}
                   </td>
                   
 
                 </tr>
-                 {% endfor%}
+                 {% endfor %}
               </tbody>
             </table>
 </div>
