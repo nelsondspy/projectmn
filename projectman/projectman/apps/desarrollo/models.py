@@ -164,3 +164,16 @@ class ItemRelacion(models.Model):
             self.tipo = self.E_INT
         else:
             self.tipo = self.E_EXT
+
+
+class ItemAdjuntos(models.Model):
+    """
+    
+    Archivos adjuntos del item.
+    
+    """
+    idadjunto = models.AutoField(primary_key=True)
+    archivo = models.FileField(upload_to='upl')
+    descripcion = models.CharField(max_length=100, null=True, blank=True)
+    item = models.ForeignKey(Item)
+    

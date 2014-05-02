@@ -1,0 +1,9 @@
+{#formulario de carga de adjuntos , y listado de archivos adjuntos #}
+
+<form action="{{ action }}" method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+	<table class="table table-striped">
+	{{ form.as_table }}
+	</table> 
+	<input type="submit" value="Guardar" class="btn btn-primary">
+</form>
