@@ -1,0 +1,60 @@
+{% extends "__panel.html" %}
+
+{% load tags %}
+
+{% block titulo %} Gestion de Cambios - Linea Base {% endblock %} 
+{% block cabecera_pagina %}Líneas Base <small> Administración de Líneas Base </small> {% endblock %}
+
+{% block zonatrabajo %}
+
+ <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'linea_base_item_crear' idfase %}">
+ <span class="glyphicon glyphicon-plus-sign"> </span> Nuevo Tipo de Item
+ </a>
+
+<table class="table table-striped">
+
+<tr>
+    <th>Id</th>
+	<th>Descripción</th>
+	<th>Fase</th>
+	<th>Fecha de Creación</th>
+	<th colspan="2">Acciones</th>
+</tr>
+
+{% for lineabase in object_list %}
+<tr class={% if lineabase.idlineabase == idlineabase %}"success"{% endif %} >
+	<td>{{ lineabase.idlineabase }}</td>
+	<td><a href="{% url 'lineabase_listardetalle' idfase lineabase.idlineabase %}" >
+	   <span class={% if lineabase.idlineabase == idlineabase %} "glyphicon glyphicon-chevron-down" {% else %} "glyphicon glyphicon-chevron-right" {% endif %}></span>
+	   {{ lineabase.descripcion }}</a>
+	</td>
+	<td>{{ lineabase.fase }}</td>
+	<td>{{ lineabase.fechacreacion}}</td>
+</tr>
+	{% if lineabase.idlineabase == idlineabase %}
+	<tr>
+	<td></td>
+	<td>
+	<table class="table table-condensed" title="Items">
+		<tr>
+			<th>Nombre</th>
+			<th>Descripción</th>
+		</tr>
+	{% for item in itemslb %}
+		<tr>
+			<td>{{ item.nombre }}</td>
+			<td>{{ item.descripcion }}</td>
+		</tr>
+	{% empty %}
+	  <td class="danger">Aún sin items</td>
+	{% endfor %}
+	</table>
+	</td>
+	</tr>
+	{% endif %}
+
+{% endfor %}
+
+</table>
+
+{% endblock %}
