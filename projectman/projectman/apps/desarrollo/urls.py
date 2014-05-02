@@ -5,6 +5,7 @@ from views.view_itematributo import CreaItemAtributoView, ListaItemAtributoView,
 from views.view_item import CreaItemView, SetEliminadoItemView, EditItemView
 from views.view_itemvalores import AsignaValoresItem
 from views.view_itemrelacion import CreaRelacionView, ListaRelacionesView, EliminaRelacionView
+from views.view_itemadjuntos import LsCrAdjuntoView
 
 urlpatterns = patterns('projectman.apps',
     url(r'^$', 'desarrollo.views.view_oth.mostrar_panel'),
@@ -34,5 +35,7 @@ urlpatterns = patterns('projectman.apps',
     url(r'^relacion/crear/(?P<idproyecto>\d+)$', CreaRelacionView.as_view(), name="relacion_crear"),
     url(r'^relaciones/listar/(?P<idproyecto>\d+)$', ListaRelacionesView.as_view(), name="relacion_listar"),
     url(r'^relacion/eliminar/(?P<pk>\d+)$', EliminaRelacionView.as_view(), name='relacion_eliminar'),
+    #listar y crear archivos adjuntos
+    url(r'^adjuntos/(?P<iditem>\d+)$', LsCrAdjuntoView.as_view(), name='itemadjuntos_ls_cr')
     
 )

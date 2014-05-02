@@ -2,6 +2,7 @@ from django.forms import HiddenInput
 from django.forms import IntegerField
 from django.forms import CharField
 from django.forms import ValidationError
+from django.forms.widgets import Select
 #from django.forms.widgets import 
 import re
 from datetime import datetime 
@@ -11,8 +12,7 @@ from models import ItemAtributos
 from models import Item
 from models import ItemAtributosValores
 from models import ItemRelacion
-from projectman.apps.admin.models import  Fase
-from django.forms.widgets import Select
+from models import ItemAdjuntos
 
 
 class ItemTiposForm(ModelForm):
@@ -119,3 +119,10 @@ class ItemRelacionForm(ModelForm):
         fields = ['origen', 'destino']
         widgets ={'origen': Select(attrs={'size': 10}),\
                   'destino': Select(attrs={'size': 10})}
+
+
+class ItemAdjuntosForm(ModelForm):
+    class Meta:
+        model = ItemAdjuntos
+        fields = ['archivo', 'descripcion', 'item']
+        widgets = {'item': HiddenInput()}
