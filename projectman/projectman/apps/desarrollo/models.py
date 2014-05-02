@@ -66,7 +66,7 @@ class Item(models.Model):
     E_DESAPROBADO = 'DES'
     E_APROBADO = 'APR'
     E_REVISION = 'REV'
-    E_BLOQUEADO = 'BLO',
+    E_BLOQUEADO = 'BLO'
     E_ELIMINADO = 'ELI'
     
     
