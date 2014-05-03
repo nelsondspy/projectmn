@@ -35,7 +35,8 @@ class AsignaValoresItem(View):
                 
                 atributovalor = ItemAtributosValores(idatributo = atrr,\
                                                  iditem = item,usoactual = True)
-                atributovalor.valor = '0'
+                #atributovalor.valor = '0'
+                atributovalor.set_valor_default()
                 atributovalor.save()
         #pos insercion la lista de atributos con valores intanciados  del item
         lista_valores = ItemAtributosValores.objects.filter(iditem=item)
