@@ -43,8 +43,11 @@ class CreaLineaBase(View):
                 item.estado = Item.E_BLOQUEADO
                 item.save()
         else:
-            form = LineaBaseForm()
-            return render(request,TEMPL_FORM_LBITEM, {'form': form })
+            idfase = int(request.POST.get('fase',None))
+            form.fields['items'].queryset = Item.objects.filter(idfase_id=idfase).\
+                                                                exclude(estado=Item.E_BLOQUEADO).\
+                                                                exclude(estado=Item.E_ELIMINADO)
+            return render(request,TEMPL_FORM_LBITEM, {'form': form ,'nodefault': '__panel.html'})
         
         return redirect(reverse('lineabase_listar', \
                        kwargs={'idfase': self.kwargs['idfase']}))
