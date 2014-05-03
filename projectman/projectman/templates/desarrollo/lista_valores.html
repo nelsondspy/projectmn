@@ -9,11 +9,13 @@
 		    <tr>
 		    <th>Atributo</th>
 		    <th>Valor</th>
+		    <th>tipo<th>
 		    </tr>
 		    {% for valitem in object_list %}
 		     <tr>
 		     <td>{{ valitem.idatributo}}</td>
-		     <td>{{ valitem.valor }}
+		     <td>{{ valitem.valor }}</td>
+		     <td>
 		     {% if valitem.idatributo.tipodato == "N" %} {# si es numero #}
 		     	<span class="glyphicon glyphicon-sound-5-1"></span>
 		     	<small>número</small>
