@@ -17,7 +17,8 @@
   <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">  
   
   <li>
-  {% if item_modif or user.is_superuser %}
+  
+  {% if item_modif or user.is_superuser  and estado != 'BLO' %}
   <a data-target="#form_modal"  data-toggle="modal" href="{% url 'item_editar' iditem %}" ><span class="glyphicon glyphicon-pencil"></span>Editar</a> 
   {% else %}
  		{% include "_msg_noperm.html" with msg="Editar" %}
@@ -25,7 +26,7 @@
   </li>
 
   <li>
-  {% if item_elim or user.is_superuser%}
+  {% if item_elim or user.is_superuser and estado != 'BLO'%}
 	  <a href="{% url 'item_eliminar' iditem %}" data-target="#form_modal"  data-toggle="modal" >
 	  <span class="glyphicon glyphicon-remove"></span>Eliminar</a>
   {% else %}
@@ -34,9 +35,11 @@
   </li>
  
  <li>
-  {% if user.is_superuser %}
+  {% if user.is_superuser and estado != 'BLO' %}
 	  <a href="{% url 'valores_asignar' iditem %}" data-target="#form_modal"  data-toggle="modal" >
 	  <span class=""></span>Asignar Valores</a>
+  {% else %}
+      {% include "_msg_noperm.html" with msg="Asignar Valores" %}
   {% endif %}
  </li>
  
