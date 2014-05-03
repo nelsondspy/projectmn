@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from views.view_itemtipo import CreaItemTipoView,EditaItemTipoView, ListaItemTipoView, EliminaItemTipoView
 from views.view_itematributo import CreaItemAtributoView, ListaItemAtributoView, EditaItemAtributoView, EliminaItemAtributoView
 from views.view_item import CreaItemView, SetEliminadoItemView, EditItemView
-from views.view_itemvalores import AsignaValoresItem
+from views.view_itemvalores import AsignaValoresItem ,ValoreItemView
+
 from views.view_itemrelacion import CreaRelacionView, ListaRelacionesView, EliminaRelacionView
 from views.view_itemadjuntos import LsCrAdjuntoView
 
@@ -31,6 +32,7 @@ urlpatterns = patterns('projectman.apps',
     url(r'^atributos/eliminar/(?P<pk>\d+)$', login_required(EliminaItemAtributoView.as_view()),name="itematributo_eliminar") ,
     #gestion de valores de items 
     url(r'^item/asignarvalores/(?P<iditem>\d+)$', AsignaValoresItem.as_view(), name="valores_asignar") ,
+    url(r'^item/listavalores/(?P<iditem>\d+)$', ValoreItemView.as_view(), name="valores_listar") ,
     #relaciones 
     url(r'^relacion/crear/(?P<idproyecto>\d+)$', CreaRelacionView.as_view(), name="relacion_crear"),
     url(r'^relaciones/listar/(?P<idproyecto>\d+)$', ListaRelacionesView.as_view(), name="relacion_listar"),

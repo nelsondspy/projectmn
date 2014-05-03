@@ -91,7 +91,7 @@
         {% for item in lista_items %}
         <tr>
            <td>{{ item.numero }}</td>
-           <td>{{ item.nombre }}</td>
+           <td><a href="{% url 'valores_listar' item.pk %}" data-target="#form_modal"data-toggle="modal">{{ item.nombre }}</a></td>
            <td>{{ item.descripcion }}</td>
            
            <td>

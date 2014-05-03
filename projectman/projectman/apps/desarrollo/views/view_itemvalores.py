@@ -1,4 +1,4 @@
-from django.views.generic import View
+from django.views.generic import View , ListView
 
 from django.shortcuts import render,redirect
 from django.shortcuts import get_object_or_404
@@ -11,12 +11,20 @@ from ..models import ItemTipos
 from ..models import ItemAtributos
 from ..forms import ItemValoresForm
 from ..models import Item
+from view_oth import get_url_edicion_actual 
 
 
 TEMPL_FORMASIG='desarrollo/form_itemvaloresatributos.html'
 
 
 class AsignaValoresItem(View):
+    """
+    
+    Vista que permite asignar valores a los items.
+    Crea los valores con valores por defecto , segun el tipo de dato
+    del atributo
+    
+    """
     
     ValoresFormSet = modelformset_factory(model=ItemAtributosValores, form=ItemValoresForm,extra=0)
 
@@ -63,9 +71,16 @@ class AsignaValoresItem(View):
                         kwargs={'iditem':kwargs['iditem']}),\
                         'nodefault':'__panel.html'  })
  
-        return redirect(request.META['HTTP_REFERER'])
-        #return render(request, TEMPL_FORMASIG, {'formset': formset })
+        return redirect(get_url_edicion_actual(request,1))
 
 
+class ValoreItemView(ListView):
+    model = ItemAtributosValores
+    template_name = 'desarrollo/lista_valores.html'
+    
+    def get_queryset(self):
+        object_list = ItemAtributosValores.objects.filter(iditem=self.kwargs['iditem'])
+        return object_list
+    
 
     
