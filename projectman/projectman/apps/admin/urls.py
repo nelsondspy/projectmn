@@ -27,7 +27,7 @@ urlpatterns = patterns('projectman.apps',
     url(r'^cerrar_sesion/$', 'admin.views.cerrar_sesion', name='cerrar_sesion'),
     url(r'^login/$', 'admin.views.login_form'),
     
-    #url(r'^proyectos/$', 'admin.views.proyectos_abm'),
+    url(r'^proyectos/$', 'admin.views.proyectos_abm'),
     url(r'^proyectos/(?P<idproyecto>\d+)$', 'admin.views.proyectos_abm'),
     url(r'^proyectos/(?P<accion>[a-z]+)/(?P<idproyecto>\d+)$', 'admin.views.proyectos_abm'),
     url(r'^proyectos/crear/(?P<idproyecto>\d+)$', 'admin.views.proyectos_abm' ,name='proyecto_crear'),

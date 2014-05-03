@@ -63,13 +63,7 @@
 	                   	 {% include "_msg_noperm.html" with msg="Eliminar" %}
 	                  {% endif %}
                   </td>
-                  <td>
-	                  {% if proyecto_elim %}
-	                    <a href="#"><span class=""></span>Comite</a>
-	                  {% else %}
-	                   	 {% include "_msg_noperm.html" with msg="Eliminar" %}
-	                  {% endif %}
-                  </td>
+                  <td><a href="{% url 'comite_listar' proyecto.idproyecto %}"><span class="glyphicon glyphicon-adjust"></span>Comite</a></td>
                   <td>
 	                  {% if proyecto_ini %}
 	                    <a data-target="#form_modal"  data-toggle="modal" href="{% url 'iniciar_proyecto' proyecto.idproyecto %}" > Iniciar</a>
