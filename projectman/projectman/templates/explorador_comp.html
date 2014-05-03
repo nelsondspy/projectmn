@@ -92,16 +92,15 @@
         <tr>
            <td>{{ item.numero }}</td>
            <td>{{ item.nombre }}</td>
-           <td>{{ item.descricion }}</td>
+           <td>{{ item.descripcion }}</td>
            
            <td>
-	       {% if item.estado == I_BLOQ%}
+	       {% if item.estado == I_BLOQ %}
 	       <span class="glyphicon glyphicon-lock"></span><small> Bloq</small> 
 	       {% else %}
 	       {{ item.estado }}
            {% endif %}
 	       </td>
-
            <td>{% include "desarrollo/_opciones_item.html" with iditem=item.pk idfase=fase.pk estado=item.estado %}</td>
         </tr>
         {% empty %}
