@@ -62,7 +62,7 @@ class ItemFormN(ModelForm):
     
     class Meta:
         model = Item
-        fields=['nombre', 'idfase','version','idtipoitem']
+        fields=['nombre','descripcion', 'idfase','idtipoitem']
         widgets ={'idfase':HiddenInput()}
 
 
