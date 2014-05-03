@@ -278,7 +278,10 @@ def proyectos_abm(request, accion=None,idproyecto=None ):
             form.save()
         else:
             return render(request,TEMPL_PROYECTOFORM, {'nodefault':'__panel.html','form':form})
-    return render(request,TEMPL_PROYECTOLISTA, { 'lista_proyectos' : lista_proyectos })
+    #return render(request,TEMPL_PROYECTOLISTA, { 'lista_proyectos' : lista_proyectos })
+    
+    messages.info(request,'Debe asignar un rol al proyecto recien creado'  )
+    return redirect(reverse('proyectos_asignados'))
 
 
 @login_required
