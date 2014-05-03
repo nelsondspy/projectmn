@@ -82,7 +82,7 @@ class Item(models.Model):
     nombre = models.CharField(max_length=40, null=False)
     descripcion = models.CharField(max_length=80, null=True, blank=True)
     estado = models.CharField(max_length=3, default=E_DESAPROBADO)
-    version = models.IntegerField()
+    version = models.IntegerField(default=0)
     #relaciones 
     idfase = models.ForeignKey(Fase) #idfase_id 
     idtipoitem = models.ForeignKey(ItemTipos)
@@ -98,6 +98,8 @@ class Item(models.Model):
 
     def __unicode__(self):
         return self.nombre
+    
+    
 
 
 class ItemAtributosValores(models.Model):
