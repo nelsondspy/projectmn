@@ -40,7 +40,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
     'projectman.apps.admin',
-    'projectman.apps.desarrollo'
+    'projectman.apps.desarrollo',
+    'projectman.apps.gestcambio'
 )
 
 
@@ -56,6 +57,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'projectman.urls'
 
 WSGI_APPLICATION = 'projectman.wsgi.application'
+
 
 
 # Database
@@ -120,3 +122,4 @@ Field.default_error_messages = {
 }
 
 SITE_ID = 1 
+
