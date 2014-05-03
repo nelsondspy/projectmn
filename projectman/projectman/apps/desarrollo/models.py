@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-
+from datetime import date
  
 from projectman.apps.admin.models import Fase
 
@@ -116,6 +116,17 @@ class ItemAtributosValores(models.Model):
     iditem = models.ForeignKey(Item)
     idatributo = models.ForeignKey(ItemAtributos)
     
+    def set_valor_default(self):
+        if self.idatributo.tipodato == ItemAtributos.T_DATE:
+            self.valor = date.strftime(date.today(), "%d/%m/%Y")
+            
+        if self.idatributo.tipodato == ItemAtributos.T_NUM :
+            self.valor = '0'
+            
+        if self.idatributo.tipodato == ItemAtributos.T_CHAR :
+            self.valor = '--'
+        
+        
 
 
 
