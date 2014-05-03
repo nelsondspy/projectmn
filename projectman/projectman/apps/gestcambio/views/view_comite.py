@@ -62,8 +62,9 @@ class ListarComiteProyectoView(ListView):
     
     def get_queryset(self):
         object_list = ComiteProyecto.objects.filter(proyecto_id=self.kwargs['idproyecto'])
-        print "lista comite: "
-        print (object_list)
+        if object_list.count() % 2 == 0 :
+            messages.error(self.request, 'La cantidad de miembros no es un numero impar,\
+             el sistema no permitira enviar solicitudes de cambio !' )
         return object_list
     
     def get_context_data(self, **kwargs):
