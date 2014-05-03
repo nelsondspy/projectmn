@@ -8,14 +8,14 @@
 {% block zonatrabajo %}
 
  <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'linea_base_item_crear' idfase %}">
- <span class="glyphicon glyphicon-plus-sign"> </span> Nuevo Tipo de Item
+ <span class="glyphicon glyphicon-plus-sign"> </span> Nueva Línea Base
  </a>
 
 <table class="table table-striped">
 
 <tr>
     <th>Id</th>
-	<th>Descripción</th>
+	<th>Descripción de línea base </th>
 	<th>Fase</th>
 	<th>Fecha de Creación</th>
 	<th colspan="2">Acciones</th>
@@ -37,7 +37,7 @@
 	<td>
 	<table class="table table-condensed" title="Items">
 		<tr>
-			<th>Nombre</th>
+			<th>Nombre del ítem</th>
 			<th>Descripción</th>
 		</tr>
 	{% for item in itemslb %}
