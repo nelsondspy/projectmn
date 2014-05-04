@@ -65,6 +65,10 @@ class ListarLineaBaseView(ListView):
     def get_queryset(self):
         #lista solo las lineas bases de la fase 
         object_list = LineaBase.objects.filter(fase_id=self.kwargs['idfase'])
+        
+        
+            
+        
         if self.kwargs.get('idlineabase', None):
             
             lineabase = get_object_or_404(LineaBase,pk=self.kwargs['idlineabase'])

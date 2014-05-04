@@ -13,6 +13,9 @@ urlpatterns = patterns('projectman.apps',
     #linea base
     url(r'^lineabase/crear/(?P<idfase>\d+)$', login_required(CreaLineaBase.as_view()), name='linea_base_item_crear'),
     url(r'^lineabase/listar/(?P<idfase>\d+)$', login_required(ListarLineaBaseView.as_view()), name="lineabase_listar"),
-    url(r'^lineabase/listar/(?P<idfase>\d+)/(?P<idlineabase>\d+)$', login_required(ListarLineaBaseView.as_view()), name="lineabase_listardetalle")
+    url(r'^lineabase/listar/(?P<idfase>\d+)/(?P<idlineabase>\d+)$', login_required(ListarLineaBaseView.as_view()), name="lineabase_listardetalle"), 
+    url(r'^lineabase/listatabla/(?P<idfase>\d+)$', login_required(ListarLineaBaseView.as_view(template_name='gestcambio/lista_lineabase_plano.html')),\
+         name="lineabase_listartabla")
+
 
 )
