@@ -157,7 +157,9 @@ class ImporteItemTipoView(CreateView):
     
     def get_form(self, form_class):
         form = CreateView.get_form(self, form_class)
-        opciones = [(item.pk, item.nombre) for item in ItemTipos.objects.all()]
+        #carga el selector con tipos de item que no son supertipo
+        opciones = [(item.pk, item.idfase.__str__()[0:10] +' - '+ item.nombre) \
+                    for item in ItemTipos.objects.filter(es_supertipo=False)]
         form.fields['itemtipoimport'].choices = opciones
 
         return form
