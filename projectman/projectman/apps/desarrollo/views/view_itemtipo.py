@@ -1,4 +1,5 @@
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import View
 from django.shortcuts import  get_object_or_404
 from django.views.generic import ListView 
 from django.core.urlresolvers import reverse
@@ -6,7 +7,7 @@ from projectman.apps.admin.models import  Fase
 
 from ..models import ItemTipos
 from ..models import ItemAtributos
-from ..forms import ItemTiposForm
+from ..forms import ItemTiposForm ,ImportTipoItemForm
 
 TEMPL_ITEMTIPFORM = 'desarrollo/form_itemtipos.html'
 TEMPL_ITEMTIPO_LIST = 'desarrollo/lista_itemtipos.html'
@@ -122,3 +123,56 @@ class EliminaItemTipoView(DeleteView):
         context = DeleteView.get_context_data(self, **kwargs)
         context['action'] = reverse('tipoitem_eliminar',kwargs={'pk':self.kwargs['pk']})
         return context
+
+
+class ImporteItemTipoView(CreateView):
+    """
+    
+    Crea un tipo de item importando otro tipo de item.
+    
+    """
+    model= ItemTipos
+    template_name = 'desarrollo/form_itemtipos_import.html'
+    form_class = ImportTipoItemForm
+    fase_param = None
+    templ_base_error = None
+    
+    def get_success_url(self):
+        return reverse('tipoitem_lista',kwargs={'idfase':self.kwargs['idfase']})
+    
+    def get_initial(self):
+        fase = Fase.objects.get(pk=self.kwargs['idfase'])
+        return { 'idfase': fase }
+
+    def get_context_data(self, **kwargs):
+        context = CreateView.get_context_data(self, **kwargs)
+        context['action'] = reverse('tipoitem_importar',kwargs={'idfase':self.kwargs['idfase'] })
+        if self.templ_base_error:
+            context['nodefault'] = self.templ_base_error
+        return context
+    
+    def form_invalid(self, form):
+        self.templ_base_error = "__panel.html"
+        return CreateView.form_invalid(self, form)
+    
+    def get_form(self, form_class):
+        form = CreateView.get_form(self, form_class)
+        opciones = [(item.pk, item.nombre) for item in ItemTipos.objects.all()]
+        form.fields['itemtipoimport'].choices = opciones
+
+        return form
+    
+    def form_valid(self, form):
+        ret = CreateView.form_valid(self, form)
+        idtipo_import = self.request.POST.get('itemtipoimport')
+        #tipo_item = get_object_or_404(ItemTipos, pk=idtipo_import) 
+        atributos = ItemAtributos.objects.filter(idtipoitem_id=idtipo_import)
+        for atr in atributos:
+            nuevoattr = ItemAtributos()
+            nuevoattr.idtipoitem = form.instance
+            nuevoattr.nombre = atr.nombre
+            nuevoattr.descripcion = atr.descripcion
+            nuevoattr.tipodato = atr.tipodato
+            nuevoattr.save()
+
+        return ret 
