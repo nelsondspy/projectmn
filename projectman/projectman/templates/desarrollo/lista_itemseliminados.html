@@ -1,0 +1,41 @@
+{% extends "__panel.html" %}
+{# lista de tipos de item #}
+
+{% block titulo %} Item eliminados  {% endblock %} 
+
+{% block cabecera_pagina %}Ítems Eliminados <small> Gestione los ítems eliminados  </small> {% endblock %}
+
+{% block zonatrabajo %}
+
+
+<table class="table table-striped">
+
+<tr>
+    <th>Fase</th>
+    <th>Item</th>
+	<th>Descripción del ítem </th>
+	<th colspan="2">Acciones</th>
+</tr>
+{% for item in object_list %}
+<tr class={% if itemtipo.idtipoitem == idtipoitem %}"success"{% endif %} >
+	<td>
+	{{ item.idfase.nombre }}
+	</td>
+	<td> 
+	    {{ item.nombre }}
+	</td>
+	<td>{{ item.descripcion }}</td>
+	<td>
+	  <a class="txt-success" data-target="#form_modal"  data-toggle="modal" href="{# url 'itematributo_crear' itemtipo.idtipoitem #}">
+       <span class="glyphicon glyphicon-heart"></span> Revivir</a>
+    </td>
+		
+</tr>
+<tr>
+ 
+{% endfor %}
+</tr>
+</table>
+
+{% endblock %}
+	

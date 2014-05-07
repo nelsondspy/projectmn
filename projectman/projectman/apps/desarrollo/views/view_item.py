@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import CreateView  , UpdateView
+from django.views.generic import ListView
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.forms.widgets import HiddenInput
@@ -154,4 +155,17 @@ class EditItemView(UpdateView):
         #por el momento no esta permitido el cambio de tipo de item
         form.fields['idtipoitem'].widget = HiddenInput()
         return form
+    
+class ListaEliminadosView(ListView):
+    """ lista los items eliminados """
+    model = Item
+    template_name = 'desarrollo/lista_itemseliminados.html'
+    
+    def get_queryset(self):
+        """
+        Lista los items en estado eliminado. 
+        
+        """
+        object_list = Item.objects.filter(estado=Item.E_ELIMINADO)
+        return object_list
     
