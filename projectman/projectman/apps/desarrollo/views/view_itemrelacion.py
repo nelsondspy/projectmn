@@ -37,7 +37,7 @@ class CreaRelacionView(CreateView):
         #el selector solo debe desplegar los items del proyecto 
         fases = Fase.objects.filter(idproyecto_id=self.kwargs['idproyecto'])
         #lista los items que coinciden con las fases de proyecto 
-        items = Item.objects.filter(idfase__in=fases)
+        items = Item.objects.filter(idfase__in=fases).exclude(estado=Item.E_ELIMINADO)
         #cargamos los selectores con los items y mostrando a que fase pertenecen 
         opciones = [(item.pk,'['+ item.idfase.__str__()[0:5]+'..] ' +\
                      '[' + item.estado +']  | ' +
@@ -199,5 +199,3 @@ class EliminaRelacionView(DeleteView):
     def get_success_url(self):
         return self.request.META['HTTP_REFERER']
     
-    
-
