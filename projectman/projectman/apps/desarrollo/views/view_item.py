@@ -7,7 +7,6 @@ from django.views.generic import ListView
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.forms.widgets import HiddenInput
-from django.forms import Form
 #modelos 
 from projectman.apps.admin.models import  Fase
 from ..models import Item , ItemTipos
@@ -117,11 +116,16 @@ class SetEliminadoItemView(UpdateView):
         #establece el estado de item  a eliminado
         
         item_eliminar = get_object_or_404(Item, pk=self.kwargs['pk'])
-            #si no paso alguna validacion
-        
         item_eliminar.estado = Item.E_ELIMINADO
         item_eliminar.save()
+        #establece el estado de las relaciones donde el item es hijo, a eliminadas
+        #ya que el duenho de la relacion es el hijo 
+        relaciones = ItemRelacion.objects.filter(destino=item_eliminar)
+        for rel in relaciones: 
+            rel.estado = ItemRelacion.E_ELIMINADO
+            rel.save()
         
+         
         return redirect(get_url_edicion_actual(request, nivel=1))
 
     def get_context_data(self, **kwargs):
