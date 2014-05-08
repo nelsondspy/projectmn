@@ -40,8 +40,8 @@ class LineaBaseForm(ModelForm):
 
 class SolicitudCambioForm(ModelForm):
         class Meta:
-            models = SolicitudCambio 
-            fields = ['comentarios', 'solicitante','items', 
-                      'estado', 'fecha_aprobacion', 'fecha_creacion']
+            model = SolicitudCambio 
+            fields = ['comentarios', 'solicitante', 'items', 'estado','fecha_aprobacion' ]
             widgets= {'items':CheckboxSelectMultiple() }
             
+
