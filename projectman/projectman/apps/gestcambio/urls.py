@@ -19,7 +19,8 @@ urlpatterns = patterns('projectman.apps',
          name="lineabase_listartabla") ,
     #solicitud de cambio
     url(r'^solicitud/crear/(?P<idlinebase>\d+)$', login_required(CreaSolicitudView.as_view()) , name="solicitud_crear" ),
-    url(r'^solicitud/listar/(?P<idfase>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitudes_fase" ), 
+    url(r'^solicitud/listar/(?P<idfase>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitudes_fase" ),
+    url(r'^solicitud/items/(?P<idfase>\d+)/(?P<idsolicitud>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitud_det_item" ), 
 
 
 )
