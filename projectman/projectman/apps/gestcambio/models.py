@@ -68,6 +68,11 @@ class SolicitudCambio(models.Model):
     
     
 class CambioTipos(models.Model):
+    """
+    
+    Tipo de cambio de la solicitud. 
+    
+    """
     idtipocambio = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=80, null=True, blank=False)
 
