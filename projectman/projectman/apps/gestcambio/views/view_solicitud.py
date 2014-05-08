@@ -57,3 +57,14 @@ class ListaSolicitudesView(ListView):
     model = SolicitudCambio
     template_name = 'gestcambio/lista_solicitudes.html'
     
+    def get_context_data(self, **kwargs):
+        context = ListView.get_context_data(self, **kwargs)
+        
+        if self.kwargs.get('idsolicitud', None):
+            context['idsolicitud'] = int(self.kwargs['idsolicitud'])
+            
+        if self.kwargs.get('idfase', None):
+            context['idfase'] = self.kwargs['idfase']
+        
+        return  context
+    
