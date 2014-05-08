@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from views.view_comite import CrearComiteProyectoView ,ListarComiteProyectoView, EliminarMiembroView
 from views.view_lineabase import CreaLineaBase 
 from views.view_lineabase import ListarLineaBaseView
+from views.view_solicitud import CreaSolicitudView ,ListaSolicitudesView
 
 
 urlpatterns = patterns('projectman.apps',
@@ -15,7 +16,10 @@ urlpatterns = patterns('projectman.apps',
     url(r'^lineabase/listar/(?P<idfase>\d+)$', login_required(ListarLineaBaseView.as_view()), name="lineabase_listar"),
     url(r'^lineabase/listar/(?P<idfase>\d+)/(?P<idlineabase>\d+)$', login_required(ListarLineaBaseView.as_view()), name="lineabase_listardetalle"), 
     url(r'^lineabase/listatabla/(?P<idfase>\d+)$', login_required(ListarLineaBaseView.as_view(template_name='gestcambio/lista_lineabase_plano.html')),\
-         name="lineabase_listartabla")
+         name="lineabase_listartabla") ,
+    #solicitud de cambio
+    url(r'^solicitud/crear/(?P<idlinebase>\d+)$', login_required(CreaSolicitudView.as_view()) , name="solicitud_crear" ),
+    url(r'^solicitud/listar/(?P<idfase>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitudes_fase" ), 
 
 
 )

@@ -1,0 +1,37 @@
+{% extends "__panel.html" %}
+
+{% load tags %}
+
+{% block titulo %} Lista de solicitudes de las fase {% endblock %} 
+{% block cabecera_pagina %}Solicitudes <small> Solicitudes </small> {% endblock %}
+
+{% block zonatrabajo %}
+
+
+<table class="table table-striped">
+
+<tr>
+    <th>id</th>
+
+    <th>Linea base afectada</th>
+        <th>Solicitante</th>
+	<th>Fecha Creacion </th>
+	<th>Fecha Aprobacion</th>
+	<th>Comentarios</th>
+	<th colspan="2">Acciones</th>
+</tr>
+
+{% for solicitud in object_list %}
+<tr>
+	<td>{{ solicitud.pk }}</td>
+	<td>{{ solicitud.lineabase }}</td>
+	<td>{{ solicitud.solicitante }}</td>
+	<td>{{ solicitud.fecha_creacion | date:'d/m/Y'}}</td>
+	<td>{{ solicitud.fecha_aprobacion | date:'d/m/Y'}}</td>
+	<td>{{ solicitud.comentarios }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}

@@ -32,6 +32,9 @@ class LineaBase(models.Model):
     #genera una segunda tabla para las relaciones con el item
     items = models.ManyToManyField(Item)
     fechacreacion = models.DateField(auto_now=True, null=True )
+    
+    def __unicode__(self):
+        return self.descripcion
 
 
 #Solicitud
@@ -62,10 +65,13 @@ class SolicitudCambio(models.Model):
     solicitante = models.ForeignKey(User)
     #los items pertenecen solo a una linea base 
     items = models.ManyToManyField(Item)
-    estado = models.CharField(max_length=3, choices=ESTADOS)
+    lineabase = models.ForeignKey(LineaBase)
+    estado = models.CharField(max_length=3, default=E_BORRADOR)
     fecha_aprobacion =  models.DateField(null=True )
     fecha_creacion =  models.DateField(auto_now=True,blank=False, null=False)
     
+    def __unicode__(self):
+        return self.solicitante
     
 class CambioTipos(models.Model):
     """

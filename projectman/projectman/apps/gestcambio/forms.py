@@ -35,13 +35,14 @@ class LineaBaseForm(ModelForm):
         model = LineaBase
         fields = ['descripcion', 'fase', 'items']
         widgets= {'fase' : HiddenInput(), 'items':CheckboxSelectMultiple() }
-        
+         
 
 
 class SolicitudCambioForm(ModelForm):
         class Meta:
             model = SolicitudCambio 
-            fields = ['comentarios', 'solicitante', 'items', 'estado','fecha_aprobacion' ]
-            widgets= {'items':CheckboxSelectMultiple() }
+            fields = ['comentarios', 'solicitante', 'items', 'lineabase' ]
+            widgets= {'items':CheckboxSelectMultiple(), 
+                      'solicitante':HiddenInput(), 'lineabase':HiddenInput() }
             
 
