@@ -64,7 +64,7 @@ class SolicitudCambio(models.Model):
     items = models.ManyToManyField(Item)
     estado = models.CharField(max_length=3, choices=ESTADOS)
     fecha_aprobacion =  models.DateField(null=True )
-    fecha_creacion =  models.DateField(auto_now=True, null=False)
+    fecha_creacion =  models.DateField(auto_now=True,blank=False, null=False)
     
     
 class CambioTipos(models.Model):
