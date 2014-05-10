@@ -1,11 +1,19 @@
-{#  #}
 {% extends "__panel.html" %}
 
 {% load tags %}
 
+
 {% block titulo %} Gestion de Cambios - Linea Base {% endblock %} 
 {% block cabecera_pagina %}Líneas Base <small> Administre las Líneas Base de {{ object_list.0.fase }} </small> {% endblock %}
 
+{# ---- cabecera de trabajo  ----#}
+{% block barra_navegacion %}
+	{% load tags_desarrollo %}
+	{% back_url_proyecto 1 %}
+{% endblock %}
+
+
+{#----  zona de trabajo ---- #}
 {% block zonatrabajo %}
 
 <!-- opciones de listado para linea base -->

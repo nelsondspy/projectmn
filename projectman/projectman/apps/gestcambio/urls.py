@@ -3,8 +3,7 @@ from django.contrib.auth.decorators import login_required
 from views.view_comite import CrearComiteProyectoView ,ListarComiteProyectoView, EliminarMiembroView
 from views.view_lineabase import CreaLineaBase 
 from views.view_lineabase import ListarLineaBaseView
-from views.view_solicitud import CreaSolicitudView ,ListaSolicitudesView
-
+from views.view_solicitud import CreaSolicitudView ,ListaSolicitudesView, SetSolicitudEnviada, EditaSolicitudView
 
 urlpatterns = patterns('projectman.apps',
     #comite 
@@ -21,6 +20,8 @@ urlpatterns = patterns('projectman.apps',
     url(r'^solicitud/crear/(?P<idlinebase>\d+)$', login_required(CreaSolicitudView.as_view()) , name="solicitud_crear" ),
     url(r'^solicitud/listar/(?P<idfase>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitudes_fase" ),
     url(r'^solicitud/items/(?P<idfase>\d+)/(?P<idsolicitud>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitud_det_item" ), 
+    url(r'^solicitud/enviar/(?P<pk>\d+)$', login_required(SetSolicitudEnviada.as_view()) , name="solicitud_envia" ) , 
+    url(r'^solicitud/editar/(?P<pk>\d+)$', login_required(EditaSolicitudView.as_view()) , name="solicitud_edita" )
 
 
 )

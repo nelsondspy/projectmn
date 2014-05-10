@@ -13,8 +13,8 @@
 <tr>
     <th>id</th>
     <th>Comentarios</th>
-    <th>Fase afectada</th>
     <th>Linea base afectada</th>
+    <th>Estado</th>
         <th>Solicitante</th>
 	<th>Fecha Creacion </th>
 	<th>Fecha Aprobacion</th>
@@ -30,13 +30,42 @@
 	</a>
 	</td>
 	<td> <a href="{% url 'solicitud_det_item' idfase solicitud.pk %}"> <span class={% if  solicitud.idsolicitud == idsolicitud %} "glyphicon glyphicon-chevron-down" {% else %} "glyphicon glyphicon-chevron-right" {% endif %}></span>
-     	{{ solicitud.comentarios }}</a>
+     {{ solicitud.comentarios }}</a>
 	</td>
-	<td>{{ solicitud.lineabase.fase }}</td>
-	<td>{{ solicitud.lineabase }}</td>
+	
+	<td><small>[{{ solicitud.lineabase.fase }}]</small> {{ solicitud.lineabase }}</td>
+	
+	<td>
+	{% if solicitud.estado == E_APROBADO %}
+	{% endif %}
+	
+	{% if solicitud.estado == E_RECHAZADO %}
+	{% endif %}
+	
+	{% if solicitud.estado == E_ENVIADO %}
+	<span class="glyphicon glyphicon-send"></span>
+	{% endif %}
+	
+	{% if solicitud.estado == E_TERMINADO %}
+	{% endif %}
+	
+	{% if solicitud.estado == E_BORRADOR %}
+	<span class="glyphicon glyphicon-file"></span>
+	{% endif %}
+	<small>{{ solicitud.estado }}</small>
+	</td>
 	<td>{{ solicitud.solicitante }}</td>
 	<td>{{ solicitud.fecha_creacion | date:'d/m/Y'}}</td>
 	<td>{{ solicitud.fecha_aprobacion | date:'d/m/Y'}}</td>
+	<td><a href="{% url 'solicitud_envia' solicitud.pk %}" data-target="#form_modal" data-toggle="modal" >Enviar</a></td>
+	<td>{% if solicitud.estado == E_BORRADOR %}
+	<a href="{% url 'solicitud_edita' solicitud.pk %}" data-target="#form_modal" data-toggle="modal" >Modificar</a>
+	{% else %}
+
+	{% include '_msg_noperm.html' with msg='Modificar' %}
+
+	{% endif %}
+	</td>
 	
 </tr>
 {% if solicitud.idsolicitud == idsolicitud %}
