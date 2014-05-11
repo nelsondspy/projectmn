@@ -1,9 +1,11 @@
-from django.shortcuts import render_to_response, redirect
+# -*- coding: utf-8 -*-
+from django.shortcuts import render_to_response, redirect, render
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
 from django.views.generic.edit import CreateView  , UpdateView
-from django.views.generic import ListView
+from django.views.generic import ListView , View
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.forms.widgets import HiddenInput
@@ -14,9 +16,9 @@ from ..models import ItemRelacion
 #formularios
 from ..forms import ItemForm, ItemFormN
 from view_oth import redirige_edicion_actual
-
 from view_oth import get_url_edicion_actual
-
+#otros
+from view_itemrelacion import CreaRelacionView
 
 TEMPL_ITEMFORM = 'desarrollo/form_item.html'
 
@@ -190,15 +192,79 @@ class EditItemView(UpdateView):
 
 
 class ListaEliminadosView(ListView):
-    """ lista los items eliminados """
+    """ lista los items eliminados de una fase  """
     model = Item
     template_name = 'desarrollo/lista_itemseliminados.html'
     
     def get_queryset(self):
         """
-        Lista los items en estado eliminado. 
+        
+        Lista los items en estado eliminado de una fase. 
         
         """
-        object_list = Item.objects.filter(estado=Item.E_ELIMINADO)
+        object_list = Item.objects.filter(estado=Item.E_ELIMINADO).\
+                        filter(idfase_id=self.kwargs['idfase'])
         return object_list
 
+
+class RevivirItem(View):
+    """
+    
+    Vista que establece el estado de los items de estado eliminado a activo.
+    Ademas re-establece de nuevos las relaciones 
+    
+    """
+    template_name ='form_confirm_accion.html'
+    lista_errores = []
+    items_rel_problemas=[]
+
+    def post(self, request, *args, **kwargs):
+        #establece el estado del item eliminado a desaprobado 
+        item_arevivir = get_object_or_404(Item, pk=self.kwargs['pk'])
+        item_arevivir.estado = Item.E_DESAPROBADO
+        item_arevivir.save()
+        #se activan las relaciones.Solo aquellas que no tienen conflictos
+        #Lista relaciones eliminadas donde particpa el item , pero donde el item
+        # no este relacionado con items eliminados 
+        relac_items = ItemRelacion.objects.filter(Q(origen=item_arevivir) | \
+                                                  Q(destino=item_arevivir)).\
+                                                  exclude(origen__estado=ItemRelacion.E_ELIMINADO).\
+                                                  exclude(destino__estado=ItemRelacion.E_ELIMINADO)
+        for relacion in relac_items:
+            
+            #valida que la relacion no forme un ciclo
+            if CreaRelacionView.valid_existe_ciclo(relacion.origen, relacion.destino):
+                messages.error(request, 'se formara un ciclo ')
+                #self.items_rel_problemas.append(relacion)
+                continue #restringe que la relacion pueda tener un solo tipo de conflicto
+
+            #valida que la relacion sea unica
+            if CreaRelacionView.valid_relacion_unica(relacion.origen, relacion.destino):
+                messages.error(request, 'la relacion ya existe ') 
+                continue
+            
+            #valida que el antecesor este en  LB pero el sucesor si este en una LB
+            if not CreaRelacionView.valid_ant_lineabase( relacion.origen, relacion.destino):
+                messages.error(request, 'es necesario que el item antecesor tenga linea base ') 
+                continue
+            
+            relacion.estado = ItemRelacion.E_ACTIVO
+            relacion.save()
+
+        messages.info(request, 'El item fue revivido!')
+        
+        #redirige a la lista de items eliminados
+        return redirect(reverse('item_listaeliminados', kwargs={'idfase': item_arevivir.idfase_id }))
+
+    def get(self,request, pk ):
+        """
+        
+        Despliega el formulario de confirmacion generico.
+        Con valores particulares para confirmar el envio 
+        
+        """
+        return render(request, self.template_name, {'action':reverse('item_revivir',\
+                                                              kwargs={'pk':pk } ),\
+                                             'titulo': 'Revivir item',\
+                                             'texto': '¿Está seguro que desea revivir este item?',\
+                                             'value': 'Aceptar' })

@@ -3,11 +3,12 @@ from django.contrib.auth.decorators import login_required
 from views.view_itemtipo import CreaItemTipoView,EditaItemTipoView, ListaItemTipoView,\
     EliminaItemTipoView , ImporteItemTipoView
 from views.view_itematributo import CreaItemAtributoView, ListaItemAtributoView, EditaItemAtributoView, EliminaItemAtributoView
-from views.view_item import CreaItemView, SetEliminadoItemView, EditItemView, ListaEliminadosView
+from views.view_item import CreaItemView,SetEliminadoItemView, EditItemView, ListaEliminadosView, RevivirItem
 from views.view_itemvalores import AsignaValoresItem ,ValoreItemView
 
 from views.view_itemrelacion import CreaRelacionView, ListaRelacionesView, EliminaRelacionView
 from views.view_itemadjuntos import LsCrAdjuntoView
+
 
 urlpatterns = patterns('projectman.apps',
     url(r'^$', 'desarrollo.views.view_oth.mostrar_panel'),
@@ -19,7 +20,8 @@ urlpatterns = patterns('projectman.apps',
     url(r'^item/crear/(?P<idfase>\d+)$', login_required(CreaItemView.as_view()), name='item_crear' ),
     url(r'^item/eliminar/(?P<pk>\d+)$', login_required(SetEliminadoItemView.as_view()), name='item_eliminar' ), 
     url(r'^item/modificar/(?P<pk>\d+)$', login_required(EditItemView.as_view()), name='item_editar' ), 
-     url(r'^item/eliminados/$', login_required(ListaEliminadosView.as_view()), name='item_listaeliminados' ), 
+    url(r'^item/eliminados/(?P<idfase>\d+)$', login_required(ListaEliminadosView.as_view()), name='item_listaeliminados' ), 
+    url(r'^item/revivir/(?P<pk>\d+)$', login_required(RevivirItem.as_view()), name='item_revivir'), 
     
     #gestion de tipos de items 
     url(r'^tipoitem/editar/(?P<pk>\d+)$', login_required(EditaItemTipoView.as_view()), name="tipoitem_editar"),
