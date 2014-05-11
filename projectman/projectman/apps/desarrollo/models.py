@@ -114,9 +114,11 @@ class ItemAtributosValores(models.Model):
     valor = models.CharField(max_length=50) 
     usoactual = models.BooleanField()
     creacion = models.DateField(auto_now=True)
+    version = models.IntegerField(default=0)
     #relaciones 
     iditem = models.ForeignKey(Item)
     idatributo = models.ForeignKey(ItemAtributos)
+    
     
     def set_valor_default(self):
         if self.idatributo.tipodato == ItemAtributos.T_DATE:
@@ -127,7 +129,11 @@ class ItemAtributosValores(models.Model):
             
         if self.idatributo.tipodato == ItemAtributos.T_CHAR :
             self.valor = '--'
-        
+            
+    def set_inc_version(self):
+        if self.version is None:
+            self.version = 0 
+        self.version = self.version + 1
         
 
 
