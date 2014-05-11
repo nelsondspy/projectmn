@@ -47,7 +47,7 @@ class AsignaValoresItem(View):
                 atributovalor.set_valor_default()
                 atributovalor.save()
         #pos insercion la lista de atributos con valores intanciados  del item
-        lista_valores = ItemAtributosValores.objects.filter(iditem=item)
+        lista_valores = ItemAtributosValores.objects.filter(iditem=item).exclude(usoactual=False)
         formset = self.ValoresFormSet(queryset=lista_valores)
         #return render_to_response(TEMPL_FORMASIG,{'formset': formset})
         
@@ -103,7 +103,18 @@ class ValoreItemView(ListView):
     def get_queryset(self):
         object_list = ItemAtributosValores.objects.filter(iditem=self.kwargs['iditem'])
         return object_list
-    
-    
 
 
+class ListaVersionesValor(ListView):
+    """
+    
+    Lista las versiones de un item.
+    
+    """
+    template_name = 'desarrollo/lista_versionesitem.html'
+    model = ItemAtributosValores
+    
+    def get_queryset(self):
+        object_list = ItemAtributosValores.objects.filter(iditem_id=self.kwargs['iditem'])
+        print 'object_list',object_list.count()
+        return object_list

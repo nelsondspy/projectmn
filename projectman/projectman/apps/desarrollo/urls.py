@@ -4,7 +4,7 @@ from views.view_itemtipo import CreaItemTipoView,EditaItemTipoView, ListaItemTip
     EliminaItemTipoView , ImporteItemTipoView
 from views.view_itematributo import CreaItemAtributoView, ListaItemAtributoView, EditaItemAtributoView, EliminaItemAtributoView
 from views.view_item import CreaItemView,SetEliminadoItemView, EditItemView, ListaEliminadosView, RevivirItem
-from views.view_itemvalores import AsignaValoresItem ,ValoreItemView
+from views.view_itemvalores import AsignaValoresItem ,ValoreItemView ,ListaVersionesValor
 
 from views.view_itemrelacion import CreaRelacionView, ListaRelacionesView, EliminaRelacionView
 from views.view_itemadjuntos import LsCrAdjuntoView
@@ -39,6 +39,7 @@ urlpatterns = patterns('projectman.apps',
     #gestion de valores de items 
     url(r'^item/asignarvalores/(?P<iditem>\d+)$', AsignaValoresItem.as_view(), name="valores_asignar") ,
     url(r'^item/listavalores/(?P<iditem>\d+)$', ValoreItemView.as_view(), name="valores_listar") ,
+    url(r'^item/versionesvalores/(?P<iditem>\d+)$', ListaVersionesValor.as_view(), name="valores_versiones") ,
     #relaciones 
     url(r'^relacion/crear/(?P<idproyecto>\d+)$', CreaRelacionView.as_view(), name="relacion_crear"),
     url(r'^relaciones/listar/(?P<idproyecto>\d+)$', ListaRelacionesView.as_view(), name="relacion_listar"),

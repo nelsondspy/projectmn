@@ -1,0 +1,53 @@
+{# lista de versiones de un item #}
+{% extends "__panel.html" %}
+
+{% load tags %}
+
+
+{% block titulo %} Versiones de valores del ítem {% endblock %} 
+{% block cabecera_pagina %}Versiones <small>Administre versiones de los valores del ítem </small> {% endblock %}
+
+{# ---- cabecera de trabajo  ----#}
+{% block barra_navegacion %}
+	{% load tags_desarrollo %}
+	{% back_url_proyecto 1 %}
+{% endblock %}
+
+
+{#----  zona de trabajo ---- #}
+{% block zonatrabajo %}
+
+
+<hr>
+<table class="table table-bordered">
+<tr>
+	<th>Version </th>
+	<th>Fecha </th>
+</tr>
+{% regroup object_list by version as lista_versiones %}
+{% for version in lista_versiones %}
+<tr>
+	<td>Version: {{ version.grouper }}
+		<p>
+			<a class="btn btn-primary" data-target="#form_modal"  data-toggle="modal" href="">
+			Revertir a esta version
+			</a>
+		</p>
+	 </td>
+	<td>
+	    <table class="table table-bordered .table-condensed">
+	    <tr><th>Atributo</th><th>Valor</th><th>Tipo Dato</th></tr>
+	    {% for version_contenido in version.list %}
+	    	<tr>
+		    	<td>{{ version_contenido.idatributo.nombre }}</td>
+		    	<td>{{ version_contenido.valor }}</td>
+		    	<td>{{ version_contenido.creacion| date:'d/m/Y' }}</td>
+	        </tr>
+	    {% endfor %}
+	   </table>
+	</td>
+	</tr>
+{% endfor %}
+</table>
+
+{% endblock %}
