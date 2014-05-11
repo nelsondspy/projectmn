@@ -116,5 +116,44 @@ class ListaVersionesValor(ListView):
     
     def get_queryset(self):
         object_list = ItemAtributosValores.objects.filter(iditem_id=self.kwargs['iditem'])
-        print 'object_list',object_list.count()
         return object_list
+    def get_context_data(self, **kwargs):
+        context = ListView.get_context_data(self, **kwargs)
+        context['iditem'] = self.kwargs['iditem']
+        return context
+
+
+
+class RevertirValoreItem(View):
+    """
+    
+    Vista que permite establecer una version anterior del item como actual.
+    
+    """
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        iditem = self.kwargs['iditem']
+        version =self.kwargs['version']
+        item = get_object_or_404(Item, pk=iditem)
+        
+        #Version anterior de los valores 
+        # a los cuales tenemos que establecer usoactual falso
+        vers_ant_valores = ItemAtributosValores.objects.filter(\
+                                    Q(usoactual=True) & Q(iditem=item))
+        for valitem in vers_ant_valores:
+            valitem.usoactual = False
+            valitem.save()
+        
+        num_vers = vers_ant_valores[0].version + 1  
+        #nueva version nueva actual
+        vers_actual = ItemAtributosValores.objects.filter(\
+                                    Q(version=version) & Q(iditem=item))
+        for valnuevo in vers_actual:
+            valnuevo.usoactual = True
+            #establece el numerode la nueva version
+            valnuevo.version = num_vers
+            valnuevo.save()
+            
+        item.version = num_vers
+        
+        return redirect(reverse('valores_versiones',kwargs={'iditem': iditem}))
