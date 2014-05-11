@@ -1,4 +1,4 @@
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView,  DeleteView
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView 
 from django.core.urlresolvers import reverse
@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.contrib import messages 
 
 from ..models import ItemRelacion, Item 
-from projectman.apps.admin.models import Proyecto, Fase
+from projectman.apps.admin.models import Fase
 
 from ..forms import ItemRelacionForm
 
@@ -22,7 +22,6 @@ class CreaRelacionView(CreateView):
     De fases antecesoras. 
     
     """
-    
     model = ItemRelacion
     template_name = TEMPL_RELACION_FORM
     form_class = ItemRelacionForm
@@ -62,7 +61,7 @@ class CreaRelacionView(CreateView):
         origen = form.instance.origen
         destino = form.instance.destino
         #Serie de validaciones 
-        if valid_relacion_unica(origen, destino):
+        if self.valid_relacion_unica(origen, destino):
             messages.error(self.request, 'La relacion ya existe: ' + \
                            origen.__str__()+ ' --> '+ destino.__str__())
             self.valido = False
@@ -74,6 +73,12 @@ class CreaRelacionView(CreateView):
 
             self.valido = False
             return self.form_invalid(form)
+
+        if not self.valid_ant_lineabase(origen, destino):
+            messages.error(self.request,'el item antecesor o padre debe estar en linea \
+                base al igual que el hijo o antecesor')
+            self.valido = False
+            return self.form_invalid(form)
         
         return CreateView.form_valid(self, form)
     
@@ -81,7 +86,7 @@ class CreaRelacionView(CreateView):
         self.valido = False
         return CreateView.form_invalid(self, form)
     
-    
+    @classmethod
     def __lista_antecesores(self,idItem):
         #retorno = list(db.session.query(Relacion).filter(Relacion.idSucesor == idItem ).all())
         retorno = ItemRelacion.objects.filter(destino_id=idItem)
@@ -90,7 +95,8 @@ class CreaRelacionView(CreateView):
             antecesores.append(r.origen_id)
             antecesores += self.__lista_antecesores(r.origen_id)
         return antecesores
-    
+
+    @classmethod
     def __lista_sucesores(self,idItem):
         #retorno = list(db.session.query(Relacion).filter(Relacion.idAntecesor == idItem ).all())
         retorno = ItemRelacion.objects.filter(origen_id=idItem)
@@ -99,7 +105,8 @@ class CreaRelacionView(CreateView):
             sucesores.append(r.destino_id)
             sucesores += self.__lista_sucesores(r.destino_id)
         return sucesores
-    
+
+    @classmethod
     def valid_existe_ciclo(self, idorigen, iddestino):
         """
         
@@ -127,19 +134,32 @@ class CreaRelacionView(CreateView):
                     return True
         
         return False 
-
-
-
-def valid_relacion_unica(porigen, pdestino):
-    """
     
-    Valida que aun no exista la relacion.
+    @classmethod
+    def valid_relacion_unica(self,porigen, pdestino):
+        """
     
-    """
-    relacion = ItemRelacion.objects.filter(Q(origen=porigen) & Q(destino=pdestino))
-    return relacion.count()
-                                
-                                
+        Valida que aun no exista la relacion.
+        -Tiene en cuenta que pueden existir relaciones eliminadas y las ignora.
+    
+        """
+        relacion = ItemRelacion.objects.filter(Q(origen=porigen) & Q(destino=pdestino)).\
+        exclude(estado=ItemRelacion.E_ELIMINADO)
+        return relacion.count()
+    
+    @classmethod
+    def valid_ant_lineabase(self, porigen, pdestino):
+        """
+        
+        Valida relaciones entre items con respecto a que existencia alguna linea base. 
+        Si el item padre no tiene linea base el hijo o antecesor tampoco debe tener linea base.
+        """
+        if porigen.estado == Item.E_BLOQUEADO:
+            return True 
+        
+        if pdestino.estado == Item.E_BLOQUEADO:
+            return False
+        return True
 
 
 class ListaRelacionesView(ListView):
