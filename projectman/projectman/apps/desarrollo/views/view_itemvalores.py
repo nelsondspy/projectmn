@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.forms.models import modelformset_factory
 from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.db import transaction
 
 from ..models import ItemAtributosValores
 from ..models import ItemTipos
@@ -43,7 +44,6 @@ class AsignaValoresItem(View):
                 
                 atributovalor = ItemAtributosValores(idatributo = atrr,\
                                                  iditem = item,usoactual = True)
-                #atributovalor.valor = '0'
                 atributovalor.set_valor_default()
                 atributovalor.save()
         #pos insercion la lista de atributos con valores intanciados  del item
@@ -55,14 +55,36 @@ class AsignaValoresItem(View):
                                                 'action': reverse('valores_asignar',\
                                                                   kwargs={'iditem':iditem} ) 
                                                 })
-    
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
         """
         
-        Metodo que guarda los valores del item
+        Metodo transaccional que guarda los valores del item.
+        Almacena los valores anteriores a la modificacion.
+        Incrementa la version de los valores.
         
         """
+        #Hace backcup de los valores actuales que estan con uso actual =true del item
+        item_part = get_object_or_404(Item, pk=int(self.kwargs.get('iditem',None))) 
+        valores_item_part = ItemAtributosValores.objects.filter(\
+                                                Q(usoactual=True) & Q(iditem=item_part))
+
+        #puede que sea la primera version de los valores del item
+        ultima_version = 1  
+        #Cada valor del item se establece con valor de usoactual false
+        #porque esta sera la version anterior
+        for valor in valores_item_part:
+            valor.pk = None # se fuerza a guardar un nuevo registro
+            valor.usoactual = False
+            valor.set_inc_version()
+            valor.save()
+            ultima_version = valor.version
+
+        #actualiza la version del item
+        item_part.version = ultima_version
+        item_part.save()
         formset = self.ValoresFormSet(request.POST)
+        
         if formset.is_valid():
             formset.save()
         else:
@@ -82,5 +104,6 @@ class ValoreItemView(ListView):
         object_list = ItemAtributosValores.objects.filter(iditem=self.kwargs['iditem'])
         return object_list
     
-
     
+
+
