@@ -1,4 +1,19 @@
 {#formulario de carga de adjuntos , y listado de archivos adjuntos #}
+{% extends "__panel.html" %}
+{% load tags %}
+{% block titulo %} Archivos Adjuntos del ítem {% endblock %} 
+{% block cabecera_pagina %}Archivos Adjuntos <small>Administre los archivos adjuntos del ítem </small> {% endblock %}
+
+{# ---- cabecera de trabajo  ----#}
+{% block barra_navegacion %}
+	{% load tags_desarrollo %}
+	{% back_url_proyecto 1 %}
+{% endblock %}
+
+
+{#----  zona de trabajo ---- #}
+{% block zonatrabajo %}
+
 
 <form action="{{ action }}" method="POST" enctype="multipart/form-data">
 {% csrf_token %}
@@ -7,7 +22,7 @@
 	</table> 
 	<input type="submit" value="Guardar" class="btn btn-primary">
 </form>
-<table>
+<table class="table table-bordered">
 <tr>
 	<th>Archivo</th>
 	<th>Descripción</th>
@@ -19,3 +34,5 @@
 </tr>
 {% endfor %}
 </table>
+
+{% endblock %}
