@@ -10,7 +10,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
 # Views de tipo clase de django
-from django.views.generic import ListView 
+from django.views.generic import ListView, View
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.core.urlresolvers import  reverse
 from django.db.models import Q
@@ -19,6 +19,7 @@ from models import Proyecto
 from models import Fase 
 from models import RolProyecto
 from models import RolFases
+from ..desarrollo.models  import Item 
 from forms import ProyectoForm
 from forms import FaseForm
 from forms import UsuarioRolForm
@@ -27,7 +28,7 @@ from forms import UserForm
 from forms import RolProyectoForm 
 from forms import RolFaseForm
 from forms import ProyectoIniciarForm
-from projectman.apps.desarrollo.views.view_oth import redirige_edicion_actual 
+from projectman.apps.desarrollo.views.view_oth import redirige_edicion_actual, get_url_edicion_actual
 
 
 
@@ -648,5 +649,54 @@ class ListaRolFasesView(ListView):
         fases = Fase.objects.filter(rolfases__rolproyecto=rolproyp)
         object_list = fases
         return object_list
-    
 
+
+class FinalizaFase(View):
+    template_name ='form_confirm_accion.html'
+
+    def post(self, request, *args, **kwargs):
+        """
+
+        Establece el estado de la solicitud a enviada
+
+        """
+        #establece el estado de la solicitud a enviada
+        fase_fin = get_object_or_404(Fase, pk=self.kwargs['pk'])
+        #serie de validaciones 
+        (validez, mensaje ) = self.valid_finalizar_fase(self.kwargs['pk'])
+        
+        if not validez:
+            messages.error(request,mensaje )
+            return redirect(get_url_edicion_actual(request, 1))
+        
+        fase_fin.estado = Fase.E_FINALIZADO
+        fase_fin.save()
+        messages.info(request, mensaje )
+        return redirect(get_url_edicion_actual(request, 1))
+
+    def get(self,request, pk ):
+        """
+
+        Despliega el formulario de confirmacion generico.
+        Con valores particulares para finalizar la fase.
+
+        """
+        return render(request, self.template_name, {'action':reverse('finalizar_fase',\
+                                                              kwargs={'pk':pk } ),\
+                                             'titulo': 'Finalización de fase',\
+                                             'texto': '¿Está seguro que desea finalizar la fase?',\
+                                             'value': 'Aceptar' })
+    
+    def valid_finalizar_fase(self, idfase):
+        """
+        
+        Valida los elementos internos de la fase antes de finalizar
+        
+        """
+        items = Item.objects.filter(idfase_id=idfase).\
+            exclude(estado=Item.E_BLOQUEADO).exclude(estado=Item.E_ELIMINADO)
+        #verifica que todos los items esten en alguna linea base 
+        if  items.count() > 0 :
+            return (False, 'ERROR : Verifique que todos los items esten en línea base' )
+        
+        return (True , 'EXITO : Fase finalizada correctamente ')
