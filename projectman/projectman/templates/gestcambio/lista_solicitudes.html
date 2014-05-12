@@ -2,7 +2,7 @@
 
 {% load tags %}
 
-{% block titulo %} Lista de solicitudes de las fase {% endblock %} 
+{% block titulo %} Lista de solicitudes de las fase {% endblock %}
 {% block cabecera_pagina %}Solicitudes <small> Solicitudes </small> {% endblock %}
 
 {% block zonatrabajo %}
@@ -18,7 +18,7 @@
         <th>Solicitante</th>
 	<th>Fecha Creacion </th>
 	<th>Fecha Aprobacion</th>
-	
+
 	<th colspan="2">Acciones</th>
 </tr>
 
@@ -26,29 +26,32 @@
 <tr class={% if solicitud.idsolicitud == idsolicitud %}"success"{% endif %} >
 	<td>
 	<a href="{% url 'solicitud_det_item' idfase solicitud.pk %}">{{ solicitud.pk }}
-     	
+
 	</a>
 	</td>
 	<td> <a href="{% url 'solicitud_det_item' idfase solicitud.pk %}"> <span class={% if  solicitud.idsolicitud == idsolicitud %} "glyphicon glyphicon-chevron-down" {% else %} "glyphicon glyphicon-chevron-right" {% endif %}></span>
      {{ solicitud.comentarios }}</a>
 	</td>
-	
+
 	<td><small>[{{ solicitud.lineabase.fase }}]</small> {{ solicitud.lineabase }}</td>
-	
+
 	<td>
 	{% if solicitud.estado == E_APROBADO %}
+  <span class="glyphicon glyphicon-thumbs-up"></span>
 	{% endif %}
-	
+
 	{% if solicitud.estado == E_RECHAZADO %}
+  <span class="glyphicon glyphicon-thumbs-down"></span>
 	{% endif %}
-	
+
 	{% if solicitud.estado == E_ENVIADO %}
 	<span class="glyphicon glyphicon-send"></span>
 	{% endif %}
-	
+
 	{% if solicitud.estado == E_TERMINADO %}
+  <span class="glyphicon glyphicon-ok"></span>
 	{% endif %}
-	
+
 	{% if solicitud.estado == E_BORRADOR %}
 	<span class="glyphicon glyphicon-file"></span>
 	{% endif %}
@@ -66,7 +69,15 @@
 
 	{% endif %}
 	</td>
-	
+  <td>{% if solicitud.estado == E_BORRADOR %}
+  <a href="{% url 'solicitud_eliminar' solicitud.pk %}" data-target="#form_modal" data-toggle="modal" >Eliminar</a>
+  {% else %}
+
+  {% include '_msg_noperm.html' with msg='Eliminar' %}
+
+  {% endif %}
+  </td>
+
 </tr>
 {% if solicitud.idsolicitud == idsolicitud %}
 <tr>
