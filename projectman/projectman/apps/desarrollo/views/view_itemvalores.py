@@ -66,27 +66,31 @@ class AsignaValoresItem(View):
         """
         #Hace backcup de los valores actuales que estan con uso actual =true del item
         item_part = get_object_or_404(Item, pk=int(self.kwargs.get('iditem',None))) 
-        valores_item_part = ItemAtributosValores.objects.filter(\
-                                                Q(usoactual=True) & Q(iditem=item_part))
+        valores_item_part = ValoresItemView.qs_valores_actuales(item_part.pk)
 
-        #puede que sea la primera version de los valores del item
-        ultima_version = 1  
-        #Cada valor del item se establece con valor de usoactual false
-        #porque esta sera la version anterior
-        for valor in valores_item_part:
-            valor.pk = None # se fuerza a guardar un nuevo registro
-            valor.usoactual = False
-            valor.set_inc_version()
-            valor.save()
-            ultima_version = valor.version
-
-        #actualiza la version del item
-        item_part.version = ultima_version
-        item_part.save()
+        #puede que sea la version inicial de los valores del item
+        if not valores_item_part[0].version == 0:
+            #Cada valor del item se establece con valor de usoactual false
+            #porque esta sera la version anterior
+            for valor in valores_item_part:
+                valor.pk = None # se fuerza a guardar un nuevo registro
+                valor.usoactual = False
+                valor.save()
+                
+        #recibe los parametros por post
         formset = self.ValoresFormSet(request.POST)
         
         if formset.is_valid():
             formset.save()
+            #aun no sabemos como modificar instancias de un formset
+            valores_item_part = ValoresItemView.qs_valores_actuales(item_part.pk)
+            for valor in valores_item_part:
+                valor.set_inc_version()
+                valor.save()
+            #actualiza la version del item
+            item_part.version = valores_item_part[0].version 
+            item_part.save()
+
         else:
             return render(request, TEMPL_FORMASIG, {'formset': formset, \
                         'action': reverse('valores_asignar',\
@@ -96,13 +100,17 @@ class AsignaValoresItem(View):
         return redirect(get_url_edicion_actual(request,1))
 
 
-class ValoreItemView(ListView):
+class ValoresItemView(ListView):
     model = ItemAtributosValores
     template_name = 'desarrollo/lista_valores.html'
     
     def get_queryset(self):
-        object_list = ItemAtributosValores.objects.filter(iditem=self.kwargs['iditem'])
+        object_list = self.qs_valores_actuales(self.kwargs['iditem'])
         return object_list
+     
+    @classmethod
+    def qs_valores_actuales(self, iditem):
+        return ItemAtributosValores.objects.filter(Q(usoactual=True) & Q(iditem_id=iditem)) 
 
 
 class ListaVersionesValor(ListView):
@@ -117,6 +125,7 @@ class ListaVersionesValor(ListView):
     def get_queryset(self):
         object_list = ItemAtributosValores.objects.filter(iditem_id=self.kwargs['iditem'])
         return object_list
+
     def get_context_data(self, **kwargs):
         context = ListView.get_context_data(self, **kwargs)
         context['iditem'] = self.kwargs['iditem']
@@ -130,6 +139,13 @@ class RevertirValoreItem(View):
     Vista que permite establecer una version anterior del item como actual.
     
     """
+    template_name = 'desarrollo/form_confirm_revertir.html'
+    
+    def get(self,request,iditem, version):
+        contex = {'iditem': iditem, 'version': version}
+        return render(request, self.template_name, contex)
+    
+    
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         iditem = self.kwargs['iditem']
