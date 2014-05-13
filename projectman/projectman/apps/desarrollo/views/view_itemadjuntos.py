@@ -1,4 +1,5 @@
-from django.shortcuts import get_object_or_404, render 
+from django.shortcuts import get_object_or_404, render , redirect
+from django.core.urlresolvers import reverse
 from django.views.generic import View
 from ..models import Item
 from ..forms import ItemAdjuntosForm
@@ -6,6 +7,7 @@ from ..models import ItemAdjuntos
  
 
 TEMPL_ADJUNTO = 'desarrollo/frmls_itemadjunto.html'
+
 
 class LsCrAdjuntoView(View):
     """
@@ -26,5 +28,5 @@ class LsCrAdjuntoView(View):
         form = ItemAdjuntosForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-        return render(request, TEMPL_ADJUNTO, {'form':form})
+        return redirect(reverse('itemadjuntos_ls_cr', kwargs={'iditem':request.POST['item'] }))
     

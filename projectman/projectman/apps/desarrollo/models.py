@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from datetime import date
  
 from projectman.apps.admin.models import Fase
-
+import os 
 
 class ItemTipos(models.Model):
     """
@@ -129,14 +129,12 @@ class ItemAtributosValores(models.Model):
             
         if self.idatributo.tipodato == ItemAtributos.T_CHAR :
             self.valor = '--'
-            
+    
     def set_inc_version(self):
         if self.version is None:
             self.version = 0 
         self.version = self.version + 1
         
-
-
 
 def carga_atributos_comunes():
     #Los atributos comunes a todos los items son de un tipo de item SIN fase
@@ -192,7 +190,8 @@ class ItemAdjuntos(models.Model):
     
     """
     idadjunto = models.AutoField(primary_key=True)
-    archivo = models.FileField(upload_to='upl')
     descripcion = models.CharField(max_length=100, null=True, blank=True)
+    fechahora = models.DateTimeField(auto_now_add=True, blank=True)
     item = models.ForeignKey(Item)
+    archivo = models.FileField(upload_to="upl")
     

@@ -26,11 +26,13 @@
 <tr>
 	<th>Archivo</th>
 	<th>Descripción</th>
+	<th>Fecha Hora</th>
 </tr>
 {% for adjunto in lista_adjuntos %}
 <tr>
 	<td>{{ adjunto.archivo }}</td>
 	<td>{{ adjunto.descripcion }}</td>
+	<td>{{ adjunto.fechahora|date:'d/m/Y H:i:s' }}</td>
 </tr>
 {% endfor %}
 </table>
