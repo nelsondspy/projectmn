@@ -19,29 +19,39 @@
 
 
 <hr>
-<table class="table table-bordered">
+<table class="table table-bordered table-condensed">
 <tr>
 	<th>Version </th>
-	<th>Fecha </th>
 </tr>
-{% regroup object_list by version as lista_versiones %}
+{% regroup object_list|dictsortreversed:"version" by version as lista_versiones %}
 {% for version in lista_versiones %}
 <tr>
-	<td>Version: {{ version.grouper }}
-		<p>
-			<a class="btn btn-primary" data-target="#form_modal"  data-toggle="modal" href="">
-			Revertir a esta version
-			</a>
-		</p>
-	 </td>
 	<td>
-	    <table class="table table-bordered .table-condensed">
-	    <tr><th>Atributo</th><th>Valor</th><th>Tipo Dato</th></tr>
+	    <table class="table table-bordered table-condensed">
 	    {% for version_contenido in version.list %}
-	    	<tr>
+	    {% ifchanged version_contenido.creacion %}
+	    <tr><td>
+	    <p>
+	    <strong>Version {{ version_contenido.version }}, Creación: {{ version_contenido.creacion| date:'d/m/Y' }}</strong>
+	    {% if not version_contenido.usoactual %}
+		<a href="{% url 'valores_reversion' iditem version.grouper %}" 
+		   class="btn btn-warning" data-target="#form_modal"  data-toggle="modal" >
+		   <span class="glyphicon glyphicon-arrow-left"></span>
+		   <span class="glyphicon glyphicon-tasks"></span>
+		 Revertir a esta versión
+		</a>
+		{% else %}
+		<strong class="text-info"> (VERSION ACTUAL)</strong>
+		{% endif %}
+		</p>
+		</td></tr>
+		<tr><th>Atributo</th><th>Valor</th><th>Tipo Dato</th></tr>
+	    {% endifchanged %}
+	    	
+	    	<tr {% if version_contenido.usoactual %}class="success"{% endif %}>
 		    	<td>{{ version_contenido.idatributo.nombre }}</td>
 		    	<td>{{ version_contenido.valor }}</td>
-		    	<td>{{ version_contenido.creacion| date:'d/m/Y' }}</td>
+		    	<td>{{ version_contenido.idatributo.tipodato }}</td>
 	        </tr>
 	    {% endfor %}
 	   </table>
