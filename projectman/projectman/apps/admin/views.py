@@ -693,10 +693,14 @@ class FinalizaFase(View):
         Valida los elementos internos de la fase antes de finalizar
         
         """
-        items = Item.objects.filter(idfase_id=idfase).\
-            exclude(estado=Item.E_BLOQUEADO).exclude(estado=Item.E_ELIMINADO)
+        items_fase =Item.objects.filter(idfase_id=idfase).exclude(estado=Item.E_ELIMINADO)
+        
+        #verifica que exista al menos un item  en la fase 
+        if items_fase.count() < 1:
+            return (False, 'ERROR : Verifique que la fase posea al menos un ítem y este en una línea base' )
         #verifica que todos los items esten en alguna linea base 
-        if  items.count() > 0 :
+        if  items_fase.exclude(estado=Item.E_BLOQUEADO).count() > 0 :
             return (False, 'ERROR : Verifique que todos los items esten en línea base' )
         
         return (True , 'EXITO : Fase finalizada correctamente ')
+    
