@@ -61,8 +61,19 @@
          </a>
          <p>{{ fase.descripcion}}</p>
    </div>
-  
-  <div class="col-md-4">
+<!-- ESTADO DE LA FASE  -->
+<div class="col-md-2">
+	{% if EST_FASE.E_DESARROLLO == fase.estado %}
+	<span class="glyphicon glyphicon-fire"></span>
+	{% endif %}
+	{% if EST_FASE.E_FINALIZADO == fase.estado %}
+	<span class="glyphicon glyphicon-ok"></span>
+	{% endif %}  
+	{{ fase.estado }}
+ </div>
+<!-- FIN ESTADO DE LA FASE  -->
+
+  <div class="col-md-2">
   {% ifequal fase.idfase idfase %}
       {% include "admin/_opciones_fase.html" with idfase=fase.idfase %}            
   {% endifequal %}
@@ -93,13 +104,15 @@
            <td>{{ item.numero }}</td>
            <td><a href="{% url 'valores_listar' item.pk %}" data-target="#form_modal"data-toggle="modal">{{ item.nombre }}</a></td>
            <td>{{ item.descripcion }}</td>
-           
            <td>
-	       {% if item.estado == I_BLOQ %}
-	       <span class="glyphicon glyphicon-lock"></span><small> Bloq</small> 
-	       {% else %}
-	       {{ item.estado }}
-           {% endif %}
+	       {% if item.estado == EST_ITEM.E_BLOQUEADO %}
+	           <span class="glyphicon glyphicon-lock"></span>
+	       {% endif %}
+	       
+	       {% if item.estado == EST_ITEM.E_DESAPROBADO %}
+	           <span class="glyphicon glyphicon-fire"></span>
+	       {% endif %}
+	       <small>{{ item.estado }}</small> 
 	       </td>
            <td>{% include "desarrollo/_opciones_item.html" with iditem=item.pk idfase=fase.pk estado=item.estado %}</td>
         </tr>
