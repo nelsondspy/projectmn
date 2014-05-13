@@ -33,13 +33,11 @@ class Fase(models.Model):
     """Modelo Fase"""
     E_INICIAL = 'INI'
     E_DESARROLLO = 'DES'
-    E_COMPLETO = 'COM'
     E_FINALIZADO = 'FIN'
     
     ESTADOS=(
         (E_INICIAL, 'Inicial'),
         (E_DESARROLLO, 'Desarrollo'),
-        (E_COMPLETO, 'Completo'),
         (E_FINALIZADO, 'Finalizado')
     )
     idfase = models.AutoField(primary_key=True)
@@ -47,7 +45,7 @@ class Fase(models.Model):
          help_text='Nombre de la fase' , verbose_name='Nombre de la fase')
     descripcion = models.CharField(max_length=80 , verbose_name='Descripcion' , blank=True)
     idproyecto = models.ForeignKey(Proyecto)
-    estado = models.CharField(max_length=3, choices=ESTADOS)
+    estado = models.CharField(max_length=3, choices=ESTADOS, default=E_DESARROLLO)
     fechacreacion = models.DateField(auto_now=True)
 
     def __unicode__(self):
