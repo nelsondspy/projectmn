@@ -1,0 +1,192 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<canvas id="proyectCanvas" width="800" height="600" style="border:1px solid #000000;">
+</canvas> 
+</body>
+
+<script>
+/**
+*Funcion que dibuja lineas con flechas:
+*Programa original gestileza de http://jsfiddle.net/m1erickson/Sg7EZ/
+*Modificado para imprimir flecha de una sola direccion 
+*y corregido para permitir flechas a 270ª (relacion de padre a hijo) 
+*/
+
+function Line(x1,y1,x2,y2){
+    this.x1=x1;
+    this.y1=y1;
+    this.x2=x2;
+    this.y2=y2;
+}
+Line.prototype.drawWithArrowheads=function(ctx){
+
+    // arbitrary styling
+    ctx.strokeStyle="blue";
+    ctx.fillStyle="blue";
+    ctx.lineWidth=1;
+    
+    // draw the line
+    ctx.beginPath();
+    ctx.moveTo(this.x1,this.y1);
+    ctx.lineTo(this.x2,this.y2);
+    ctx.stroke();
+
+    var endRadians=Math.atan((this.y2-this.y1)/(this.x2-this.x1));
+    endRadians+=((this.x2>this.x1)?90:-270)*Math.PI/180;
+    this.drawArrowhead(ctx,this.x2,this.y2,endRadians);
+	
+}
+Line.prototype.drawArrowhead=function(ctx,x,y,radians){
+    ctx.save();
+    ctx.beginPath();
+    ctx.translate(x,y);
+    ctx.rotate(radians);
+    ctx.moveTo(0,0);
+    ctx.lineTo(5,10);
+    ctx.lineTo(-5,10);
+    ctx.closePath();
+    ctx.restore();
+    ctx.fill();
+}
+
+</script>
+
+<script>
+	listafases = [{ fase: 1, nombre: 'eltema1asdasdasd asasdsadasdasdsasdasdasd as',
+					items : [ { iditem : 1,  nombre : 'item 1 ' },
+					          { iditem : 2,  nombre : 'item 2 es muy largo y bla bla bal balbalbalbal ' },
+					          { iditem : 3,  nombre : 'item 3 ' }
+					        ] },
+				  { fase: 3 , nombre: 'eltema 3' ,
+					      items : [ { iditem : 4 , nombre : 'item 1 kasdk askd askd kasdk askd kasdka ' },
+								    { iditem : 5 , nombre : 'item 2 ' },
+								    { iditem : 6 , nombre : 'item 3 ' }, 
+								    { iditem : 7 , nombre : 'item 3 ' },
+								    { iditem : 8 , nombre : 'item 3 ' }
+								   ] },	        	
+				 { fase: 4 , nombre: 'eltema 5' },
+				 { fase: 4 , nombre: 'eltema 10' } 
+				  ];
+	
+	lista_relaciones = [ { antecesor : 1 , sucesor : 5 },
+	                     { antecesor : 1 , sucesor : 6 } ,
+						{ antecesor : 1 , sucesor : 2 } 
+						];
+	
+	
+	var c = document.getElementById("proyectCanvas");
+	var ctx = c.getContext("2d");
+	
+	var proyectox = new DibujaProyecto();
+	proyectox.dibuja_fases_items( ctx, listafases );
+	proyectox.dibuja_relaciones(ctx, lista_relaciones );
+	
+	
+	function DibujaProyecto(){
+		 //lista de coordenadas para cada item
+		this.lista_items_coord = [] ;
+		
+		this.dibuja_fases_items = function (ctx, listafases){
+			ANCHO_FASE = 180;    //largo maximo de la fase 
+			ALTO_FASE = 200;    //alto maximo de una fase 
+			X_SEPARACION_ENTRE_FASES = 10;   //distancia x entre fases 
+			Y_SEPARACION_ITEM = 20 ;     //distancia y entre items 
+			RADIO_ITEM = 5               //radio del la cia del item
+			FUENTE_TEXTO= "12px Arial" ; //tamanho y tipo fuente 
+			X_FASE_INICIAL = 5 ;    
+			Y_FASE_INICIAL = 2 ;     
+			BACKCOLOR_FASE = "#B8CBE0" ;//color de fondo de la fase 
+			TEXTCOLOR_FASE = "#185B9E";  //color de fuente del nombre de la fase
+			CANT_TRUNCAR = 20; //cantidad de letras a truncar
+			TEXTCOLOR_ITEM = "#484842"; //color del texto del item
+			
+			
+			ctx.font = FUENTE_TEXTO;
+			x_fase = X_FASE_INICIAL ;
+			y_fase = Y_FASE_INICIAL ;
+			ctx.fillStyle = BACKCOLOR_FASE ;
+			
+			for(i=0; i<listafases.length ; ++i ){
+				
+				ctx.fillRect(x_fase, y_fase ,ANCHO_FASE, ALTO_FASE );
+				
+				lista_items = [];
+				
+				if ( listafases[i].items !==  undefined) {
+					lista_items = listafases[i].items;
+					
+				}
+				
+				//Establece el nombre de la fase, con el color de fuente de la fase.  
+				ctx.fillStyle = TEXTCOLOR_FASE ; 
+				nombre_fase = listafases[i].nombre.substring (0 , CANT_TRUNCAR) +
+							((listafases[i].nombre.length>CANT_TRUNCAR)?'...':'') ;	 
+				ctx.fillText(nombre_fase  ,x_fase + 10 , y_fase + 10 );
+				ctx.fillStyle = BACKCOLOR_FASE ;
+				
+				//
+				y_item = y_fase + Y_SEPARACION_ITEM ;
+				x_item = x_fase + 10  
+				
+				for(k=0; k < lista_items.length ; ++k ){
+					ctx.beginPath();
+					ctx.arc( x_item  , y_item   , RADIO_ITEM , 0 , 2 * Math.PI );
+					ctx.stroke();
+					this.lista_items_coord[lista_items[k].iditem.toString()]= {x:  x_item, y : y_item  } ;
+					
+					//Establece el nombreo descripcion del item , con el color de fuente .
+					//trunca si es necesario
+					ctx.fillStyle = TEXTCOLOR_ITEM ; 
+					nombre_item = lista_items[k].nombre.substring (0 , CANT_TRUNCAR) +  
+					((lista_items[k].nombre.length>CANT_TRUNCAR)?'...':'') ; 	 
+					
+					ctx.fillText(nombre_item , x_item +10 , y_item + 2 );
+					ctx.fillStyle = BACKCOLOR_FASE ;
+
+					y_item =  y_item + Y_SEPARACION_ITEM
+
+				};
+				
+				x_fase = x_fase  + ANCHO_FASE + X_SEPARACION_ENTRE_FASES   ;
+				
+			};
+		};
+		//dibuja las relaciones entre los items 
+		this.dibuja_relaciones = function ( ctx , lista_relaciones ){
+			for(k=0; k < lista_relaciones.length ; ++k ){
+				
+				item_antecesor = lista_relaciones[k].antecesor ;
+				item_sucesor = lista_relaciones[k].sucesor ;
+				
+				x_antecesor = this.lista_items_coord[item_antecesor].x ;
+				y_antecesor =this.lista_items_coord[item_antecesor].y ; 
+				x_sucesor = this.lista_items_coord[item_sucesor].x ;
+				y_sucesor = this.lista_items_coord[item_sucesor].y ;
+				
+				/*dibuja una linea con estilo simple entre dos puntos (a lo macho)  
+				
+				ctx.moveTo(x_antecesor,y_antecesor);
+				ctx.lineTo(x_sucesor,y_sucesor);
+				ctx.stroke();
+				*/
+				
+				//llama a la funcion que dibuja flechas 
+				conector=new Line(x_antecesor,y_antecesor,x_sucesor,y_sucesor);
+				conector.drawWithArrowheads(ctx);
+			};
+			
+		};
+	};
+
+</script>
+
+</html>
