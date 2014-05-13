@@ -73,12 +73,15 @@ LISTA_PERMISOS = [
                   #permisos asociados a fases especificas
                   ('fase_modif', 'Modificar Fase', 2), 
                   ('fase_elim', 'Eliminar Fase', 2),
+                  ('fase_finalizar', 'Finalizar Fase', 2),
                   ('tipoitem_gestion', 'Gestionar tipos de item', 2),
                   ('item_crear', 'Crear Item', 2),
                   ('item_modif', 'Modificar Item', 2),
                   ('item_elim', 'Eliminar Item', 2),
                   ('item_revivir', 'Revivir Item', 2),
-                  ('lineabase_crear', 'Crear Linea Base', 2)
+                  ('item_revertir', 'Revertir version de Item', 2),
+                  ('lineabase_crear', 'Crear Linea Base', 2),
+                  ('solicitud_gest','Crear, modificar y eliminar Solicitud de Cambio' ,2),
                   ] 
 
 
