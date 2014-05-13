@@ -6,7 +6,8 @@
 
 {% block titulo %} Relaciones {% endblock %} 
 
-{% block cabecera_pagina %}Relaciones  <small> Gestione las relaciones del proyecto </small> {% endblock %}
+{% block cabecera_pagina %}Relaciones  <small> Gestione las relaciones del proyecto: 
+{{ object_list.0.origen.idfase.idproyecto }} </small> {% endblock %}
 
 {# ---- cabecera de trabajo  ----#}
 {% block barra_navegacion %}
