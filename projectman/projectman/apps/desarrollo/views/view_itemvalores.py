@@ -6,6 +6,7 @@ from django.forms.models import modelformset_factory
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.db import transaction
+from django.contrib import messages 
 
 from ..models import ItemAtributosValores
 from ..models import ItemTipos
@@ -165,11 +166,13 @@ class RevertirValoreItem(View):
         vers_actual = ItemAtributosValores.objects.filter(\
                                     Q(version=version) & Q(iditem=item))
         for valnuevo in vers_actual:
+            valnuevo.pk = None
             valnuevo.usoactual = True
             #establece el numerode la nueva version
             valnuevo.version = num_vers
             valnuevo.save()
             
         item.version = num_vers
-        
+        item.save()
+        messages.info(request, 'Operacion revertir realizada exitosamente sobre los valores')
         return redirect(reverse('valores_versiones',kwargs={'iditem': iditem}))
