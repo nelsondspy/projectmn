@@ -32,7 +32,7 @@
 	    {% ifchanged version_contenido.creacion %}
 	    <tr><td>
 	    <p>
-	    <strong>Version {{ version_contenido.version }}, Creación: {{ version_contenido.creacion| date:'d/m/Y' }}</strong>
+	    <strong>Version {{ version_contenido.version }}, Creación:{{ version_contenido.creacion| date:'d/m/Y' }}</strong>
 	    {% if not version_contenido.usoactual %}
 		<a href="{% url 'valores_reversion' iditem version.grouper %}" 
 		   class="btn btn-warning" data-target="#form_modal"  data-toggle="modal" >
