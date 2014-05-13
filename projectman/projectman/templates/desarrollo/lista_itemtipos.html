@@ -5,6 +5,13 @@
 
 {% block cabecera_pagina %}Tipos de Ítem <small> Gestione los tipos de item de {{ fase.nombre }} </small> {% endblock %}
 
+{# ---- cabecera de trabajo  ----#}
+{% block barra_navegacion %}
+	{% load tags_desarrollo %}
+	{% back_url_proyecto 1 %}
+{% endblock %}
+
+
 {% block zonatrabajo %}
 
 

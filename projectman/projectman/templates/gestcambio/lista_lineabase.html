@@ -5,6 +5,13 @@
 {% block titulo %} Gestion de Cambios - Linea Base {% endblock %} 
 {% block cabecera_pagina %}Líneas Base <small> Administración de Líneas Base </small> {% endblock %}
 
+{# ---- cabecera de trabajo  ----#}
+{% block barra_navegacion %}
+	{% load tags_desarrollo %}
+	{% back_url_proyecto 1 %}
+{% endblock %}
+
+
 {% block zonatrabajo %}
 
 <!-- opciones de listado para linea base -->

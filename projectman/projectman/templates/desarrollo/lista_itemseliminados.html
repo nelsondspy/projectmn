@@ -5,6 +5,12 @@
 
 {% block cabecera_pagina %}Ítems Eliminados <small> Items eliminados de la fase {{ object_list.0.idfase }}</small> {% endblock %}
 
+{# ---- cabecera de trabajo  ----#}
+{% block barra_navegacion %}
+	{% load tags_desarrollo %}
+	{% back_url_proyecto 1 %}
+{% endblock %}
+
 {% block zonatrabajo %}
 
 

@@ -8,6 +8,13 @@
 
 {% block cabecera_pagina %}Relaciones  <small> Gestione las relaciones del proyecto </small> {% endblock %}
 
+{# ---- cabecera de trabajo  ----#}
+{% block barra_navegacion %}
+	{% load tags_desarrollo %}
+	{% back_url_proyecto 0 %}
+{% endblock %}
+
+
 {% block zonatrabajo %}
 
 
