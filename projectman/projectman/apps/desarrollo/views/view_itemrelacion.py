@@ -245,3 +245,15 @@ class EliminaRelacionView(DeleteView):
                 return (False, 'No es posible eliminar la relacion entre items con linea base')
 
         return (True, 'Relacion Eliminada')
+
+
+def valid_item_eshuerfano(iditem):
+    """
+    
+    Metodo que determina si un item es huerfano.
+    -Se dice que un item es huerfano si ningun item tiene 
+    relacion de antecesor o padre con este item.
+    -Retorna true si el item es huerfano.
+    """
+    return not (ItemRelacion.objects.filter(destino_id=iditem).\
+               exclude(estado=ItemRelacion.E_ELIMINADO).count() > 0 )
