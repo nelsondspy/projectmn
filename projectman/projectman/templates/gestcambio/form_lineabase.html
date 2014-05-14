@@ -8,6 +8,20 @@
 	<h4 class="modal-title">Linea Base</h4>
 </div>
 <div class="modal-body">
+<div class="alert alert-warning">
+{% if lista_huerfanos.0 %}
+<strong> ADVERTENCIA </strong>
+<strong>-- Lista de Items huérfanos</strong>: son items en la fase, que no pueden formar parte de una línea base porque no están relacionados a otros ítems( de esta fase u otra ). 
+{% endif %}
+
+<ul>
+	{% for huerf in lista_huerfanos %}
+	<li>{{ huerf.nombre }}</li>
+	{% endfor %}
+</ul>
+</div>
+
+
 	<form method="post" action="{{ action }}" enctype="multipart/form-data" class="form-horizontal">
 	{% csrf_token %}
 	<table>
