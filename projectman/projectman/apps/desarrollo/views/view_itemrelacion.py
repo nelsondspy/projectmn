@@ -251,9 +251,25 @@ def valid_item_eshuerfano(iditem):
     """
     
     Metodo que determina si un item es huerfano.
-    -Se dice que un item es huerfano si ningun item tiene 
-    relacion de antecesor o padre con este item.
+    -Se dice que un item es huerfano si ningun item tiene \
+     relacion de antecesor o padre con este item.
     -Retorna true si el item es huerfano.
     """
+    #items sin relaciones 
     return not (ItemRelacion.objects.filter(destino_id=iditem).\
-               exclude(estado=ItemRelacion.E_ELIMINADO).count() > 0 )
+                exclude(estado=ItemRelacion.E_ELIMINADO).count() > 0 )
+    
+def lista_huerfanos_fase(fase_id):
+    """
+    Funcion que devuelve un queryset de los items en una fase \
+    que cumplen las siguientes condiciones:
+    - los items no estan eliminados 
+    
+    
+    """
+    qs_relaciones_fase = ItemRelacion.objects.filter(destino__idfase_id=fase_id)
+    qs_items_huerfanos = Item.objects.filter(idfase_id=fase_id).exclude(estado=Item.E_ELIMINADO)\
+        .exclude(iditem__in=qs_relaciones_fase)
+    return qs_items_huerfanos
+
+    
