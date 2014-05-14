@@ -41,14 +41,6 @@ class CreaLineaBase(View):
                         'lista_huerfanos': lista_huerfanos , \
                         'action': reverse('linea_base_item_crear', kwargs={'idfase': idfase}) })
     
-    def valida_items_lineabase(self, listaitems):
-        valido = True
-        #
-        for item in listaitems :
-            if valid_item_eshuerfano(item.pk):
-                messages.error(self.request, 'ERROR : El item es huerfano: '+ item.__str__())
-            valido = False
-        return valido
     
     def post(self, request, *args, **kwargs):
 
