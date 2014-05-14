@@ -1,5 +1,6 @@
+
 from django.views.generic.edit import CreateView,  DeleteView
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404 , redirect
 from django.views.generic import ListView 
 from django.core.urlresolvers import reverse
 from django.db.models import Q
@@ -58,25 +59,24 @@ class CreaRelacionView(CreateView):
         #establece el tipo de la relacion , si es interna a la fase o externa
         # es decir padre e hijo o antecesor sucesor.
         form.instance.set_tipo()
+        relacion_str = form.instance.__str__()
         origen = form.instance.origen
         destino = form.instance.destino
         #Serie de validaciones 
         if self.valid_relacion_unica(origen, destino):
-            messages.error(self.request, 'La relacion ya existe: ' + \
-                           origen.__str__()+ ' --> '+ destino.__str__())
+            messages.error(self.request, 'ERROR : La relacion ya existe: ' + relacion_str)
             self.valido = False
             return self.form_invalid(form)
-        
+        #valida la existencia de un ciclo
         if self.valid_existe_ciclo(form.instance.origen_id, form.instance.destino_id):
-            messages.error(self.request, 'se ha detectado un ciclo: ' + \
-                origen.__str__()+ ' --> '+ destino.__str__())
-
+            messages.error(self.request, 'ERROR : Se ha detectado un ciclo: ' + relacion_str)
             self.valido = False
             return self.form_invalid(form)
-
+        #valida que el antecesor este en linea base y el el hijo no tenga linea base si el hijo si 
         if not self.valid_ant_lineabase(origen, destino):
-            messages.error(self.request,'el item antecesor o padre debe estar en linea \
-                base al igual que el hijo o antecesor')
+            messages.error(self.request,'ERROR : Si es una relacion interfase: \
+            El item antecesor o padre debe estar en linea.Si es una relacion intra-fase:\
+            El item hijo no debe tener linea base. ')
             self.valido = False
             return self.form_invalid(form)
         
@@ -153,12 +153,17 @@ class CreaRelacionView(CreateView):
         
         Valida relaciones entre items con respecto a que existencia alguna linea base. 
         Si el item padre no tiene linea base el hijo o antecesor tampoco debe tener linea base.
-        """
-        if porigen.estado == Item.E_BLOQUEADO:
-            return True 
         
-        if pdestino.estado == Item.E_BLOQUEADO:
-            return False
+        """
+        if porigen.estado == Item.E_BLOQUEADO :
+            return True
+        #si es una relacion interfase
+        if porigen.idfase_id != pdestino.idfase_id:
+            if porigen.estado != Item.E_BLOQUEADO:
+                return False #porque el antecesor debe estar bloqueado
+        else: #es una relacion intra-fase 
+            if pdestino.estado == Item.E_BLOQUEADO :
+                return False 
         return True
 
 
@@ -215,7 +220,28 @@ class EliminaRelacionView(DeleteView):
         context['action'] = reverse('relacion_eliminar',\
                                     kwargs = {'pk': self.kwargs['pk']})
         return context
-    
+
     def get_success_url(self):
         return self.request.META['HTTP_REFERER']
     
+    def delete(self, request, *args, **kwargs):
+        relacion = self.get_object()
+        (validez, mensaje) = self.valid_eliminar_rel(relacion)
+        if validez:
+            messages.success(request,mensaje)
+            
+            return DeleteView.delete(self, request, *args, **kwargs)
+            
+        else:
+            messages.error(request,'ERROR : '+ mensaje)
+            return redirect(self.get_success_url())
+
+        return DeleteView.delete(self, request, *args, **kwargs)
+
+    @classmethod
+    def valid_eliminar_rel(self, relacion):
+        if relacion.origen.estado == Item.E_BLOQUEADO :
+            if relacion.destino.estado == Item.E_BLOQUEADO:
+                return (False, 'No es posible eliminar la relacion entre items con linea base')
+
+        return (True, 'Relacion Eliminada')
