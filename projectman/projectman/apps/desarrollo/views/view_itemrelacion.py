@@ -267,9 +267,12 @@ def lista_huerfanos_fase(fase_id):
     
     
     """
-    qs_relaciones_fase = ItemRelacion.objects.filter(destino__idfase_id=fase_id)
+    qs_relaciones_fase = ItemRelacion.objects.\
+            filter(destino__idfase_id=fase_id).values('destino')
+
     qs_items_huerfanos = Item.objects.filter(idfase_id=fase_id).exclude(estado=Item.E_ELIMINADO)\
         .exclude(iditem__in=qs_relaciones_fase)
+        
     return qs_items_huerfanos
 
     
