@@ -80,6 +80,7 @@ class CreaRelacionView(CreateView):
             self.valido = False
             return self.form_invalid(form)
         
+        messages.info(self.request, 'Relacion creada : ' + relacion_str)
         return CreateView.form_valid(self, form)
     
     def form_invalid(self, form):
