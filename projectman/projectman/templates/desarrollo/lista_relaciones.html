@@ -15,29 +15,25 @@
 	{% back_url_proyecto 0 %}
 {% endblock %}
 
-
 {% block zonatrabajo %}
 
-
-
- <a class="btn btn-success" data-target="#form_modal"  
+<a class="btn btn-success" data-target="#form_modal"  
  data-toggle="modal" href="{% url 'relacion_crear' idproyecto %}">
  <span class="glyphicon glyphicon-plus-sign"> </span> Nueva Relacion
  </a>
 
-
-<table class="table table-condensed">
-
+<table class="table table-condensed table-bordered">
 <tr>
-    
-	<th>Origen</th>
+	<th colspan="2">[Fase] Item  Origen</th>
 	<th>Tipo </th>
-	<th>Destino</th>
+	<th colspan="2">[Fase] Item  Destino</th>
 	<th colspan="2">Acciones</th>
 </tr>
+
 {% for relacion in object_list %}
 <tr>
-	<td>{{ relacion.origen }}</td>
+    <td><small> [{{ relacion.origen.idfase }}]</small></td>
+	<td> {{ relacion.origen }}</td>
 	<td>
 		{% if relacion.tipo == 'E'%}
 		<img src="{% static "base/images/flecha_extra.png" %}"/>
@@ -45,16 +41,13 @@
 		<img src="{% static "base/images/flecha_intra.png" %}"/>
 		{% endif %}
 	</td>
-	
+	<td><small> [{{ relacion.destino.idfase }}]</small></td>
 	<td>{{ relacion.destino }}</td>
 	<td><a href="{% url 'relacion_eliminar' relacion.pk %}" data-target="#form_modal"  data-toggle="modal">
 		<span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 	</td>
-    <td></td>
 </tr>
 {% endfor %}
 
 </table>
-
 {% endblock %}
-	
