@@ -1,0 +1,15 @@
+{# formulario generico de confirmacion #}
+{# recibe como parametros: action, titulo , texto #}
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	<h3>{{ titulo }}</h3>
+</div>
+	<div class="modal-body">
+	<div class="alert alert-warning">
+	<form method="post" action="{{ action }}"> 
+	{% csrf_token %}
+	    <p>{{ texto }}</p>
+	    <input type="submit" value="{{ value }}" class="btn btn-success" />
+	</form>
+	</div>
+</div>

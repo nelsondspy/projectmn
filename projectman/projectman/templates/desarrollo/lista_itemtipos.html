@@ -5,12 +5,23 @@
 
 {% block cabecera_pagina %}Tipos de Ítem <small> Gestione los tipos de item de {{ fase.nombre }} </small> {% endblock %}
 
+{# ---- cabecera de trabajo  ----#}
+{% block barra_navegacion %}
+	{% load tags_desarrollo %}
+	{% back_url_proyecto 1 %}
+{% endblock %}
+
+
 {% block zonatrabajo %}
 
 
 
  <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'tipoitem_crear' fase.idfase %}">
  <span class="glyphicon glyphicon-plus-sign"> </span> Nuevo Tipo de Item
+ </a>
+ 
+ <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'tipoitem_importar' fase.idfase %}">
+ <span class="glyphicon glyphicon-import"> </span> Importar Tipo de Item
  </a>
 
 

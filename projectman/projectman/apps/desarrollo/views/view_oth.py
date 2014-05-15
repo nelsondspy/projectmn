@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from projectman.apps.admin.models import  Proyecto, Fase
 from ..models import  Item
- 
+
 
 #nombres de variables de sesion 
 SESS_IDPROYECTO = 'idproyecto'
@@ -61,10 +61,12 @@ def get_url_edicion_actual(request, nivel=0):
 def editor_componentes(request, idproyecto=None, idfase=None):
     """"
     
-    Explorador de componentes de forma jerarquica permitira 
+    Explorador de componentes de forma jerarquica permitira:
     -Listar fases, 
     -Los items de una fase
     -Los valores de atributos del item seleccionado 
+    
+    Envia los valores de las constantes de estado para la impresion de iconografia.
     
     """
 
@@ -80,7 +82,11 @@ def editor_componentes(request, idproyecto=None, idfase=None):
         request.session[SESS_IDFASE] = idfase
         lista_items = Item.objects.filter(idfase=idfase).exclude(estado=Item.E_ELIMINADO )
         idfase = int(idfase) # en la plantilla se requier el valor entero no el unicode
-        
+
+    #valores constantes de estado para las fase
+    estados_fase = {'E_DESARROLLO':Fase.E_DESARROLLO, 'E_FINALIZADO': Fase.E_FINALIZADO}
+    estados_item = {'E_BLOQUEADO': Item.E_BLOQUEADO, 'E_DESAPROBADO':Item.E_DESAPROBADO}
     return render(request , TEMPL_EXPLORADOR , {'proyecto': proyecto , 'idfase':idfase,
                     'lista_fases':lista_fases ,\
-                     'lista_items':lista_items ,'I_BLOQ':Item.E_BLOQUEADO })
+                     'lista_items':lista_items, 'I_BLOQ':Item.E_BLOQUEADO,\
+                     'EST_FASE':  estados_fase, 'EST_ITEM': estados_item })

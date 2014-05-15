@@ -1,0 +1,45 @@
+{% extends "__panel.html" %}
+{# lista de tipos de item #}
+
+{% block titulo %} Item eliminados  {% endblock %} 
+
+{% block cabecera_pagina %}Ítems Eliminados <small> Items eliminados de la fase {{ object_list.0.idfase }}</small> {% endblock %}
+
+{# ---- cabecera de trabajo  ----#}
+{% block barra_navegacion %}
+	{% load tags_desarrollo %}
+	{% back_url_proyecto 1 %}
+{% endblock %}
+
+{% block zonatrabajo %}
+
+
+<table class="table table-striped">
+
+<tr>
+    <th>Item</th>
+	<th>Descripción del ítem </th>
+	<th colspan="2">Acciones</th>
+</tr>
+{% for item in object_list %}
+<tr class={% if itemtipo.idtipoitem == idtipoitem %}"success"{% endif %} >
+	<td> 
+	    {{ item.nombre }}
+	</td>
+	<td>{{ item.descripcion }}</td>
+	<td>
+	  <a data-target="#form_modal"  data-toggle="modal" href="{% url 'item_revivir' item.pk %}">
+       <span class="glyphicon glyphicon-heart"></span> Revivir</a>
+    </td>
+</tr>
+<tr>
+{% empty %}
+
+<tr class="warning"><td>La fase no cuenta con items eliminados</td></tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}
+	

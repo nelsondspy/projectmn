@@ -20,7 +20,11 @@
 	        	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 	        	</div>
 	        {% endif %}
-	        
+	        {% if message.tags == 'success' %}
+	        	<div class="alert alert-success">{{ message }}
+	        	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	        	</div>
+	        {% endif %}
 	        {% if not message.tags %}
 	        <div class="">{{ message }}
 	        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>

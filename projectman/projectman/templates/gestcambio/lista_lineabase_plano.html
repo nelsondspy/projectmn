@@ -1,0 +1,56 @@
+{% extends "__panel.html" %}
+
+{% load tags %}
+
+
+{% block titulo %} Gestion de Cambios - Linea Base {% endblock %} 
+{% block cabecera_pagina %}Líneas Base <small> Administre las Líneas Base de {{ object_list.0.fase }} </small> {% endblock %}
+
+{# ---- cabecera de trabajo  ----#}
+{% block barra_navegacion %}
+	{% load tags_desarrollo %}
+	{% back_url_proyecto 1 %}
+{% endblock %}
+
+
+{#----  zona de trabajo ---- #}
+{% block zonatrabajo %}
+
+<!-- opciones de listado para linea base -->
+<div class="row">
+	<div class="col-md-8"> 
+		 <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'linea_base_item_crear' idfase %}">
+		 <span class="glyphicon glyphicon-plus-sign"> </span> Nueva Línea Base
+		 </a>
+	</div> 
+	<div class="btn-group">
+		  <a href="{% url 'lineabase_listar' idfase %}" type="button" class="btn btn-default">Árbol</a>
+		  <a href="{% url 'lineabase_listartabla' idfase %}" type="button" class="btn btn-default">Tabla</a>
+	</div>
+</div>
+<!-- FIN de opciones de listado para linea base  -->
+
+<hr>
+<table class="table table-bordered">
+<tr>
+	<th>Línea base </th>
+	<th>Fecha </th>
+	<th>Ítems de la Línea Base</th>
+</tr>
+
+{% for lineabase in object_list %}
+<tr><td class="warning">
+	<strong>{{ lineabase.descripcion }}</strong></td>
+	<td>
+	{{ lineabase.fechacreacion| date:'d/m/Y' }}
+	</td>
+	<td>
+	{% for item in lineabase.items.all %}
+		<li> {{ item.nombre }}</li>
+	{% endfor %}
+	</td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

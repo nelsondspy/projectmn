@@ -1,9 +1,9 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-
+from datetime import date
  
 from projectman.apps.admin.models import Fase
-
+import os 
 
 class ItemTipos(models.Model):
     """
@@ -82,7 +82,7 @@ class Item(models.Model):
     nombre = models.CharField(max_length=40, null=False)
     descripcion = models.CharField(max_length=80, null=True, blank=True)
     estado = models.CharField(max_length=3, default=E_DESAPROBADO)
-    version = models.IntegerField()
+    version = models.IntegerField(default=0)
     #relaciones 
     idfase = models.ForeignKey(Fase) #idfase_id 
     idtipoitem = models.ForeignKey(ItemTipos)
@@ -98,6 +98,8 @@ class Item(models.Model):
 
     def __unicode__(self):
         return self.nombre
+    
+    
 
 
 class ItemAtributosValores(models.Model):
@@ -112,12 +114,27 @@ class ItemAtributosValores(models.Model):
     valor = models.CharField(max_length=50) 
     usoactual = models.BooleanField()
     creacion = models.DateField(auto_now=True)
+    version = models.IntegerField(default=0)
     #relaciones 
     iditem = models.ForeignKey(Item)
     idatributo = models.ForeignKey(ItemAtributos)
     
-
-
+    
+    def set_valor_default(self):
+        if self.idatributo.tipodato == ItemAtributos.T_DATE:
+            self.valor = date.strftime(date.today(), "%d/%m/%Y")
+            
+        if self.idatributo.tipodato == ItemAtributos.T_NUM :
+            self.valor = '0'
+            
+        if self.idatributo.tipodato == ItemAtributos.T_CHAR :
+            self.valor = '--'
+    
+    def set_inc_version(self):
+        if self.version is None:
+            self.version = 0 
+        self.version = self.version + 1
+        
 
 def carga_atributos_comunes():
     #Los atributos comunes a todos los items son de un tipo de item SIN fase
@@ -173,7 +190,8 @@ class ItemAdjuntos(models.Model):
     
     """
     idadjunto = models.AutoField(primary_key=True)
-    archivo = models.FileField(upload_to='upl')
     descripcion = models.CharField(max_length=100, null=True, blank=True)
+    fechahora = models.DateTimeField(auto_now_add=True, blank=True)
     item = models.ForeignKey(Item)
+    archivo = models.FileField(upload_to="upl")
     

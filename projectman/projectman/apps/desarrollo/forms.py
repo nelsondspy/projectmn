@@ -3,6 +3,9 @@ from django.forms import IntegerField
 from django.forms import CharField
 from django.forms import ValidationError
 from django.forms.widgets import Select
+from django.forms import Form
+from django.forms import ChoiceField
+from django.forms.fields import Select
 #from django.forms.widgets import 
 import re
 from datetime import datetime 
@@ -62,7 +65,7 @@ class ItemFormN(ModelForm):
     
     class Meta:
         model = Item
-        fields=['nombre', 'idfase','version','idtipoitem']
+        fields=['nombre','descripcion', 'idfase','idtipoitem']
         widgets ={'idfase':HiddenInput()}
 
 
@@ -126,3 +129,14 @@ class ItemAdjuntosForm(ModelForm):
         model = ItemAdjuntos
         fields = ['archivo', 'descripcion', 'item']
         widgets = {'item': HiddenInput()}
+
+
+class ImportTipoItemForm(ItemTiposForm):
+    """
+    
+    Formulario que permite importar un tipo de item.
+    permite especificar los datos del nuevo item y el tipo de item a clonar
+       
+    
+    """
+    itemtipoimport = ChoiceField()

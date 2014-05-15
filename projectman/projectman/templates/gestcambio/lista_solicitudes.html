@@ -1,0 +1,102 @@
+{% extends "__panel.html" %}
+
+{% load tags %}
+
+{% block titulo %} Lista de solicitudes de las fase {% endblock %}
+{% block cabecera_pagina %}Solicitudes <small> Solicitudes </small> {% endblock %}
+
+{% block zonatrabajo %}
+
+
+<table class="table table-striped">
+
+<tr>
+    <th>id</th>
+    <th>Comentarios</th>
+    <th>Linea base afectada</th>
+    <th>Estado</th>
+        <th>Solicitante</th>
+	<th>Fecha Creacion </th>
+	<th>Fecha Aprobacion</th>
+
+	<th colspan="2">Acciones</th>
+</tr>
+
+{% for solicitud in object_list %}
+<tr class={% if solicitud.idsolicitud == idsolicitud %}"success"{% endif %} >
+	<td>
+	<a href="{% url 'solicitud_det_item' idfase solicitud.pk %}">{{ solicitud.pk }}
+
+	</a>
+	</td>
+	<td> <a href="{% url 'solicitud_det_item' idfase solicitud.pk %}"> <span class={% if  solicitud.idsolicitud == idsolicitud %} "glyphicon glyphicon-chevron-down" {% else %} "glyphicon glyphicon-chevron-right" {% endif %}></span>
+     {{ solicitud.comentarios }}</a>
+	</td>
+
+	<td><small>[{{ solicitud.lineabase.fase }}]</small> {{ solicitud.lineabase }}</td>
+
+	<td>
+	{% if solicitud.estado == E_APROBADO %}
+  <span class="glyphicon glyphicon-thumbs-up"></span>
+	{% endif %}
+
+	{% if solicitud.estado == E_RECHAZADO %}
+  <span class="glyphicon glyphicon-thumbs-down"></span>
+	{% endif %}
+
+	{% if solicitud.estado == E_ENVIADO %}
+	<span class="glyphicon glyphicon-send"></span>
+	{% endif %}
+
+	{% if solicitud.estado == E_TERMINADO %}
+  <span class="glyphicon glyphicon-ok"></span>
+	{% endif %}
+
+	{% if solicitud.estado == E_BORRADOR %}
+	<span class="glyphicon glyphicon-file"></span>
+	{% endif %}
+	<small>{{ solicitud.estado }}</small>
+	</td>
+	<td>{{ solicitud.solicitante }}</td>
+	<td>{{ solicitud.fecha_creacion | date:'d/m/Y'}}</td>
+	<td>{{ solicitud.fecha_aprobacion | date:'d/m/Y'}}</td>
+	<td><a href="{% url 'solicitud_envia' solicitud.pk %}" data-target="#form_modal" data-toggle="modal" >Enviar</a></td>
+	<td>{% if solicitud.estado == E_BORRADOR %}
+	<a href="{% url 'solicitud_edita' solicitud.pk %}" data-target="#form_modal" data-toggle="modal" >Modificar</a>
+	{% else %}
+
+	{% include '_msg_noperm.html' with msg='Modificar' %}
+
+	{% endif %}
+	</td>
+  <td>{% if solicitud.estado == E_BORRADOR %}
+  <a href="{% url 'solicitud_eliminar' solicitud.pk %}" data-target="#form_modal" data-toggle="modal" >Eliminar</a>
+  {% else %}
+
+  {% include '_msg_noperm.html' with msg='Eliminar' %}
+
+  {% endif %}
+  </td>
+
+</tr>
+{% if solicitud.idsolicitud == idsolicitud %}
+<tr>
+	<td></td>
+	<td>
+		<table class="table table-striped">
+		<tr><th>Nombre Item</th></tr>
+		{% for item in solicitud.items.all %}
+		<tr>
+			<td>{{ item.nombre }}</td>
+		</tr>
+		{% endfor %}
+		</table>
+	</td>
+</tr>
+{% endif %}
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

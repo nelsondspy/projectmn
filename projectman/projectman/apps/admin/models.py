@@ -33,13 +33,11 @@ class Fase(models.Model):
     """Modelo Fase"""
     E_INICIAL = 'INI'
     E_DESARROLLO = 'DES'
-    E_COMPLETO = 'COM'
     E_FINALIZADO = 'FIN'
     
     ESTADOS=(
         (E_INICIAL, 'Inicial'),
         (E_DESARROLLO, 'Desarrollo'),
-        (E_COMPLETO, 'Completo'),
         (E_FINALIZADO, 'Finalizado')
     )
     idfase = models.AutoField(primary_key=True)
@@ -47,7 +45,7 @@ class Fase(models.Model):
          help_text='Nombre de la fase' , verbose_name='Nombre de la fase')
     descripcion = models.CharField(max_length=80 , verbose_name='Descripcion' , blank=True)
     idproyecto = models.ForeignKey(Proyecto)
-    estado = models.CharField(max_length=3, choices=ESTADOS)
+    estado = models.CharField(max_length=3, choices=ESTADOS, default=E_DESARROLLO)
     fechacreacion = models.DateField(auto_now=True)
 
     def __unicode__(self):
@@ -75,12 +73,15 @@ LISTA_PERMISOS = [
                   #permisos asociados a fases especificas
                   ('fase_modif', 'Modificar Fase', 2), 
                   ('fase_elim', 'Eliminar Fase', 2),
+                  ('fase_finalizar', 'Finalizar Fase', 2),
                   ('tipoitem_gestion', 'Gestionar tipos de item', 2),
                   ('item_crear', 'Crear Item', 2),
                   ('item_modif', 'Modificar Item', 2),
                   ('item_elim', 'Eliminar Item', 2),
                   ('item_revivir', 'Revivir Item', 2),
-                  ('lineabase_crear', 'Crear Linea Base', 2)
+                  ('item_revertir', 'Revertir version de Item', 2),
+                  ('lineabase_crear', 'Crear Linea Base', 2),
+                  ('solicitud_gest','Crear, modificar y eliminar Solicitud de Cambio' ,2),
                   ] 
 
 

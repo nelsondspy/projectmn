@@ -2,12 +2,13 @@
 from django.forms import HiddenInput
 from django.forms import IntegerField
 from django.forms import CheckboxSelectMultiple 
-from django.forms import ModelMultipleChoiceField
+
 from django.forms import ModelForm 
-from django.forms.models import inlineformset_factory 
+
 from models import ComiteProyecto 
 
 from models import LineaBase
+from models import SolicitudCambio
 
 
 class ComiteProyectoForm(ModelForm):
@@ -34,5 +35,14 @@ class LineaBaseForm(ModelForm):
         model = LineaBase
         fields = ['descripcion', 'fase', 'items']
         widgets= {'fase' : HiddenInput(), 'items':CheckboxSelectMultiple() }
-        
+         
+
+
+class SolicitudCambioForm(ModelForm):
+        class Meta:
+            model = SolicitudCambio 
+            fields = ['comentarios', 'solicitante', 'items', 'lineabase' ]
+            widgets= {'items':CheckboxSelectMultiple(), 
+                      'solicitante':HiddenInput(), 'lineabase':HiddenInput() }
+            
 

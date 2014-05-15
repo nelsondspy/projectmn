@@ -1,0 +1,40 @@
+{# lista de valores para un item #}
+<div id="edit_valoresitem">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3 class="modal-title">Valores del ítem : {{ object_list.0.iditem.nombre }} </h3>
+	</div>
+	<div class="modal-body">
+	    <div>Versión actual : {{ object_list.0.version }} 
+	    </div>
+		<table class="table table-striped">
+		    <tr>
+		    <th>Atributo</th>
+		    <th>Valor</th>
+		    <th>tipo<th>
+		    </tr>
+		    {% for valitem in object_list %}
+		     <tr>
+		     <td>{{ valitem.idatributo}}</td>
+		     <td>{{ valitem.valor }}</td>
+		     <td>
+		     {% if valitem.idatributo.tipodato == "N" %} {# si es numero #}
+		     	<span class="glyphicon glyphicon-sound-5-1"></span>
+		     	<small>número</small>
+		     {% endif %}
+		     {% if valitem.idatributo.tipodato == "D" %} {# si es fecha #}
+		     	<span class="glyphicon glyphicon-calendar"></span>
+		     	<small>fecha</small>
+		     {% endif %}
+		     {% if valitem.idatributo.tipodato == "C" %} {# si es cadena #}
+		     	<span class="glyphicon glyphicon-font"></span>
+		     	<small>texto</small>
+		     {% endif %}
+		     </td>
+		     </tr>
+		    {% endfor %}
+		</table>
+			    	<small>{{object_list.0.iditem.version}}</small>
+	</div>
+</div>
+
