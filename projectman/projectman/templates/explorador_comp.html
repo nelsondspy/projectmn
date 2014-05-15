@@ -108,13 +108,12 @@
 	       {% if item.estado == EST_ITEM.E_BLOQUEADO %}
 	           <span class="glyphicon glyphicon-lock"></span>
 	       {% endif %}
-	       
 	       {% if item.estado == EST_ITEM.E_DESAPROBADO %}
 	           <span class="glyphicon glyphicon-fire"></span>
 	       {% endif %}
 	       <small>{{ item.estado }}</small> 
 	       </td>
-           <td>{% include "desarrollo/_opciones_item.html" with iditem=item.pk idfase=fase.pk estado=item.estado %}</td>
+           <td>{% include "desarrollo/_opciones_item.html" with iditem=item.pk idfase=fase.pk estado=item.estado EST_ITEM=EST_ITEM %}</td>
         </tr>
         {% empty %}
            <p> Fase aún sin items </p>
