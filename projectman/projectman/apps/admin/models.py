@@ -80,6 +80,7 @@ LISTA_PERMISOS = [
                   ('item_elim', 'Eliminar Item', 2),
                   ('item_revivir', 'Revivir Item', 2),
                   ('item_revertir', 'Revertir version de Item', 2),
+                  ('item_adjuntos', 'Gestionar adjuntos del Item', 2),
                   ('lineabase_crear', 'Crear Linea Base', 2),
                   ('solicitud_gest','Crear, modificar y eliminar Solicitud de Cambio' ,2),
                   ] 
