@@ -47,12 +47,13 @@ def get_url_edicion_actual(request, nivel=0):
     #Utiliza las variables de sesion cargadas en la navegacion
     #para redireccionar al proyecto y la fase.  
     idproyecto = int(request.session[SESS_IDPROYECTO])
-    idfase = int(request.session[SESS_IDFASE])
+    
     
     if nivel == 0:
         return reverse('editor_componentes',kwargs={'idproyecto': idproyecto })
 
     if nivel == 1:
+        idfase = int(request.session[SESS_IDFASE])
         return reverse('expl_nivelfase',kwargs={'idproyecto': idproyecto , 
                                                 'idfase' : idfase})
 
