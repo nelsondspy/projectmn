@@ -21,7 +21,7 @@
   
   <li>
   
-  {% if item_modif or user.is_superuser  and estado != EST_ITEM.E_BLOQUEADO %}
+  {% if item_modif and estado != EST_ITEM.E_BLOQUEADO %}
   <a data-target="#form_modal"  data-toggle="modal" href="{% url 'item_editar' iditem %}" ><span class="glyphicon glyphicon-pencil"></span>Editar</a> 
   {% else %}
  		{% include "_msg_noperm.html" with msg="Editar" %}
@@ -29,7 +29,7 @@
   </li>
 
   <li>
-  {% if item_elim or user.is_superuser and estado != EST_ITEM.E_BLOQUEADO %}
+  {% if item_elim and estado != EST_ITEM.E_BLOQUEADO %}
 	  <a href="{% url 'item_eliminar' iditem %}" data-target="#form_modal"  data-toggle="modal" >
 	  <span class="glyphicon glyphicon-remove"></span>Eliminar</a>
   {% else %}
@@ -38,7 +38,7 @@
   </li>
  
  <li>
-  {% if item_modif or user.is_superuser and estado != EST_ITEM.E_BLOQUEADO %}
+  {% if item_modif and estado != EST_ITEM.E_BLOQUEADO %}
 	  <a href="{% url 'valores_asignar' iditem %}" data-target="#form_modal"  data-toggle="modal" >
 	  <span class="glyphicon glyphicon-pencil"></span>
 	  <span class="glyphicon glyphicon-tasks"></span>
@@ -60,12 +60,12 @@
  </li>
 
  <li>
- {% if item_adjuntos or user.is_superuser and estado != EST_ITEM.E_BLOQUEADO %}
-   <a href="{% url 'itemadjuntos_ls_cr' iditem %}"><span class="glyphicon glyphicon-paperclip">
-   </span>Archivos adjuntos </a>
- {% else %}
- 	{% include "_msg_noperm.html" with msg="Archivos adjuntos" %}
- {% endif %}
+ {% if item_adjuntos and estado != EST_ITEM.E_BLOQUEADO %}
+	   <a href="{% url 'itemadjuntos_ls_cr' iditem %}"><span class="glyphicon glyphicon-paperclip">
+	   </span>Archivos adjuntos </a>
+{% else %}
+	{% include "_msg_noperm.html" with msg="Archivos adjuntos" %}
+{% endif %}
  </li>
 
 </ul>
