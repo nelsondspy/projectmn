@@ -5,6 +5,7 @@ from django.views.generic import ListView
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.contrib import messages 
+from django.db.models import Min
 
 from ..models import ItemRelacion, Item 
 from projectman.apps.admin.models import Fase
@@ -295,11 +296,19 @@ def lista_huerfanos_fase(fase_id):
     
     
     """
+    #obtiene la primera fase del proyecto (la que tiene menor id)
+    min_fase = Fase.objects.aggregate(min_fase=Min('idfase')).get('min_fase')
+    qs_fase = Item.objects.filter(idfase_id=min_fase).\
+            exclude(estado=Item.E_ELIMINADO)
+    #obtiene el primer item de la fase (el que tiene menor id)
+    min_item = qs_fase.aggregate(min_item=Min('iditem')).get('min_item')
+    
     qs_relaciones_fase = ItemRelacion.objects.\
             filter(destino__idfase_id=fase_id).values('destino')
 
+    #exclude los items eliminados y el primer item de la primera fase 
     qs_items_huerfanos = Item.objects.filter(idfase_id=fase_id).exclude(estado=Item.E_ELIMINADO)\
-        .exclude(iditem__in=qs_relaciones_fase)
+        .exclude(iditem__in=qs_relaciones_fase).exclude(pk=min_item)
         
     return qs_items_huerfanos
 
