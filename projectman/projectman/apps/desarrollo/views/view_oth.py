@@ -81,7 +81,7 @@ def editor_componentes(request, idproyecto=None, idfase=None):
     lista_items = None
     if idfase:
         request.session[SESS_IDFASE] = idfase
-        lista_items = Item.objects.filter(idfase=idfase).exclude(estado=Item.E_ELIMINADO )
+        lista_items = Item.objects.order_by('numero').filter(idfase=idfase).exclude(estado=Item.E_ELIMINADO )
         idfase = int(idfase) # en la plantilla se requier el valor entero no el unicode
 
     #valores constantes de estado para las fase
