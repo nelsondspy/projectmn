@@ -75,7 +75,7 @@
 
   <div class="col-md-2">
   {% ifequal fase.idfase idfase %}
-      {% include "admin/_opciones_fase.html" with idfase=fase.idfase %}            
+      {% include "admin/_opciones_fase.html" with idfase=fase.idfase EST_FASE=EST_FASE estado=fase.estado %}
   {% endifequal %}
   </div>
    
@@ -87,10 +87,15 @@
      
      <div class="panel panel-info">
      <div class="panel-heading"><span class="glyphicon glyphicon-tasks"></span> Items de la fase:</div>
+
+     {% if not EST_FASE.E_FINALIZADO == fase.estado %}
      <a class="btn btn-success btn-sm" data-target="#form_modal"data-toggle="modal" 
-     	href="{% url 'item_crear' idfase %}"><span class="glyphicon glyphicon-plus-sign"></span> Crear item
+     	href="{% url 'item_crear' idfase %}"><span class="glyphicon glyphicon-list-alt"></span> Crear item
      </a>
-     
+      {% else %}
+      		{% include "_msg_noperm.html" with msg="Crear item" %}
+     {% endif %}
+
      <table class="table table-condensed">
      <tr>
 	     <th>#</th>
@@ -108,13 +113,12 @@
 	       {% if item.estado == EST_ITEM.E_BLOQUEADO %}
 	           <span class="glyphicon glyphicon-lock"></span>
 	       {% endif %}
-	       
 	       {% if item.estado == EST_ITEM.E_DESAPROBADO %}
 	           <span class="glyphicon glyphicon-fire"></span>
 	       {% endif %}
 	       <small>{{ item.estado }}</small> 
 	       </td>
-           <td>{% include "desarrollo/_opciones_item.html" with iditem=item.pk idfase=fase.pk estado=item.estado %}</td>
+           <td>{% include "desarrollo/_opciones_item.html" with iditem=item.pk idfase=fase.pk estado=item.estado EST_ITEM=EST_ITEM %}</td>
         </tr>
         {% empty %}
            <p> Fase aún sin items </p>

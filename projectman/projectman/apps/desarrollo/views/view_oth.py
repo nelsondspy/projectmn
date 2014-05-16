@@ -47,12 +47,13 @@ def get_url_edicion_actual(request, nivel=0):
     #Utiliza las variables de sesion cargadas en la navegacion
     #para redireccionar al proyecto y la fase.  
     idproyecto = int(request.session[SESS_IDPROYECTO])
-    idfase = int(request.session[SESS_IDFASE])
+    
     
     if nivel == 0:
         return reverse('editor_componentes',kwargs={'idproyecto': idproyecto })
 
     if nivel == 1:
+        idfase = int(request.session[SESS_IDFASE])
         return reverse('expl_nivelfase',kwargs={'idproyecto': idproyecto , 
                                                 'idfase' : idfase})
 
@@ -80,7 +81,7 @@ def editor_componentes(request, idproyecto=None, idfase=None):
     lista_items = None
     if idfase:
         request.session[SESS_IDFASE] = idfase
-        lista_items = Item.objects.filter(idfase=idfase).exclude(estado=Item.E_ELIMINADO )
+        lista_items = Item.objects.order_by('numero').filter(idfase=idfase).exclude(estado=Item.E_ELIMINADO )
         idfase = int(idfase) # en la plantilla se requier el valor entero no el unicode
 
     #valores constantes de estado para las fase

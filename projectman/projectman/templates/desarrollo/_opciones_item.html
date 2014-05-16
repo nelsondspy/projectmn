@@ -4,6 +4,9 @@
 {# permisos del item #}
 {% perm_fase user.pk idfase 'item_modif' as item_modif %}
 {% perm_fase user.pk idfase 'item_elim' as item_elim %}
+{% perm_fase user.pk idfase 'item_revertir' as item_revertir %}
+{% perm_fase user.pk idfase 'item_adjuntos' as item_adjuntos %}
+{% perm_fase user.pk idfase 'item_modif' as item_modif %}
 
 
 
@@ -18,7 +21,7 @@
   
   <li>
   
-  {% if item_modif or user.is_superuser  and estado != 'BLO' %}
+  {% if item_modif or user.is_superuser  and estado != EST_ITEM.E_BLOQUEADO %}
   <a data-target="#form_modal"  data-toggle="modal" href="{% url 'item_editar' iditem %}" ><span class="glyphicon glyphicon-pencil"></span>Editar</a> 
   {% else %}
  		{% include "_msg_noperm.html" with msg="Editar" %}
@@ -26,7 +29,7 @@
   </li>
 
   <li>
-  {% if item_elim or user.is_superuser and estado != 'BLO'%}
+  {% if item_elim or user.is_superuser and estado != EST_ITEM.E_BLOQUEADO %}
 	  <a href="{% url 'item_eliminar' iditem %}" data-target="#form_modal"  data-toggle="modal" >
 	  <span class="glyphicon glyphicon-remove"></span>Eliminar</a>
   {% else %}
@@ -35,7 +38,7 @@
   </li>
  
  <li>
-  {% if user.is_superuser and estado != 'BLO' %}
+  {% if item_modif or user.is_superuser and estado != EST_ITEM.E_BLOQUEADO %}
 	  <a href="{% url 'valores_asignar' iditem %}" data-target="#form_modal"  data-toggle="modal" >
 	  <span class="glyphicon glyphicon-pencil"></span>
 	  <span class="glyphicon glyphicon-tasks"></span>
@@ -45,18 +48,26 @@
   {% endif %}
  </li>
  
- 
+
  <li>
+{% if item_revertir and estado != EST_ITEM.E_BLOQUEADO %}
    <a href="{% url 'valores_versiones' iditem %}">
    <span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-tasks"></span>
    Versiones de valores </a>
+{% else %}
+	{% include "_msg_noperm.html" with msg="Versiones de valores" %}
+{% endif %}
  </li>
- 
+
  <li>
+ {% if item_adjuntos or user.is_superuser and estado != EST_ITEM.E_BLOQUEADO %}
    <a href="{% url 'itemadjuntos_ls_cr' iditem %}"><span class="glyphicon glyphicon-paperclip">
    </span>Archivos adjuntos </a>
+ {% else %}
+ 	{% include "_msg_noperm.html" with msg="Archivos adjuntos" %}
+ {% endif %}
  </li>
- 
-  </ul>
-  
+
+</ul>
+
 </div>

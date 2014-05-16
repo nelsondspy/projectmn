@@ -5,6 +5,7 @@ from django.views.generic import ListView
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.contrib import messages 
+from django.db.models import Min
 
 from ..models import ItemRelacion, Item 
 from projectman.apps.admin.models import Fase
@@ -79,6 +80,14 @@ class CreaRelacionView(CreateView):
             El item hijo no debe tener linea base. ')
             self.valido = False
             return self.form_invalid(form)
+        #
+        if not self.valid_intra_fase_bloq(origen, destino):
+            messages.error(self.request,'ERROR : Si es una relacion intrafase y ambos items \
+            ya estan en linea base entonces la relacion ya no esta permitida. \
+            En estado desarrollo debe establecer las relaciones')
+            self.valido = False
+            return self.form_invalid(form)
+
         
         messages.info(self.request, 'Relacion creada : ' + relacion_str)
         return CreateView.form_valid(self, form)
@@ -166,6 +175,25 @@ class CreaRelacionView(CreateView):
             if pdestino.estado == Item.E_BLOQUEADO :
                 return False 
         return True
+    
+    @classmethod
+    def valid_intra_fase_bloq(self, porigen, pdestino):
+        """
+        
+        Valida que la relacion no se produzca entre items bloqueados de la misma fase.
+        porque estos items al estar bajo una linea base tambien se deben evitar nuevas relaciones entre ellas 
+        
+        """
+        #son de la misma fase 
+        if porigen.idfase_id == pdestino.idfase_id:
+            #el origen esta bloqueado
+            if porigen.estado == Item.E_BLOQUEADO :
+                #el destino tambien esta bloqueado
+                if pdestino.estado == Item.E_BLOQUEADO :
+                    return False #no es posible esta relacion
+                
+        return True
+
 
 
 class ListaRelacionesView(ListView):
@@ -268,11 +296,19 @@ def lista_huerfanos_fase(fase_id):
     
     
     """
+    #obtiene la primera fase del proyecto (la que tiene menor id)
+    min_fase = Fase.objects.aggregate(min_fase=Min('idfase')).get('min_fase')
+    qs_fase = Item.objects.filter(idfase_id=min_fase).\
+            exclude(estado=Item.E_ELIMINADO)
+    #obtiene el primer item de la fase (el que tiene menor id)
+    min_item = qs_fase.aggregate(min_item=Min('iditem')).get('min_item')
+    
     qs_relaciones_fase = ItemRelacion.objects.\
             filter(destino__idfase_id=fase_id).values('destino')
 
+    #exclude los items eliminados y el primer item de la primera fase 
     qs_items_huerfanos = Item.objects.filter(idfase_id=fase_id).exclude(estado=Item.E_ELIMINADO)\
-        .exclude(iditem__in=qs_relaciones_fase)
+        .exclude(iditem__in=qs_relaciones_fase).exclude(pk=min_item)
         
     return qs_items_huerfanos
 
