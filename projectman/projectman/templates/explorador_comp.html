@@ -75,7 +75,7 @@
 
   <div class="col-md-2">
   {% ifequal fase.idfase idfase %}
-      {% include "admin/_opciones_fase.html" with idfase=fase.idfase %}            
+      {% include "admin/_opciones_fase.html" with idfase=fase.idfase EST_FASE=EST_FASE estado=fase.estado %}
   {% endifequal %}
   </div>
    
@@ -87,10 +87,15 @@
      
      <div class="panel panel-info">
      <div class="panel-heading"><span class="glyphicon glyphicon-tasks"></span> Items de la fase:</div>
+
+     {% if not EST_FASE.E_FINALIZADO == fase.estado %}
      <a class="btn btn-success btn-sm" data-target="#form_modal"data-toggle="modal" 
-     	href="{% url 'item_crear' idfase %}"><span class="glyphicon glyphicon-plus-sign"></span> Crear item
+     	href="{% url 'item_crear' idfase %}"><span class="glyphicon glyphicon-list-alt"></span> Crear item
      </a>
-     
+      {% else %}
+      		{% include "_msg_noperm.html" with msg="Crear item" %}
+     {% endif %}
+
      <table class="table table-condensed">
      <tr>
 	     <th>#</th>
