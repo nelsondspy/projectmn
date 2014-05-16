@@ -79,6 +79,14 @@ class CreaRelacionView(CreateView):
             El item hijo no debe tener linea base. ')
             self.valido = False
             return self.form_invalid(form)
+        #
+        if not self.valid_intra_fase_bloq(origen, destino):
+            messages.error(self.request,'ERROR : Si es una relacion intrafase y ambos items \
+            ya estan en linea base entonces la relacion ya no esta permitida. \
+            En estado desarrollo debe establecer las relaciones')
+            self.valido = False
+            return self.form_invalid(form)
+
         
         messages.info(self.request, 'Relacion creada : ' + relacion_str)
         return CreateView.form_valid(self, form)
@@ -166,6 +174,25 @@ class CreaRelacionView(CreateView):
             if pdestino.estado == Item.E_BLOQUEADO :
                 return False 
         return True
+    
+    @classmethod
+    def valid_intra_fase_bloq(self, porigen, pdestino):
+        """
+        
+        Valida que la relacion no se produzca entre items bloqueados de la misma fase.
+        porque estos items al estar bajo una linea base tambien se deben evitar nuevas relaciones entre ellas 
+        
+        """
+        #son de la misma fase 
+        if porigen.idfase_id == pdestino.idfase_id:
+            #el origen esta bloqueado
+            if porigen.estado == Item.E_BLOQUEADO :
+                #el destino tambien esta bloqueado
+                if pdestino.estado == Item.E_BLOQUEADO :
+                    return False #no es posible esta relacion
+                
+        return True
+
 
 
 class ListaRelacionesView(ListView):
