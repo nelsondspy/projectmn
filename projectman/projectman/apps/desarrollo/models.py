@@ -99,7 +99,8 @@ class Item(models.Model):
     def __unicode__(self):
         return self.nombre
     
-    
+    class Meta:
+        ordering = ['iditem']
 
 
 class ItemAtributosValores(models.Model):
@@ -181,6 +182,9 @@ class ItemRelacion(models.Model):
             self.tipo = self.E_INT
         else:
             self.tipo = self.E_EXT
+
+    def __unicode__(self):
+        return self.origen.__str__()+ ' --> '+ self.destino.__str__()
 
 
 class ItemAdjuntos(models.Model):
