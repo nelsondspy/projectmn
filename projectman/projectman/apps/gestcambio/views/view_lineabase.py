@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView 
 from django.contrib import messages
-
+from django.db import transaction
 #modelos 
 from ..models import LineaBase
 from ...admin.models import Fase 
@@ -41,7 +41,7 @@ class CreaLineaBase(View):
                         'lista_huerfanos': lista_huerfanos , \
                         'action': reverse('linea_base_item_crear', kwargs={'idfase': idfase}) })
     
-    
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
 
         form = LineaBaseForm(request.POST)

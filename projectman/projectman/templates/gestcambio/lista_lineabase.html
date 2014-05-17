@@ -48,6 +48,7 @@
 	</td>
 	<td>{{ lineabase.fase }}</td>
 	<td>{{ lineabase.fechacreacion}}</td>
+	<td><a href="{% url 'solicitud_crear' lineabase.pk %}" data-target="#form_modal"  data-toggle="modal">Solicitud de Cambio</a></td>
 </tr>
 	{% if lineabase.idlineabase == idlineabase %}
 	<tr>
