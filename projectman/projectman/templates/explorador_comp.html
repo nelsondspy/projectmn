@@ -30,7 +30,13 @@
 	<a class="btn btn-default" href ="{% url 'relacion_listar' proyecto.idproyecto %}">
 	    <span class="glyphicon glyphicon-random"></span> 
 	    Relacionar Items
-	    </a>
+	</a>
+		<a class="btn btn-default" href ="{% url 'solicitudes_proyecto' proyecto.idproyecto %}">
+	    <span class="glyphicon glyphicon-"></span> 
+	    Solicitudes de Cambio
+	</a>
+	
+	
 	</div>
 </div>
 </div>
@@ -92,7 +98,7 @@
      <a class="btn btn-success btn-sm" data-target="#form_modal"data-toggle="modal" 
      	href="{% url 'item_crear' idfase %}"><span class="glyphicon glyphicon-list-alt"></span> Crear item
      </a>
-      {% else %}
+     {% else %}
       		{% include "_msg_noperm.html" with msg="Crear item" %}
      {% endif %}
 

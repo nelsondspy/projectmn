@@ -70,7 +70,10 @@ class ListaSolicitudesView(ListView):
 
         if self.kwargs.get('idfase', None):
             context['idfase'] = self.kwargs['idfase']
-
+        #solicitudes_proyecto
+        if self.kwargs.get('idproyecto', None):
+            context['idproyecto'] = self.kwargs['idproyecto']
+            
         context['E_APROBADO'] = SolicitudCambio.E_APROBADO
         context['E_RECHAZADO'] = SolicitudCambio.E_RECHAZADO
         context['E_ENVIADO'] = SolicitudCambio.E_ENVIADO
@@ -78,7 +81,13 @@ class ListaSolicitudesView(ListView):
         context['E_BORRADOR'] = SolicitudCambio.E_BORRADOR
 
         return  context
-
+    def get_queryset(self):
+                #solicitudes_proyecto
+        if self.kwargs.get('idproyecto', None):
+            #solicitud.lineabase.fase
+            idproyecto = self.kwargs.get('idproyecto', None)
+            object_list = SolicitudCambio.objects.filter(lineabase__fase__idproyecto_id=idproyecto)
+        return object_list
 
 
 class SetSolicitudEnviada(View):
@@ -95,8 +104,8 @@ class SetSolicitudEnviada(View):
         solicitud_env.estado = SolicitudCambio.E_ENVIADO
         solicitud_env.save()
         messages.info(request, 'La solicitud fue enviada!')
-        idfase = solicitud_env.lineabase.fase_id
-        return redirect(reverse('solicitudes_fase', kwargs={'idfase' : idfase }))
+        idproyecto = solicitud_env.lineabase.fase.idproyecto_id
+        return redirect(reverse('solicitudes_proyecto', kwargs={'idproyecto' : idproyecto }))
 
     def get(self,request, pk ):
         """
@@ -136,8 +145,11 @@ class EditaSolicitudView(UpdateView):
         return context
 
     def get_success_url(self):
+        pk = self.kwargs['pk']
+        solicitud = get_object_or_404( SolicitudCambio, pk= pk)
+        return reverse('solicitudes_proyecto', \
+            kwargs={'idproyecto': solicitud.lineabase.fase.idproyecto_id })
 
-        return UpdateView.get_success_url(self)
 
 class EliminaSolicitudView(DeleteView):
     """

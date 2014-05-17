@@ -19,7 +19,8 @@ urlpatterns = patterns('projectman.apps',
     #solicitud de cambio
     url(r'^solicitud/crear/(?P<idlinebase>\d+)$', login_required(CreaSolicitudView.as_view()) , name="solicitud_crear" ),
     url(r'^solicitud/listar/(?P<idfase>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitudes_fase" ),
-    url(r'^solicitud/items/(?P<idfase>\d+)/(?P<idsolicitud>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitud_det_item" ),
+    url(r'^solicitud/listaproyecto/(?P<idproyecto>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitudes_proyecto" ),
+    url(r'^solicitud/items/(?P<idproyecto>\d+)/(?P<idsolicitud>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitud_det_item" ),
     url(r'^solicitud/enviar/(?P<pk>\d+)$', login_required(SetSolicitudEnviada.as_view()) , name="solicitud_envia" ) ,
     url(r'^solicitud/editar/(?P<pk>\d+)$', login_required(EditaSolicitudView.as_view()) , name="solicitud_edita" ),
     url(r'^solicitud/eliminar/(?P<pk>\d+)$', login_required(EliminaSolicitudView.as_view()) , name="solicitud_eliminar" )

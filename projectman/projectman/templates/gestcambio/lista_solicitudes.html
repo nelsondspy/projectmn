@@ -25,11 +25,11 @@
 {% for solicitud in object_list %}
 <tr class={% if solicitud.idsolicitud == idsolicitud %}"success"{% endif %} >
 	<td>
-	<a href="{% url 'solicitud_det_item' idfase solicitud.pk %}">{{ solicitud.pk }}
+	<a href="{% url 'solicitud_det_item' idproyecto solicitud.pk %}">{{ solicitud.pk }}
 
 	</a>
 	</td>
-	<td> <a href="{% url 'solicitud_det_item' idfase solicitud.pk %}"> <span class={% if  solicitud.idsolicitud == idsolicitud %} "glyphicon glyphicon-chevron-down" {% else %} "glyphicon glyphicon-chevron-right" {% endif %}></span>
+	<td> <a href="{% url 'solicitud_det_item' idproyecto solicitud.pk %}"> <span class={% if  solicitud.idsolicitud == idsolicitud %} "glyphicon glyphicon-chevron-down" {% else %} "glyphicon glyphicon-chevron-right" {% endif %}></span>
      {{ solicitud.comentarios }}</a>
 	</td>
 
