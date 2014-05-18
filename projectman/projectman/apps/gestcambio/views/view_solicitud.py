@@ -40,8 +40,8 @@ class CreaSolicitudView(View):
 
         linea_base = get_object_or_404(LineaBase, pk=int(self.kwargs['idlinebase']))
 
-        return redirect(reverse('solicitudes_fase', \
-                       kwargs={'idfase': linea_base.fase_id }))
+        return redirect(reverse('solicitudes_proyecto', \
+                       kwargs={'idproyecto': linea_base.fase.idproyecto_id }))
 
     def crea_formulario(self, request, idlinebase):
         form = SolicitudCambioForm()
