@@ -15,6 +15,8 @@ class ComiteProyecto(models.Model):
     #claves foraneas
     proyecto = models.ForeignKey(Proyecto)
     usuario = models.ForeignKey(User)
+    incorporacion = models.DateField(auto_now=True)
+
     
     def __unicode__(self):
         return self.proyecto.__str__() +'..'+ self.usuario.__str__() 
