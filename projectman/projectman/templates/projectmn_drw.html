@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -9,16 +7,16 @@
 <title>Insert title here</title>
 </head>
 <body>
-<canvas id="proyectCanvas" width="800" height="600" style="border:1px solid #000000;">
+<canvas id="proyectCanvas" width="2048" height="300" style="border:1px solid #000000;">
 </canvas> 
 </body>
 
 <script>
 /**
 *Funcion que dibuja lineas con flechas:
-*Programa original gestileza de http://jsfiddle.net/m1erickson/Sg7EZ/
+*Programa original gentileza de http://jsfiddle.net/m1erickson/Sg7EZ/
 *Modificado para imprimir flecha de una sola direccion 
-*y corregido para permitir flechas a 270ª (relacion de padre a hijo) 
+*y corregido para permitir flechas a 270 (relacion de padre a hijo) 
 */
 
 function Line(x1,y1,x2,y2){
@@ -61,6 +59,8 @@ Line.prototype.drawArrowhead=function(ctx,x,y,radians){
 </script>
 
 <script>
+listafases = [{% for fase in object_list %}{ fase: {{ fase.pk }}, nombre :'{{ fase.nombre }}' },{% endfor %} ];
+	/*
 	listafases = [{ fase: 1, nombre: 'eltema1asdasdasd asasdsadasdasdsasdasdasd as',
 					items : [ { iditem : 1,  nombre : 'item 1 ' },
 					          { iditem : 2,  nombre : 'item 2 es muy largo y bla bla bal balbalbalbal ' },
@@ -74,15 +74,17 @@ Line.prototype.drawArrowhead=function(ctx,x,y,radians){
 								    { iditem : 8 , nombre : 'item 3 ' }
 								   ] },	        	
 				 { fase: 4 , nombre: 'eltema 5' },
-				 { fase: 4 , nombre: 'eltema 10' } 
+				 { fase: 4 , nombre: 'eltema 10' } ,
+				 { fase: 5 , nombre: 'el tema 11' } 
 				  ];
 	
 	lista_relaciones = [ { antecesor : 1 , sucesor : 5 },
 	                     { antecesor : 1 , sucesor : 6 } ,
-						{ antecesor : 1 , sucesor : 2 } 
+						{ antecesor : 1 , sucesor : 2 },
+						{ antecesor : 1 , sucesor : 7 }
 						];
 	
-	
+	*/
 	var c = document.getElementById("proyectCanvas");
 	var ctx = c.getContext("2d");
 	
@@ -143,8 +145,7 @@ Line.prototype.drawArrowhead=function(ctx,x,y,radians){
 					ctx.stroke();
 					this.lista_items_coord[lista_items[k].iditem.toString()]= {x:  x_item, y : y_item  } ;
 					
-					//Establece el nombreo descripcion del item , con el color de fuente .
-					//trunca si es necesario
+					//Establece el nombreo descripcion del item , con el color de fuente 
 					ctx.fillStyle = TEXTCOLOR_ITEM ; 
 					nombre_item = lista_items[k].nombre.substring (0 , CANT_TRUNCAR) +  
 					((lista_items[k].nombre.length>CANT_TRUNCAR)?'...':'') ; 	 

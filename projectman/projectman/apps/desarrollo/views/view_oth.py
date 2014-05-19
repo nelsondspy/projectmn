@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.views.generic import ListView
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from projectman.apps.admin.models import  Proyecto, Fase
@@ -75,7 +76,7 @@ def editor_componentes(request, idproyecto=None, idfase=None):
     request.session[SESS_IDPROYECTO] = idproyecto
     request.session[SESS_IDFASE] = None
     #lista las fases del proyecto  
-    lista_fases = Fase.objects.filter(idproyecto=idproyecto)
+    lista_fases = Fase.objects.order_by('idfase').filter(idproyecto=idproyecto)
     #lista de items de una fase seleccionada ( recibida como parametro) 
     # cuyo estado no sea eliminado 
     lista_items = None
@@ -91,3 +92,18 @@ def editor_componentes(request, idproyecto=None, idfase=None):
                     'lista_fases':lista_fases ,\
                      'lista_items':lista_items, 'I_BLOQ':Item.E_BLOQUEADO,\
                      'EST_FASE':  estados_fase, 'EST_ITEM': estados_item })
+
+
+class GraficoProyecto(ListView):
+    template_name='projectmn_drw.html'
+    
+    def get_queryset(self):
+        lista_fases = Fase.objects.order_by('idfase').\
+            filter(idproyecto=self.kwargs['idproyecto'])
+        
+        return lista_fases
+    
+    
+    def get_context_data(self, **kwargs):
+        context = ListView.get_context_data(self, **kwargs)
+        return context
