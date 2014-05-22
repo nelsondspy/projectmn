@@ -59,7 +59,12 @@ Line.prototype.drawArrowhead=function(ctx,x,y,radians){
 </script>
 
 <script>
-listafases = [{% for fase in object_list %}{ fase: {{ fase.pk }}, nombre :'{{ fase.nombre }}' },{% endfor %} ];
+listafases = [{% for fase in object_list %}
+			 { fase: {{ fase.pk }}, nombre :'{{ fase.nombre }}' ,
+			 items :[ {% for item in fase.items %}
+			 { iditem:{{ item.pk }} , nombre: '{{item.nombre}}' }, {% endfor %} ]
+			 },
+			 {% endfor %}  ];
 	/*
 	listafases = [{ fase: 1, nombre: 'eltema1asdasdasd asasdsadasdasdsasdasdasd as',
 					items : [ { iditem : 1,  nombre : 'item 1 ' },
