@@ -5,9 +5,9 @@ from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView, DeleteView
+from view_comite import  CrearComiteProyectoView
 from django.contrib import messages
 
-from ...desarrollo.models import Item
 from ..models import LineaBase
 from ..models import SolicitudCambio
 from ..forms import SolicitudCambioForm
@@ -16,8 +16,18 @@ from ..forms import SolicitudCambioForm
 class CreaSolicitudView(View):
     template_name = 'gestcambio/form_solicitudcambio.html'
     linea_base = None
+    comite_miembros = None
 
     def get(self, request, idlinebase):
+        (validez, msg )= self.validaciones(idlinebase)
+        if not validez:
+            #messages.error(request, msg)
+            return render(request, 'form_confirm_accion.html', {'action': request.META['HTTP_REFERER'] ,\
+                                             'titulo': 'ADVERTENCIA',\
+                                             'texto': msg ,\
+                                             'value': '' })
+
+            
 
         form = self.crea_formulario(request, idlinebase)
 
@@ -56,8 +66,20 @@ class CreaSolicitudView(View):
         form.fields['items'].queryset = linea_base.items.all()
 
         return form
-
-
+    
+    def validaciones(self, idlinebase):
+        #valida la cantidad de miembros
+        proyecto_id = LineaBase.objects.get(pk=idlinebase).fase.idproyecto_id
+        (miembros, valido, mensaje) = CrearComiteProyectoView.miembros_proyecto(proyecto_id)
+        
+        self.comite_miembros = miembros
+        
+        if not valido:
+            return (valido, mensaje)
+        
+        return (True, '')
+        
+ 
 class ListaSolicitudesView(ListView):
     model = SolicitudCambio
     template_name = 'gestcambio/lista_solicitudes.html'
