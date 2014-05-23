@@ -19,6 +19,13 @@ class ListaSolicPendientes(ListView):
     
     def get_queryset(self):
         proyecto_id = self.kwargs['idproyecto']
+        
+        miembro = ComiteProyecto.objects.filter(usuario=self.request.user).\
+            filter(proyecto=proyecto_id)
+        if miembro.count()< 1 :
+            messages.info(self.request, 'Usted no es miembro del comite de este proyecto ' )
+            return []
+        
         solic_votadas = SolicitudVoto.objects.filter(Q(miembro__usuario=self.request.user)\
                                    & Q(miembro__proyecto_id=proyecto_id)).values('solicitud_id')
         
@@ -99,13 +106,36 @@ class VotaSolicitudView(View):
         
         """
         votos_sol = SolicitudVoto.objects.filter(solicitud_id=idsolicitud)
-        def prefvotos(x) : votos_sol.filter(aprobado=x).count()
-        votos_favor = prefvotos(True)
-        votos_contra = prefvotos(False)
+        votos_favor = votos_sol.filter(aprobado=True).count()
+        votos_contra = votos_sol.filter(aprobado=False).count()
         #obtenemos la cantidad de votos esperados que es  
         solicitud = get_object_or_404(SolicitudCambio, pk=idsolicitud)
         proyecto_id = solicitud.lineabase.fase.idproyecto_id
-        (miembros, ) = CrearComiteProyectoView.miembros_proyecto(proyecto_id)
+        (miembros, validez, msg ) = CrearComiteProyectoView.miembros_proyecto(proyecto_id)
         vot_faltantes = miembros.count() - ( votos_favor + votos_contra )
         return (votos_favor, votos_contra, vot_faltantes)
     
+
+class EstadoVotacionView(ListView):
+    """
+    
+    Vista que muestra el estado de la votacion
+    
+    """
+    model = SolicitudVoto
+    template_name = 'gestcambio/lista_estadovotacion.html'
+    
+    def get_queryset(self):
+        idsolicitud = self.kwargs['idsolicitud']
+        votos_sol = SolicitudVoto.objects.filter(solicitud_id=idsolicitud)
+        return votos_sol
+
+
+    def get_context_data(self, **kwargs):
+        idsolicitud = self.kwargs['idsolicitud']
+        context = ListView.get_context_data(self, **kwargs)
+        estado = VotaSolicitudView.estado_votacion(idsolicitud)
+        context['favor'] = estado[0]
+        context['contra'] = estado[1]
+        context['faltantes'] = estado[2]
+        return context

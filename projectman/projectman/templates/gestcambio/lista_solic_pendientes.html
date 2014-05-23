@@ -2,8 +2,8 @@
 
 {% load tags %}
 
-{% block titulo %} Lista de solicitudes en el proyecto {% endblock %}
-{% block cabecera_pagina %}Solicitudes <small> Solicitudes de cambio en el proyecto</small> {% endblock %}
+{% block titulo %} Lista de solicitudes pendientes {% endblock %}
+{% block cabecera_pagina %}Solicitudes <small> Solicitudes de cambio pendientes en el proyecto</small> {% endblock %}
 
 {# ---- cabecera de trabajo  ----#}
 {% block barra_navegacion %}
@@ -12,6 +12,9 @@
 {% endblock %}
 
 {% block zonatrabajo %}
+
+{% include 'gestcambio/_opc_lista_solicitudes.html' with idproyecto=idproyecto %}
+
 <table class="table table-striped">
 
 <tr>
@@ -64,6 +67,11 @@
 	<td>{{ solicitud.solicitante }}</td>
 	<td>{{ solicitud.fecha_creacion | date:'d/m/Y'}}</td>
 	<td>{{ solicitud.fecha_aprobacion | date:'d/m/Y'}}</td>
+	
+	<td>
+	<a href="{% url 'solicitud_est_votacion' solicitud.pk %}" data-target="#form_modal" data-toggle="modal" >
+	<span class=""></span> Estado</a>
+	</td> 
 	<td>
 	<a href="{% url 'solicitud_votar' solicitud.pk 'aprobar'%}" data-target="#form_modal" data-toggle="modal" >
 	<span class="glyphicon glyphicon-thumbs-up"></span> Aprobar</a> 

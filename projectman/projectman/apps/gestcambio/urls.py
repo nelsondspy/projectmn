@@ -4,7 +4,7 @@ from views.view_comite import CrearComiteProyectoView ,ListarComiteProyectoView,
 from views.view_lineabase import CreaLineaBase
 from views.view_lineabase import ListarLineaBaseView
 from views.view_solicitud import CreaSolicitudView ,ListaSolicitudesView, SetSolicitudEnviada, EditaSolicitudView, EliminaSolicitudView
-from views.view_solicitudvoto import ListaSolicPendientes, VotaSolicitudView
+from views.view_solicitudvoto import ListaSolicPendientes, VotaSolicitudView, EstadoVotacionView
 urlpatterns = patterns('projectman.apps',
     #comite
     url(r'^comite/crear/(?P<idproyecto>\d+)$', login_required(CrearComiteProyectoView.as_view()), name="comite_crear"),
@@ -27,5 +27,7 @@ urlpatterns = patterns('projectman.apps',
 
     url(r'^solicitudes/pendientes/(?P<idproyecto>\d+)$', login_required(ListaSolicPendientes.as_view()) , name="solicitudes_pend_proy" ),
     url(r'^solicitudes/votar/(?P<pk>\d+)/(?P<accion>[a-z]+)$', login_required(VotaSolicitudView.as_view()) , name="solicitud_votar" ),
+    url(r'^solicitud/estadovotacion/(?P<idsolicitud>\d+)$', login_required(EstadoVotacionView.as_view()) , name="solicitud_est_votacion" ),
+
 
 )

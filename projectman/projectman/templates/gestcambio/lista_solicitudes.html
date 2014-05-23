@@ -9,9 +9,14 @@
 {% block barra_navegacion %}
 	{% load tags_desarrollo %}
 	{% back_url_proyecto 0 %}
+
 {% endblock %}
 
+
+
 {% block zonatrabajo %}
+{% include 'gestcambio/_opc_lista_solicitudes.html' with idproyecto=idproyecto %}
+
 <table class="table table-striped">
 
 <tr>
@@ -86,7 +91,10 @@
 
   {% endif %}
   </td>
-
+<td>
+	<a href="{% url 'solicitud_est_votacion' solicitud.pk %}" data-target="#form_modal" data-toggle="modal" >
+	<span class=""></span> Estado</a>
+</td>
 </tr>
 {% if solicitud.idsolicitud == idsolicitud %}
 <tr>
