@@ -12,7 +12,11 @@ from django.http import Http404
 
 from view_comite import  CrearComiteProyectoView
 class ListaSolicPendientes(ListView):
+    """
     
+    Lista las solicitudes pendientes de ser tratadas en el proyecto.
+    
+    """
     template_name = 'gestcambio/lista_solic_pendientes.html'
     #lista de solicitudes, no votadas en el proyecto 
     # la solicitud debe ur dirigida al comite
@@ -48,6 +52,14 @@ class ListaSolicPendientes(ListView):
         return context
 
 class VotaSolicitudView(View):
+    """
+    
+    Vista que permite realizar la votacion de la solicitud, permite aprobar y rechazar.
+    -Almacena el voto del usuario
+    -Determina si es posible dar por finalizada la votacion
+    -Si finaliza la votacion establece el estado de la solicitud como aprobada o rechazada 
+    
+    """
     template_name ='form_confirm_accion.html'
     APROBAR ='aprobar'
     RECHAZAR = 'rechazar'
@@ -138,7 +150,9 @@ class VotaSolicitudView(View):
 class EstadoVotacionView(ListView):
     """
     
-    Vista que muestra el estado de la votacion
+    Vista que muestra el estado de la votacion, muestra:.
+    Votos a favor , votos en contra , votos faltantes.
+    Eleccion realizada por cada miembro del comite
     
     """
     model = SolicitudVoto
