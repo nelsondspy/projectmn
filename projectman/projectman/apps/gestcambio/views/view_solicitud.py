@@ -3,7 +3,7 @@ from django.views.generic import View
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
 from view_comite import  CrearComiteProyectoView
 from django.contrib import messages
@@ -83,6 +83,8 @@ class CreaSolicitudView(View):
 class ListaSolicitudesView(ListView):
     model = SolicitudCambio
     template_name = 'gestcambio/lista_solicitudes.html'
+    titulo = ''
+    explicacion = ''
 
     def get_context_data(self, **kwargs):
         context = ListView.get_context_data(self, **kwargs)
@@ -101,14 +103,28 @@ class ListaSolicitudesView(ListView):
         context['E_ENVIADO'] = SolicitudCambio.E_ENVIADO
         context['E_TERMINADO'] = SolicitudCambio.E_TERMINADO
         context['E_BORRADOR'] = SolicitudCambio.E_BORRADOR
+        context['titulo'] = self.titulo 
+        context['explicacion'] = self.explicacion 
 
         return  context
     def get_queryset(self):
-                #solicitudes_proyecto
-        if self.kwargs.get('idproyecto', None):
+        #solicitudes_proyecto
+        if self.kwargs.get('idproyecto', None) and not self.kwargs.get('propios', None):
             #solicitud.lineabase.fase
             idproyecto = self.kwargs.get('idproyecto', None)
-            object_list = SolicitudCambio.objects.filter(lineabase__fase__idproyecto_id=idproyecto)
+            object_list = SolicitudCambio.objects.filter(lineabase__fase__idproyecto_id=idproyecto).\
+                exclude(estado=SolicitudCambio.E_BORRADOR)
+            self.titulo = 'Solicitudes de cambio en el proyecto'
+            self.explicacion = 'Todas las solicitudes pendientes y resueltas en el proyecto'
+
+        #solicitudes_del proyecto que hechas por el usuario
+        if self.kwargs.get('idproyecto', None) and self.kwargs.get('missolicitudes', None):
+            idproyecto = self.kwargs.get('idproyecto', None)
+            object_list = SolicitudCambio.objects.filter(lineabase__fase__idproyecto_id=idproyecto).\
+                filter(solicitante=self.request.user)
+            self.titulo = 'Mis solicitudes de cambio'
+            self.explicacion = 'Todas las solicitudes creadas por mi (aprobadas, rechazadas , enviadas y  en borrador) '
+
         return object_list
 
 
@@ -189,3 +205,11 @@ class EliminaSolicitudView(DeleteView):
         context = DeleteView.get_context_data(self, **kwargs)
         context['action'] = reverse('solicitud_eliminar', kwargs={'pk':self.kwargs['pk']})
         return context
+    
+class DetalleSolicitud(DetailView):
+    context_object_name = "solicitud"
+    model = SolicitudCambio
+    template_name = 'gestcambio/detalle_solicitudcambio.html'
+
+    
+    

@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from views.view_comite import CrearComiteProyectoView ,ListarComiteProyectoView, EliminarMiembroView
 from views.view_lineabase import CreaLineaBase
 from views.view_lineabase import ListarLineaBaseView
-from views.view_solicitud import CreaSolicitudView ,ListaSolicitudesView, SetSolicitudEnviada, EditaSolicitudView, EliminaSolicitudView
+from views.view_solicitud import CreaSolicitudView ,ListaSolicitudesView, SetSolicitudEnviada, EditaSolicitudView, EliminaSolicitudView ,DetalleSolicitud
 from views.view_solicitudvoto import ListaSolicPendientes, VotaSolicitudView, EstadoVotacionView
 urlpatterns = patterns('projectman.apps',
     #comite
@@ -20,7 +20,8 @@ urlpatterns = patterns('projectman.apps',
     url(r'^solicitud/crear/(?P<idlinebase>\d+)$', login_required(CreaSolicitudView.as_view()) , name="solicitud_crear" ),
     url(r'^solicitud/listar/(?P<idfase>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitudes_fase" ),
     url(r'^solicitud/listaproyecto/(?P<idproyecto>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitudes_proyecto" ),
-    url(r'^solicitud/items/(?P<idproyecto>\d+)/(?P<idsolicitud>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitud_det_item" ),
+    url(r'^solicitud/mis_solicitudes/(?P<idproyecto>\d+)/(?P<missolicitudes>\d+)$', login_required(ListaSolicitudesView.as_view()) , name="solicitudes_usuario" ),
+    url(r'^solicitud/items/(?P<pk>\d+)$', login_required(DetalleSolicitud.as_view()) , name="solicitud_det_item" ),
     url(r'^solicitud/enviar/(?P<pk>\d+)$', login_required(SetSolicitudEnviada.as_view()) , name="solicitud_envia" ) ,
     url(r'^solicitud/editar/(?P<pk>\d+)$', login_required(EditaSolicitudView.as_view()) , name="solicitud_edita" ),
     url(r'^solicitud/eliminar/(?P<pk>\d+)$', login_required(EliminaSolicitudView.as_view()) , name="solicitud_eliminar" ),

@@ -14,33 +14,28 @@
 {% block zonatrabajo %}
 
 {% include 'gestcambio/_opc_lista_solicitudes.html' with idproyecto=idproyecto %}
+<p>Solicitudes pendientes para las que debe emitir un voto de aprobación o rechazo.</p>
 
 <table class="table table-striped">
 
 <tr>
     <th>id</th>
     <th>Comentarios</th>
-    <th>Linea base afectada</th>
     <th>Estado</th>
-        <th>Solicitante</th>
-	<th>Fecha Creacion </th>
-	<th>Fecha Aprobacion</th>
-
+    <th>Solicitante</th>
+	<th>Creación </th>
 	<th colspan="2">Acciones</th>
 </tr>
 
 {% for solicitud in object_list %}
-<tr class={% if solicitud.idsolicitud == idsolicitud %}"success"{% endif %} >
+<tr>
 	<td>
-	<a href="{% url 'solicitud_det_item' idproyecto solicitud.pk %}">{{ solicitud.pk }}
-
-	</a>
+		<a href="{% url 'solicitud_det_item' solicitud.pk %}" data-target="#form_modal" data-toggle="modal">
+		{{ solicitud.pk }}</a>
 	</td>
-	<td> <a href="{% url 'solicitud_det_item' idproyecto solicitud.pk %}"> <span class={% if  solicitud.idsolicitud == idsolicitud %} "glyphicon glyphicon-chevron-down" {% else %} "glyphicon glyphicon-chevron-right" {% endif %}></span>
-     {{ solicitud.comentarios }}</a>
+	<td> <a href="{% url 'solicitud_det_item' solicitud.pk %}" data-target="#form_modal" data-toggle="modal"> 
+     {{ solicitud.comentarios |truncatechars:35}}</a>
 	</td>
-
-	<td><small>[{{ solicitud.lineabase.fase }}]</small> {{ solicitud.lineabase }}</td>
 
 	<td>
 	{% if solicitud.estado == E_APROBADO %}
@@ -66,11 +61,10 @@
 	</td>
 	<td>{{ solicitud.solicitante }}</td>
 	<td>{{ solicitud.fecha_creacion | date:'d/m/Y'}}</td>
-	<td>{{ solicitud.fecha_aprobacion | date:'d/m/Y'}}</td>
 	
 	<td>
 	<a href="{% url 'solicitud_est_votacion' solicitud.pk %}" data-target="#form_modal" data-toggle="modal" >
-	<span class=""></span> Estado</a>
+	<span class=""></span> Votación</a>
 	</td> 
 	<td>
 	<a href="{% url 'solicitud_votar' solicitud.pk 'aprobar'%}" data-target="#form_modal" data-toggle="modal" >
@@ -82,22 +76,6 @@
   <td>
   </td>
 </tr>
-{% if solicitud.idsolicitud == idsolicitud %}
-<tr>
-	<td></td>
-	<td>
-		<table class="table table-striped">
-		<tr><th>Nombre Item</th></tr>
-		{% for item in solicitud.items.all %}
-		<tr>
-			<td>{{ item.nombre }}</td>
-		</tr>
-		{% endfor %}
-		</table>
-	</td>
-</tr>
-{% endif %}
-
 {% endfor %}
 
 </table>

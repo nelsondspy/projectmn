@@ -1,0 +1,18 @@
+{# detalle de una solicitud de cambio #}
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	<h4 class="modal-title">Detalles de la Solicitud de cambio</h4>
+</div>
+<div class="modal-body">
+<p><strong>Comentarios:</strong> {{ solicitud.comentarios }}</p>
+<p><strong>[Fase]Linea Base afectada :</strong> <small>[{{ solicitud.lineabase.fase }}]</small> {{ solicitud.lineabase }}</p>
+
+<table class="table table-striped">
+		<tr><th>Ítem incluidos en la solicitud</th></tr>
+		{% for item in solicitud.items.all %}
+		<tr>
+			<td>{{ item.nombre }}</td>
+		</tr>
+		{% endfor %}
+		</table>
+</div>
