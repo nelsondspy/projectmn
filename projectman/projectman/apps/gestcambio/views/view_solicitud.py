@@ -118,7 +118,7 @@ class ListaSolicitudesView(ListView):
             object_list = SolicitudCambio.objects.filter(lineabase__fase__idproyecto_id=idproyecto).\
                 exclude(estado=SolicitudCambio.E_BORRADOR)
             self.titulo = 'Solicitudes de cambio en el proyecto'
-            self.explicacion = 'Todas las solicitudes pendientes y resueltas en el proyecto'
+            self.explicacion = 'Todas las solicitudes enviadas ,aprobadas y rechazadas en el proyecto'
 
         #solicitudes_del proyecto que hechas por el usuario
         if self.kwargs.get('idproyecto', None) and self.kwargs.get('missolicitudes', None):
