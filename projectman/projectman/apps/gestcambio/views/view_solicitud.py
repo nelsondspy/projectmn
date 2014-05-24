@@ -45,16 +45,19 @@ class CreaSolicitudView(View):
 
         else:
 
-            form = self.crea_formulario(request, self.kwargs['idlinebase'])
-            return render(request, self.template_name, {'form': form ,'nodefault': '__panel.html'})
+            formred = self.crea_formulario(request, self.kwargs['idlinebase'], form)
+            return render(request, self.template_name, {'form': formred ,'nodefault': '__panel.html'})
 
         linea_base = get_object_or_404(LineaBase, pk=int(self.kwargs['idlinebase']))
 
         return redirect(reverse('solicitudes_proyecto', \
                        kwargs={'idproyecto': linea_base.fase.idproyecto_id }))
 
-    def crea_formulario(self, request, idlinebase):
-        form = SolicitudCambioForm()
+    def crea_formulario(self, request, idlinebase , instance=None):
+        if not instance:
+            form = SolicitudCambioForm()
+        else:
+            form = instance
         #establece el solicitante por defecto
         form.fields['solicitante'].initial = request.user
 
