@@ -1,7 +1,9 @@
 {# opciones de listas de solicitudes #}
-<ul>
-	<li><a href="{% url 'solicitudes_pend_proy' idproyecto %}">Pendientes de voto</a></li>
-	<li><a href="{% url 'solicitudes_proyecto' idproyecto %}">Todas</a></li>
-	<li><a href="#"></a>Resueltas</li>
-	<li><a href="#"></a>Mis solicitudes</li>
-</ul>
+<div class="btn-toolbar" role="toolbar">
+<div class="btn-group">
+	<a href="{% url 'solicitudes_pend_proy' idproyecto %}" class="btn btn-default">Pendientes de voto</a>
+	<a href="{% url 'solicitudes_proyecto' idproyecto %}" class="btn btn-default">Todas</a>
+	<a href="#" class="btn btn-default" class="btn btn-default">Resueltas</a>
+	<a href="#" class="btn btn-default" class="btn btn-default">Mis solicitudes</a>
+</div>
+</div>
