@@ -1,3 +1,4 @@
+from datetime import date
 from django.views.generic import View
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
@@ -101,6 +102,7 @@ class VotaSolicitudView(View):
             #se aprueba o rechaza la solicitud
         (favor, contra, faltantes ) = self.estado_votacion(solicitud.pk)
         if faltantes == 0 :
+            
             if favor > contra:
                 solicitud.estado = SolicitudCambio.E_APROBADO
                 messages.success(request,'La solicitud fue APROBADA')
@@ -108,6 +110,7 @@ class VotaSolicitudView(View):
                 solicitud.estado = SolicitudCambio.E_RECHAZADO
                 messages.warning(request,'La solicitud fue RECHAZADA')
             #
+            solicitud.fecha_aprobacion = date.today()
             solicitud.save()
         
         
