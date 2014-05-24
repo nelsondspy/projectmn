@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView
-from django.db.models import Count
+from django.db import transaction
 from django.contrib import messages
 from ..models import SolicitudCambio, SolicitudVoto, ComiteProyecto
 from django.db.models import Q
@@ -75,6 +75,7 @@ class VotaSolicitudView(View):
                                              'titulo': 'Voto de solicitud',\
                                              'texto': mensaje ,\
                                              'value': 'Aceptar' })
+    @transaction.atomic
     def post(self,request, *args, **kwargs):
         """
         Guarda el nuevo voto.
@@ -95,6 +96,21 @@ class VotaSolicitudView(View):
         voto.aprobado = (accion==self.APROBAR) 
         voto.save()
         messages.success(request,'Voto enviado exitosamente')
+        #una vez registrado el voto del usuario determina si la solicitud fue aprobada
+            #o rechazada , si la cant de votos faltantes es 0 entonces 
+            #se aprueba o rechaza la solicitud
+        (favor, contra, faltantes ) = self.estado_votacion(solicitud.pk)
+        if faltantes == 0 :
+            if favor > contra:
+                solicitud.estado = SolicitudCambio.E_APROBADO
+                messages.success(request,'La solicitud fue APROBADA')
+            else:
+                solicitud.estado = SolicitudCambio.E_RECHAZADO
+                messages.warning(request,'La solicitud fue RECHAZADA')
+            #
+            solicitud.save()
+        
+        
         return redirect( reverse('solicitudes_pend_proy',kwargs={'idproyecto':proyecto_id}))
 
     @classmethod
