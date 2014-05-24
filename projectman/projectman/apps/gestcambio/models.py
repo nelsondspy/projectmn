@@ -15,6 +15,8 @@ class ComiteProyecto(models.Model):
     #claves foraneas
     proyecto = models.ForeignKey(Proyecto)
     usuario = models.ForeignKey(User)
+    incorporacion = models.DateField(auto_now=True)
+
     
     def __unicode__(self):
         return self.proyecto.__str__() +'..'+ self.usuario.__str__() 
@@ -72,7 +74,8 @@ class SolicitudCambio(models.Model):
     
     def __unicode__(self):
         return self.solicitante
-    
+
+
 class CambioTipos(models.Model):
     """
     
@@ -82,3 +85,15 @@ class CambioTipos(models.Model):
     idtipocambio = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=80, null=True, blank=False)
 
+
+class SolicitudVoto(models.Model):
+    """
+    
+    Modelo que representa al voto de un miembro ,en una solicitud de cambio.
+    
+    """
+    solicitud = models.ForeignKey(SolicitudCambio)
+    miembro = models.ForeignKey(ComiteProyecto)
+    aprobado = models.BooleanField()
+    fechavoto = models.DateField(auto_now=True, blank=False, null=False)
+    

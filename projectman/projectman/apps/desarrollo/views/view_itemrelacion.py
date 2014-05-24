@@ -40,7 +40,7 @@ class CreaRelacionView(CreateView):
         #lista los items que coinciden con las fases de proyecto 
         items = Item.objects.filter(idfase__in=fases).exclude(estado=Item.E_ELIMINADO)
         #cargamos los selectores con los items y mostrando a que fase pertenecen 
-        opciones = [(item.pk,'['+ item.idfase.__str__()[0:5]+'..] ' +\
+        opciones = [(item.pk,'['+ item.idfase.__unicode__()[0:5]+'..] ' +\
                      '[' + item.estado +']  | ' +
                       item.nombre[0:40] ) for item in items]
         form.fields['origen'].choices = opciones
@@ -60,7 +60,7 @@ class CreaRelacionView(CreateView):
         #establece el tipo de la relacion , si es interna a la fase o externa
         # es decir padre e hijo o antecesor sucesor.
         form.instance.set_tipo()
-        relacion_str = form.instance.__str__()
+        relacion_str = form.instance.__unicode__()
         origen = form.instance.origen
         destino = form.instance.destino
         #Serie de validaciones 
@@ -309,7 +309,5 @@ def lista_huerfanos_fase(fase_id):
     #exclude los items eliminados y el primer item de la primera fase 
     qs_items_huerfanos = Item.objects.filter(idfase_id=fase_id).exclude(estado=Item.E_ELIMINADO)\
         .exclude(iditem__in=qs_relaciones_fase).exclude(pk=min_item)
-        
-    return qs_items_huerfanos
-
     
+    return qs_items_huerfanos

@@ -1,0 +1,27 @@
+{# estado actual de la votacion #}
+<h3>Estado de la votacion</h3>
+<table class="table table-bordered">
+<tr>
+	<th>Miembro </th>
+	<th>Fecha Voto </th>
+	<th>Voto</th>
+</tr>
+
+{% for voto in object_list %}
+<tr>
+	<td>{{ voto.miembro }}</td>
+	<td>{{ voto.fechavoto | date:'d/m/Y' }}</td>
+	<td>{% if voto.aprobado %} Aprobado
+	<span class="glyphicon glyphicon-thumbs-up"></span>
+	{% else %}Desaprobado
+	<span class="glyphicon glyphicon-thumbs-down"></span>
+	{% endif %}
+	</td>
+</tr>
+{% endfor %}
+
+</table>
+
+Votos a favor : {{ favor }} 
+Votos en contra : {{ contra }}
+Votos faltantes : {{ faltantes }}

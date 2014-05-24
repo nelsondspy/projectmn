@@ -9,7 +9,9 @@
 	<form method="post" action="{{ action }}"> 
 	{% csrf_token %}
 	    <p>{{ texto }}</p>
+	    {% if value %}
 	    <input type="submit" value="{{ value }}" class="btn btn-success" />
+	    {% endif %}
 	</form>
 	</div>
 </div>

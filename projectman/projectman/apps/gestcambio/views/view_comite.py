@@ -19,7 +19,7 @@ class CrearComiteProyectoView(CreateView):
     """
     models = ComiteProyecto
     form_class = ComiteProyectoForm
-    template_name= 'gestcambio/form_comiteproyecto.html'
+    template_name= 'gestcambio/lista_comite.html'
     proyecto_ob = None
     ocurrio_error = False
     
@@ -41,14 +41,30 @@ class CrearComiteProyectoView(CreateView):
         
         return CreateView.form_valid(self, form)
     
-
-    
     def get_context_data(self, **kwargs):
         context = CreateView.get_context_data(self, **kwargs) 
         context['action']= reverse('comite_crear',kwargs={'idproyecto':self.kwargs['idproyecto'] })
-        if self.ocurrio_error:
-            context['nodefault'] = '__panel.html'
-        return context  
+        #if self.ocurrio_error:
+            #context['nodefault'] = '__panel.html'
+        return context
+
+    @classmethod
+    def miembros_proyecto(self, proyecto_id):
+        """
+        
+        Lista los miembros de un proyecto.
+        Verifica que la cantidad de miembros sea impar y devuelve.
+        Retorna una tupla con la lista de miembros y la validez de la lista. 
+        
+        """
+        #verifica que solo exista un solo registro del par (usuario, proyecto)
+        lista_miembros = ComiteProyecto.objects.filter(proyecto_id=proyecto_id)
+        valido = True
+        if lista_miembros.count() % 2 == 0 :
+            valido = False
+        return (lista_miembros , valido, 'La cantidad de miembros no es un numero impar,\
+             el sistema no permitira enviar solicitudes de cambio' )
+
 
 
 class ListarComiteProyectoView(ListView):
@@ -61,17 +77,30 @@ class ListarComiteProyectoView(ListView):
     template_name = TEMPL_LISTACOMITE
     
     def get_queryset(self):
-        object_list = ComiteProyecto.objects.filter(proyecto_id=self.kwargs['idproyecto'])
-        if object_list.count() % 2 == 0 :
-            messages.error(self.request, 'La cantidad de miembros no es un numero impar,\
-             el sistema no permitira enviar solicitudes de cambio !' )
+        
+        (object_list, valido, mensaje ) = \
+            CrearComiteProyectoView.miembros_proyecto(self.kwargs['idproyecto'])
+        
+        if not valido :
+            messages.error(self.request, 'ERROR : ' + mensaje )
         return object_list
     
     def get_context_data(self, **kwargs):
         context = ListView.get_context_data(self, **kwargs)
         context['idproyecto'] = self.kwargs['idproyecto']
+        context['action']= reverse('comite_crear',kwargs={'idproyecto':self.kwargs['idproyecto'] })
+        context['form'] = self.get_form()
         return context
+
+    def get_initial(self):
+        proyecto_ob = get_object_or_404(Proyecto, pk=self.kwargs['idproyecto'])
+        return { 'proyecto': proyecto_ob } # es como hacer #form.idfase=fase
     
+    def get_form(self):
+        form = ComiteProyectoForm()
+        form.initial = self.get_initial()
+        return form 
+
 
 class EliminarMiembroView(DeleteView):
     """

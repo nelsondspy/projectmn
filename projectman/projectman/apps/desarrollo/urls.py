@@ -8,6 +8,7 @@ from views.view_itemvalores import AsignaValoresItem ,ValoresItemView ,ListaVers
 
 from views.view_itemrelacion import CreaRelacionView, ListaRelacionesView, EliminaRelacionView
 from views.view_itemadjuntos import LsCrAdjuntoView
+from views.view_oth import GraficoProyecto
 
 
 urlpatterns = patterns('projectman.apps',
@@ -47,6 +48,8 @@ urlpatterns = patterns('projectman.apps',
     url(r'^relaciones/listar/(?P<idproyecto>\d+)$', ListaRelacionesView.as_view(), name="relacion_listar"),
     url(r'^relacion/eliminar/(?P<pk>\d+)$', EliminaRelacionView.as_view(), name='relacion_eliminar'),
     #listar y crear archivos adjuntos
-    url(r'^adjuntos/(?P<iditem>\d+)$', LsCrAdjuntoView.as_view(), name='itemadjuntos_ls_cr')
+    url(r'^adjuntos/(?P<iditem>\d+)$', LsCrAdjuntoView.as_view(), name='itemadjuntos_ls_cr'),
     
+    #grafico del proyecto 
+    url(r'^grafico/(?P<idproyecto>\d+)$', GraficoProyecto.as_view(), name='proyecto_grafico')
 )

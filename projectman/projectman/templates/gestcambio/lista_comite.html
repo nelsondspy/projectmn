@@ -3,21 +3,33 @@
 {% load tags %}
 
 {% block titulo %} Comite de cambios {% endblock %} 
-{% block cabecera_pagina %}Comite de cambios <small> Agregue o remueva miembros del comite </small> {% endblock %}
+{% block cabecera_pagina %}Comite de cambios
+<small> Comite del proyecto:{{ object_list.0.proyecto }}</small> {% endblock %}
 
 {% block zonatrabajo %}
 
-
-
-<a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'comite_crear' idproyecto %}">
-<span class="glyphicon glyphicon-plus-sign"> </span> Nuevo Usuario
-</a>
+<div class="panel panel-default">
+	<div class="panel-body">
+	Seleccione el usuario que formara parte del comite y presione "Agregar miembro".
+	
+	<form method="post" action="{{ action }}" >{% csrf_token %}
+	<table>
+	<tr><td>{{ form.errors }}</td></tr>
+	<tr>
+		<td>Usuario : {{ form.usuario }} {{ form.proyecto }} ...</td>
+		<td><input type="submit" class="btn btn-success" value="Agregar miembro"></td>
+	</tr>
+	</table>
+	</form>
+	</div>
+</div>
 
 <table class="table table-striped">
-
 <tr>
     <th>Usuario</th>
-	<th>Proyecto</th>
+    <th>Nombre y Apellido</th>
+    <th>Email</th>
+	<th>Fecha Incorporación</th>
 	<th colspan="2">Acciones</th>
 </tr>
 
@@ -25,7 +37,9 @@
 {% for miembro in object_list %}
 <tr>
 	<td>{{ miembro.usuario }}</td>
-	<td>{{ miembro.proyecto }}</td>
+	<td>{{ miembro.usuario.last_name }}</td>
+	<td><a href="mailto:{{ miembro.usuario.email }}">{{ miembro.usuario.email }}</a></td>
+	<td>{{ miembro.incorporacion | date:'d/m/Y' }}</td>
 	
 	<td>
 		<a href="{% url 'comite_eliminar' miembro.pk %}"  data-target="#form_modal" data-toggle="modal" ><span class="glyphicon glyphicon-remove"></span> Eliminar </a>
