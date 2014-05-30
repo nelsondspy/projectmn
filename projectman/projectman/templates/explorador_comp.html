@@ -37,7 +37,7 @@
 	</a>
 	
 	<a class="btn btn-default" href ="{% url 'proyecto_grafico' proyecto.idproyecto %}">
-	    <span class="glyphicon glyphicon-eye-open"></span> 
+	    <span class="glyphicon glyphicon-picture"></span> 
 	    Gráfico del proyecto 
 	</a>
 	
@@ -125,6 +125,9 @@
 	       {% endif %}
 	       {% if item.estado == EST_ITEM.E_DESAPROBADO %}
 	           <span class="glyphicon glyphicon-fire"></span>
+	       {% endif %}
+	       {% if item.estado == EST_ITEM.E_REVISION %}
+	       <span class="glyphicon glyphicon-eye-open"></span>
 	       {% endif %}
 	       <small>{{ item.estado }}</small> 
 	       </td>
