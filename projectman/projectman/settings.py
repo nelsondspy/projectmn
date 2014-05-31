@@ -7,10 +7,11 @@ https://docs.djangoproject.com/en/1.6/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
-
+ 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from django.conf.global_settings import TEMPLATE_DIRS
+#from django.conf.global_settings import TEMPLATE_DIRS , 
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -63,15 +64,16 @@ WSGI_APPLICATION = 'projectman.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.pm.sqlite3'),
     }
 }
-
 """
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -82,7 +84,7 @@ DATABASES = {
         'PORT': '5432'
     }
 }
-"""
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -109,7 +111,7 @@ _ROOT_PATH = os.path.dirname(__file__)
 TEMPLATE_DIRS=os.path.join(_ROOT_PATH, 'templates')
                      
 STATICFILES_DIRS = (  os.path.join(BASE_DIR, 'static'),
-('base','/home/nelsonds/projectmn/projectman/projectman/static'))
+('base', os.path.join(_ROOT_PATH, 'static' ) ))
 
 LOGIN_URL = '/admin/login'
 
@@ -123,3 +125,4 @@ Field.default_error_messages = {
 
 SITE_ID = 1 
 
+TEMPLATE_CONTEXT_PROCESSORS += ("django.core.context_processors.request",)
