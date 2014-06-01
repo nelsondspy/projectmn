@@ -5,13 +5,14 @@ from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
-from view_comite import  CrearComiteProyectoView
+from django.db import transaction
 from django.contrib import messages
 
+from view_comite import  CrearComiteProyectoView
 from ..models import LineaBase
 from ..models import SolicitudCambio, ComiteProyecto
 from ..forms import SolicitudCambioForm
-
+from ...desarrollo.models import Item
 
 class CreaSolicitudView(View):
     template_name = 'gestcambio/form_solicitudcambio.html'
@@ -144,7 +145,8 @@ class ListaSolicitudesView(ListView):
 
 class SetSolicitudEnviada(View):
     template_name ='form_confirm_accion.html'
-
+    
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
         """
 
@@ -236,6 +238,7 @@ class SetSolicitudEjecutada(View):
     """
     template_name ='form_confirm_accion.html'
 
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
         """
 
@@ -247,6 +250,12 @@ class SetSolicitudEjecutada(View):
         solicitud_aprob.estado = SolicitudCambio.E_TERMINADO
         solicitud_aprob.save()
         messages.success(request, 'La solicitud fue terminada')
+
+        #se debe reestablecer el estado de los items afectados a bloqueado
+        lista_items = solicitud_aprob.items.all()
+        for item in lista_items:
+            item.estado = Item.E_BLOQUEADO
+            item.save()
 
         #redirecciona a la lista de solicitudes del usuario
         idproyecto = solicitud_aprob.lineabase.fase.idproyecto_id
