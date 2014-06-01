@@ -32,7 +32,7 @@
   {% endif %}
   </li>
 <li>
-{% if solicitud.estado == EST_SOLICITUD.E_APROBADO %}
+{% if solicitud.estado == EST_SOLICITUD.E_APROBADO and usuario_essolic %}
 	<a href="{% url 'expl_nivelfase' solicitud.lineabase.fase.idproyecto_id solicitud.lineabase.fase_id %}" >
 	<span class="glyphicon glyphicon-share-alt"></span>Ejecutar</a>
 {% endif %}

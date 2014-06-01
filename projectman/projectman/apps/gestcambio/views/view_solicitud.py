@@ -9,7 +9,7 @@ from view_comite import  CrearComiteProyectoView
 from django.contrib import messages
 
 from ..models import LineaBase
-from ..models import SolicitudCambio
+from ..models import SolicitudCambio, ComiteProyecto
 from ..forms import SolicitudCambioForm
 
 
@@ -88,6 +88,7 @@ class ListaSolicitudesView(ListView):
     template_name = 'gestcambio/lista_solicitudes.html'
     titulo = ''
     explicacion = ''
+    usuario_essolic = False
 
     def get_context_data(self, **kwargs):
         context = ListView.get_context_data(self, **kwargs)
@@ -100,12 +101,17 @@ class ListaSolicitudesView(ListView):
         #solicitudes_proyecto
         if self.kwargs.get('idproyecto', None):
             context['idproyecto'] = self.kwargs['idproyecto']
+        
+        EST_SOLICITUD = {'E_APROBADO': SolicitudCambio.E_APROBADO, \
+                         'E_RECHAZADO': SolicitudCambio.E_RECHAZADO,\
+                         'E_ENVIADO': SolicitudCambio.E_ENVIADO, \
+                         'E_TERMINADO': SolicitudCambio.E_TERMINADO,\
+                         'E_BORRADOR': SolicitudCambio.E_BORRADOR }
+        #variable que indica si el usuario es miembro del comite
+        if self.usuario_essolic:
+            context['usuario_essolic'] = self.usuario_essolic
             
-        context['E_APROBADO'] = SolicitudCambio.E_APROBADO
-        context['E_RECHAZADO'] = SolicitudCambio.E_RECHAZADO
-        context['E_ENVIADO'] = SolicitudCambio.E_ENVIADO
-        context['E_TERMINADO'] = SolicitudCambio.E_TERMINADO
-        context['E_BORRADOR'] = SolicitudCambio.E_BORRADOR
+        context['EST_SOLICITUD'] = EST_SOLICITUD
         context['titulo'] = self.titulo 
         context['explicacion'] = self.explicacion 
 
@@ -125,6 +131,11 @@ class ListaSolicitudesView(ListView):
             idproyecto = self.kwargs.get('idproyecto', None)
             object_list = SolicitudCambio.objects.filter(lineabase__fase__idproyecto_id=idproyecto).\
                 filter(solicitante=self.request.user)
+            
+            #indica si el usuario fue el que hizo la solicitud y permite ocultar opciones 
+            if object_list.count()> 0:
+                self.usuario_essolic = object_list[0].solicitante == self.request.user
+            
             self.titulo = 'Mis solicitudes de cambio'
             self.explicacion = 'Todas las solicitudes creadas por mi (aprobadas, rechazadas , enviadas y  en borrador) '
 
