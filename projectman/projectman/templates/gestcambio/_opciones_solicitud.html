@@ -1,0 +1,42 @@
+{#lista de opciones para una solicitud #}
+<div class="dropdown">
+  
+  <a id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="#">
+  <span class="glyphicon glyphicon-asterisk"></span>
+    Acciones <span class="caret"></span>
+  </a>
+  
+  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">  
+
+
+	<li>{% if solicitud.estado == EST_SOLICITUD.E_BORRADOR %}
+	<a href="{% url 'solicitud_envia' solicitud.pk %}" data-target="#form_modal" data-toggle="modal" >Enviar</a>
+	{% else %}
+		{% include '_msg_noperm.html' with msg='Enviar' %}
+	{% endif %}
+	</li>
+	<li>{% if solicitud.estado == EST_SOLICITUD.E_BORRADOR %}
+	<a href="{% url 'solicitud_edita' solicitud.pk %}" data-target="#form_modal" data-toggle="modal" >Modificar</a>
+	{% else %}
+
+	{% include '_msg_noperm.html' with msg='Modificar' %}
+
+	{% endif %}
+	</li>
+  <li>{% if solicitud.estado == EST_SOLICITUD.E_BORRADOR %}
+  <a href="{% url 'solicitud_eliminar' solicitud.pk %}" data-target="#form_modal" data-toggle="modal" >Eliminar</a>
+  {% else %}
+
+  {% include '_msg_noperm.html' with msg='Eliminar' %}
+
+  {% endif %}
+  </li>
+<li>
+{% if solicitud.estado == EST_SOLICITUD.E_APROBADO %}
+	<a href="{% url 'expl_nivelfase' solicitud.lineabase.fase.idproyecto_id solicitud.lineabase.fase_id %}" >
+	<span class="glyphicon glyphicon-share-alt"></span>Ejecutar</a>
+{% endif %}
+</li>
+
+
+</ul>
