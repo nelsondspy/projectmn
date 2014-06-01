@@ -76,6 +76,8 @@ class SolicitudCambio(models.Model):
         return self.solicitante
 
 
+
+
 class CambioTipos(models.Model):
     """
     
