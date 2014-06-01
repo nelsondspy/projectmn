@@ -225,5 +225,45 @@ class DetalleSolicitud(DetailView):
     model = SolicitudCambio
     template_name = 'gestcambio/detalle_solicitudcambio.html'
 
+
+class SetSolicitudEjecutada(View):
+    """
     
+    Vista que permite establecer el estado de una solicitud de aprobada a terminada.
+    Muestra un mensaje solicitando confirmacion.
+    Si el usuario acepta envia una peticion post y realizar el cambio de estado. 
     
+    """
+    template_name ='form_confirm_accion.html'
+
+    def post(self, request, *args, **kwargs):
+        """
+
+        Establece el estado de la solicitud a aprobada
+
+        """
+        #establece el estado de la solicitud a enviada
+        solicitud_aprob = get_object_or_404(SolicitudCambio, pk=self.kwargs['pk'])
+        solicitud_aprob.estado = SolicitudCambio.E_TERMINADO
+        solicitud_aprob.save()
+        messages.success(request, 'La solicitud fue terminada')
+
+        #redirecciona a la lista de solicitudes del usuario
+        idproyecto = solicitud_aprob.lineabase.fase.idproyecto_id
+        return redirect(reverse('solicitudes_usuario', kwargs={'idproyecto' : idproyecto,\
+                                                                'missolicitudes': 1}))
+
+    def get(self,request, pk ):
+        """
+
+        Despliega el formulario de confirmacion generico.
+        Con valores particulares para confirmar la terminacion de la solicitud.
+
+        """
+        confirm = {'action':reverse('solicitud_terminar',kwargs={'pk':pk } ),\
+                    'titulo': 'Terminar la solicitud',\
+                    'texto': '¿Está seguro que desea terminar la ejecucion de la solicitud ?',\
+                    'value': 'Aceptar' }
+        
+        return render(request, self.template_name, confirm)
+

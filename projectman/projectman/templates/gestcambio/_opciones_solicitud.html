@@ -38,5 +38,11 @@
 {% endif %}
 </li>
 
+<li>
+{% if solicitud.estado == EST_SOLICITUD.E_APROBADO and usuario_essolic %}
+	<a href="{% url 'solicitud_terminar' solicitud.pk %}" data-target="#form_modal" data-toggle="modal">
+	<span class="glyphicon glyphicon-ok"></span>Terminar</a>
+{% endif %}
+</li>
 
 </ul>
