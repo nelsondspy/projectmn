@@ -105,7 +105,15 @@
      {% else %}
       		{% include "_msg_noperm.html" with msg="Crear item" %}
      {% endif %}
-
+     
+     {% if items_afectados %}{#si el usario tiene solicitudes aprobadas y sin utilizar #}
+	     <div class="alert alert-warning"><span class="glyphicon glyphicon-tag"></span>
+	     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	     ..<strong>Item cuya modificación está aprobada. Realice los cambios correspondientes.</strong>
+	     </div>
+     {% endif %}
+     
+     <!-- LISTA DE ITEMS  -->
      <table class="table table-condensed">
      <tr>
 	     <th>#</th>
@@ -115,8 +123,14 @@
 	     <th>Acciones</th>
      </tr>
         {% for item in lista_items %}
-        <tr>
-           <td>{{ item.numero }}</td>
+        <tr {% if item.pk in items_afectados %}class="warning"{% endif %}>
+           <td>{{ item.numero }}
+           	       {# el item podria estar afectado por una solicitud de cambio aprobada #}
+	       {% if item.pk in items_afectados %}
+	       <span class="glyphicon glyphicon-tag"></span>
+	       {% endif %}
+           
+           </td>
            <td><a href="{% url 'valores_listar' item.pk %}" data-target="#form_modal"data-toggle="modal">{{ item.nombre }}</a></td>
            <td>{{ item.descripcion }}</td>
            <td>
@@ -131,7 +145,8 @@
 	       {% endif %}
 	       <small>{{ item.estado }}</small> 
 	       </td>
-           <td>{% include "desarrollo/_opciones_item.html" with iditem=item.pk idfase=fase.pk estado=item.estado EST_ITEM=EST_ITEM %}</td>
+
+           <td>{% include "desarrollo/_opciones_item.html" with iditem=item.pk idfase=fase.pk estado=item.estado EST_ITEM=EST_ITEM items_afectados=items_afectados %}</td>
         </tr>
         {% empty %}
            <p> Fase aún sin items </p>
