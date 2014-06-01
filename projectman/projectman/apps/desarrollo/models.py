@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from datetime import date
  
 from projectman.apps.admin.models import Fase
-import os 
+
 
 class ItemTipos(models.Model):
     """
@@ -151,6 +151,19 @@ def carga_atributos_comunes():
     attr2= ItemAtributos(nombre='prioridad',tipodato='N',idtipoitem=tipo_defecto)
     attr2.save()
 
+
+def atributo_complejidad():
+    """
+    
+    Metodo que retorna el objeto,  atributo complejidad
+    
+    """
+    tipo_defecto = ItemTipos.objects.filter(es_supertipo=True)
+    if tipo_defecto.count() > 0:
+        attr1 = ItemAtributos.objects.filter(nombre='complejidad').\
+            filter(idtipoitem=tipo_defecto)
+        return attr1
+    return None
 
 
 class ItemRelacion(models.Model):
