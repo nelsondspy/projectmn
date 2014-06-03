@@ -123,14 +123,20 @@ class ListaVersionesValor(ListView):
     """
     template_name = 'desarrollo/lista_versionesitem.html'
     model = ItemAtributosValores
+    permitir_revertir = True
     
     def get_queryset(self):
+        item = get_object_or_404(Item, pk=self.kwargs['iditem'])
+        if item.estado == Item.E_BLOQUEADO:
+            self.permitir_revertir = False
+        
         object_list = ItemAtributosValores.objects.filter(iditem_id=self.kwargs['iditem'])
         return object_list
 
     def get_context_data(self, **kwargs):
         context = ListView.get_context_data(self, **kwargs)
         context['iditem'] = self.kwargs['iditem']
+        context['permitir_revertir']= self.permitir_revertir
         return context
 
 

@@ -10,9 +10,9 @@ from django.contrib import messages
 
 from view_comite import  CrearComiteProyectoView
 from ..models import LineaBase
-from ..models import SolicitudCambio, ComiteProyecto
+from ..models import SolicitudCambio
 from ..forms import SolicitudCambioForm
-from ...desarrollo.models import Item
+from ...desarrollo.models import Item, ItemAtributosValores
 
 class CreaSolicitudView(View):
     template_name = 'gestcambio/form_solicitudcambio.html'
@@ -256,6 +256,14 @@ class SetSolicitudEjecutada(View):
         for item in lista_items:
             item.estado = Item.E_BLOQUEADO
             item.save()
+            #valores actuales del item, afectados por la linea base 
+            valores = ItemAtributosValores.objects.filter(iditem=item).\
+                filter(usoactual=True)
+            #establece como true el indicador 
+                #que el valor se encuentra bajo linea base
+            for val_act in valores:
+                val_act.enlineabase =  True
+                val_act.save()
 
         #redirecciona a la lista de solicitudes del usuario
         idproyecto = solicitud_aprob.lineabase.fase.idproyecto_id

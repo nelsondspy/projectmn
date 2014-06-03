@@ -9,9 +9,10 @@ from django.db import transaction
 #modelos 
 from ..models import LineaBase
 from ...admin.models import Fase 
+from ...desarrollo.models import ItemAtributosValores
 
 #formularios
-from ...desarrollo.views.view_itemrelacion import valid_item_eshuerfano ,lista_huerfanos_fase
+from ...desarrollo.views.view_itemrelacion import lista_huerfanos_fase
 from ..forms import LineaBaseForm
 from ...desarrollo.models import Item
 
@@ -57,10 +58,21 @@ class CreaLineaBase(View):
             lineabase_pers = LineaBase.objects.get(pk=lineabase.pk)
             items = lineabase_pers.items.all()
             
+            
             #establece el estado de los items selecionados en la lb a bloqueado
             for item in items:
                 item.estado = Item.E_BLOQUEADO
                 item.save()
+                
+                #valores actuales del item, afectados por la linea base 
+                valores = ItemAtributosValores.objects.filter(iditem=item).\
+                    filter(usoactual=True)
+                #establece como true el indicador 
+                    #que el valor se encuentra bajo linea base
+                for val_act in valores:
+                    val_act.enlineabase =  True
+                    val_act.save()
+            
         else:
             idfase = int(request.POST.get('fase',None))
                 #lista de huerfanos 

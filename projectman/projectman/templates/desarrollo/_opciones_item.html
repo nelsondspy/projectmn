@@ -57,13 +57,13 @@
  <li>
  {#solo si tiene el permiso de revertir y esta en estado desarrollo o afectado por una solicitud  #}
 {% if item_revertir %}
-{% if estado == EST_ITEM.E_DESAPROBADO or estado == EST_ITEM.E_REVISION and iditem in items_afectados %}
+{# if estado == EST_ITEM.E_DESAPROBADO or estado == EST_ITEM.E_REVISION and iditem in items_afectados #}
    <a href="{% url 'valores_versiones' iditem %}">
    <span class="glyphicon glyphicon-arrow-left"></span> <span class="glyphicon glyphicon-tasks"></span>
    Versiones de valores </a>
-{% else %}
-	{% include "_msg_noperm.html" with msg="Versiones de valores" %}
-{% endif %}
+{# else #}
+	{# include "_msg_noperm.html" with msg="Versiones de valores" #}
+{# endif #}
 {% else %}
 	{% include "_msg_noperm.html" with msg="Versiones de valores" %}
 {% endif %}
