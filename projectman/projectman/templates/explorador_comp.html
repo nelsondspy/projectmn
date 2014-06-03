@@ -66,16 +66,23 @@
              </strong>
         </a>
         <p>{{ fase.descripcion}}</p>
-        <ul>
-        <li>
-        <small>Complejidad Porcentual de la fase : {{ complejidad_fase_porcen }}</small></li>
-        <li><small>Sumatoria de complejidades de items : {{ complejidad_fase }}</small></li>
-        </ul>
+
+        <!--  PANEL COMPLEJIDAD FASE -->
+        <div class="panel panel-default">
+	        <small><strong>Complejidad</strong></small>
+	        <ul>
+	        <li><small>Complejidad Porcentual de la fase : {{ complejidad_fase_porcen }}</small></li>
+	        <li><small>Sumatoria de complejidades de items : {{ complejidad_fase }}</small></li>
+	        </ul>
+        </div>
+        <!-- FIN PANEL COMPLEJIDAD -->
+
         {% else %}
         <a href="{% url 'expl_nivelfase' proyecto.idproyecto fase.idfase %}">
             <span class ="glyphicon glyphicon-folder-close"></span>
             {{ fase.nombre }}
         </a>
+        <p>{{ fase.descripcion}}</p>
         {% endifequal %}
    </div>
 <!-- ESTADO DE LA FASE  -->
