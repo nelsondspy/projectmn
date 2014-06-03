@@ -116,6 +116,7 @@ class ItemAtributosValores(models.Model):
     usoactual = models.BooleanField()
     creacion = models.DateField(auto_now=True)
     version = models.IntegerField(default=0)
+    enlineabase = models.BooleanField(default=False)
     #relaciones 
     iditem = models.ForeignKey(Item)
     idatributo = models.ForeignKey(ItemAtributos)
