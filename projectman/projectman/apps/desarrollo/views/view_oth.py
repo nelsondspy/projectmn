@@ -6,6 +6,7 @@ from django.db.models import Q
 from projectman.apps.admin.models import  Proyecto, Fase
 from ..models import  Item, ItemRelacion
 from ...gestcambio.models import  SolicitudCambio
+from ...gestcambio.views.view_calcimpacto import calc_complejidad_fase, calc_complejidad_projecto 
 
 #nombres de variables de sesion 
 SESS_IDPROYECTO = 'idproyecto'
@@ -82,6 +83,9 @@ def editor_componentes(request, idproyecto=None, idfase=None):
     # cuyo estado no sea eliminado 
     items_afectados = None
     lista_items = None
+    complejidad_proyecto = None
+    complejidad_fase = None
+    comp_fase_porcen = None
     if idfase:
         request.session[SESS_IDFASE] = idfase
         lista_items = Item.objects.order_by('numero').\
@@ -98,7 +102,11 @@ def editor_componentes(request, idproyecto=None, idfase=None):
             items_afectados = []
             for sub_iditem in lc_items[0]:
                 items_afectados.append(sub_iditem['iditem'])
-        
+
+        #complejidad
+        complejidad_proyecto = calc_complejidad_projecto(idproyecto) 
+        complejidad_fase = calc_complejidad_fase(idfase)
+        comp_fase_porcen = "%.2f%%" % ((float(complejidad_fase) / float(complejidad_proyecto)) * 100)
         idfase = int(idfase) # en la plantilla se requier el valor entero no el unicode
 
     #valores constantes de estado para las fase
@@ -109,7 +117,10 @@ def editor_componentes(request, idproyecto=None, idfase=None):
                     'lista_fases':lista_fases ,\
                      'lista_items':lista_items, 'I_BLOQ':Item.E_BLOQUEADO,\
                      'EST_FASE':  estados_fase, 'EST_ITEM': estados_item,\
-                     'items_afectados': items_afectados })
+                     'items_afectados': items_afectados,\
+                     'complejidad_fase': complejidad_fase ,\
+                     'complejidad_proyecto': complejidad_proyecto,\
+                     'complejidad_fase_porcen': comp_fase_porcen })
 
 
 class GraficoProyecto(ListView):

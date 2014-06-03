@@ -58,18 +58,25 @@
    <div class="row">
 
    <div  class="col-md-8">
-        <a href="{% url 'expl_nivelfase' proyecto.idproyecto fase.idfase %}">
         {% ifequal fase.idfase idfase %}
+        <a href="{% url 'expl_nivelfase' proyecto.idproyecto fase.idfase %}">
              <span class ="glyphicon glyphicon-folder-open"></span> 
              <strong>
              {{ fase.nombre}}
              </strong>
+        </a>
+        <p>{{ fase.descripcion}}</p>
+        <ul>
+        <li>
+        <small>Complejidad Porcentual de la fase : {{ complejidad_fase_porcen }}</small></li>
+        <li><small>Sumatoria de complejidades de items : {{ complejidad_fase }}</small></li>
+        </ul>
         {% else %}
+        <a href="{% url 'expl_nivelfase' proyecto.idproyecto fase.idfase %}">
             <span class ="glyphicon glyphicon-folder-close"></span>
             {{ fase.nombre }}
+        </a>
         {% endifequal %}
-         </a>
-         <p>{{ fase.descripcion}}</p>
    </div>
 <!-- ESTADO DE LA FASE  -->
 <div class="col-md-2">
