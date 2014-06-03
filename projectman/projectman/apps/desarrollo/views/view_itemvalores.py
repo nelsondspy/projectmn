@@ -69,19 +69,20 @@ class AsignaValoresItem(View):
         item_part = get_object_or_404(Item, pk=int(self.kwargs.get('iditem',None))) 
         valores_item_part = ValoresItemView.qs_valores_actuales(item_part.pk)
 
-        #puede que sea la version inicial de los valores del item
-        if not valores_item_part[0].version == 0:
-            #Cada valor del item se establece con valor de usoactual false
-            #porque esta sera la version anterior
-            for valor in valores_item_part:
-                valor.pk = None # se fuerza a guardar un nuevo registro
-                valor.usoactual = False
-                valor.save()
                 
         #recibe los parametros por post
         formset = self.ValoresFormSet(request.POST)
         
         if formset.is_valid():
+            #puede que sea la version inicial de los valores del item
+            if not valores_item_part[0].version == 0:
+                #Cada valor del item se establece con valor de usoactual false
+                #porque esta sera la version anterior
+                for valor in valores_item_part:
+                    valor.pk = None # se fuerza a guardar un nuevo registro
+                    valor.usoactual = False
+                    valor.save()
+            #
             formset.save()
             #aun no sabemos como modificar instancias de un formset
             valores_item_part = ValoresItemView.qs_valores_actuales(item_part.pk)
@@ -111,7 +112,7 @@ class ValoresItemView(ListView):
      
     @classmethod
     def qs_valores_actuales(self, iditem):
-        return ItemAtributosValores.objects.filter(Q(usoactual=True) & Q(iditem_id=iditem)) 
+        return ItemAtributosValores.objects.filter(Q(usoactual=True) & Q(iditem_id=iditem))
 
 
 class ListaVersionesValor(ListView):
