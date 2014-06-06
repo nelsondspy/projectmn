@@ -290,14 +290,16 @@ def valid_item_eshuerfano(iditem):
     
 def lista_huerfanos_fase(fase_id):
     """
+    
     Funcion que devuelve un queryset de los items en una fase \
     que cumplen las siguientes condiciones:
     - los items no estan eliminados 
     
-    
     """
     #obtiene la primera fase del proyecto (la que tiene menor id)
-    min_fase = Fase.objects.aggregate(min_fase=Min('idfase')).get('min_fase')
+    fase =  get_object_or_404(Fase, pk=fase_id)
+    min_fase = Fase.objects.filter(idproyecto=fase.idproyecto).\
+         aggregate(min_fase=Min('idfase')).get('min_fase')
     qs_fase = Item.objects.filter(idfase_id=min_fase).\
             exclude(estado=Item.E_ELIMINADO)
     #obtiene el primer item de la fase (el que tiene menor id)
