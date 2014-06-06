@@ -124,6 +124,9 @@
 	     <div class="alert alert-warning"><span class="glyphicon glyphicon-tag"></span>
 	     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 	     ..<strong>Item cuya modificación está aprobada. Realice los cambios correspondientes.</strong>
+	       <p>Una vez realizado el cambio solicitudo, utilice la opción "Terminar" en la 
+	       	<a href="{% url 'solicitudes_usuario' proyecto.pk 1 %}" class="alert-link">Lista de solicitudes</a>
+	       </p>
 	     </div>
      {% endif %}
      
@@ -174,6 +177,5 @@
  {% endfor %} {# fin de listar fases #}
  
 </div>
-
 
 {% endblock %}

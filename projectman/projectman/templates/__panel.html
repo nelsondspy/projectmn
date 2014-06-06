@@ -12,7 +12,7 @@
 
     <title>{% block titulo %}Panel de Administración{% endblock %}</title>
 
-    <!-- Bootstrap core CSS --> 
+    <!-- Bootstrap core CSS  --> 
     
     <link href="{% static "base/bootstrap/css/spacelab.bootstrap.css" %}" rel="stylesheet">
 
@@ -24,6 +24,7 @@
   </head>
 
   <body>
+
     <!-- <div class="navbar navbar-fixed-top" role="navigation"> -->
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     
@@ -38,13 +39,18 @@
           <a class="navbar-brand" href="#"><img alt="" src="{% static "base/images/logo_pm_nav.png" %}"> Software </a>
         </div>
         <div class="navbar-collapse collapse">
+
           <ul class="nav navbar-nav navbar-right">
             
-            <li><a href="{% url 'usuario_detalle' user.id %}">Perfil</a></li>
+            <li><a href="{% url 'usuario_detalle' user.id %}" >
+            	<span class="glyphicon glyphicon-user"></span> Perfil</a>
+            </li>
+            <!--
             <li><a href="#">Mensajes</a></li>
             <li><a href="#">Opciones</a></li>
-            <li><a href="#">Ayuda</a></li>
-            <li><a href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
+            -->
+            <li><a href="#"><span class="glyphicon glyphicon-question-sign"></span> Ayuda</a></li>
+            <li><a href="{% url 'cerrar_sesion' %}"><span class="glyphicon glyphicon-log-out"></span> Cerrar sesión</a></li>
           </ul>
           
           <ul class="nav navbar-nav navbar-left">
@@ -52,13 +58,12 @@
           </ul>
           
           {# bloques para definir el comportamiento del buscador( action y helptext,)  #}
-          <form class="navbar-form navbar-right" action="{% block buscador_url %}{% endblock %}" method="get">
+          <form class="navbar-form navbar-right" action="{% block buscador_url %} {% url 'proyectos_asignados' %} {% endblock %}" method="get">
             {% csrf_token %}
             <input name="busqueda" class="form-control" placeholder="{% block buscador_texto %}{% endblock %}" type="text">
            
           </form>
 
-          
         </div>
       </div>
     </div>
@@ -76,13 +81,6 @@
         {% block cabecera_zonatrabajo %}
         
         {% block barra_navegacion %} {% endblock %}
-        <!--
-          <ol class="breadcrumb">
-  			<li><a href="#">Home</a></li>
-  			<li><a href="#">Library</a></li>
-  			<li class="active">Data</li>
-		   </ol>
-        -->
         
           <h1 class="page-header">{% block cabecera_pagina %}{% endblock %}</h1>
         {% endblock %}  
@@ -98,8 +96,6 @@
           
           <div class="row placeholders">
             <div class="col-xs-6 col-sm-3 placeholder">
-              
-              
             </div>  
           </div>
         </div>
@@ -167,8 +163,5 @@
     });
 	
     </script>
-    <!--
-      <script src="panel_files/bootstrap/docs.js"></script>
-  -->
-   
+
 </body></html>
