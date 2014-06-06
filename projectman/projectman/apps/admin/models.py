@@ -21,7 +21,7 @@ class Proyecto (models.Model):
     descripcion = models.CharField(max_length=80 , verbose_name='Descripcion' ,null=True, blank=True)
     fechainicio = models.DateField(verbose_name='Fecha Inicio', null=True)
     fechafin = models.DateField(verbose_name='Fecha finalizacion',null=True)
-    estado = models.CharField(max_length=3, choices=ESTADOS)
+    estado = models.CharField(max_length=3, default=E_NOINICIADO)
 
     def __unicode__(self):
         return self.nombre

@@ -20,6 +20,7 @@ from views import EliminaRolFaseView
 from views import ListaRolFasesView
 from views import IniciarProyecto
 from views import FinalizaFase
+from views import FinalizaProyecto
 
 urlpatterns = patterns('projectman.apps',
     url(r'^doc/', include('django.contrib.admindocs.urls')),
@@ -68,6 +69,8 @@ urlpatterns = patterns('projectman.apps',
     #lista los proyectos asignados al usuario
     url (r'^proyectos/listaasig$', ListaProyectosUsuario.as_view(), name='proyectos_asignados'),
     url (r'^proyecto/iniciar/(?P<pk>\d+)$', IniciarProyecto.as_view(), name='iniciar_proyecto'),
+    url (r'^proyecto/finalizar/(?P<pk>\d+)$', FinalizaProyecto.as_view(), name='finalizar_proyecto'),
+
     #finalizar fase 
-    url (r'^fase/finalizar/(?P<pk>\d+)$', FinalizaFase.as_view(), name='finalizar_fase')
+    url (r'^fase/finalizar/(?P<pk>\d+)$', FinalizaFase.as_view(), name='finalizar_fase'),
 )

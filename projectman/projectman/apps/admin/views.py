@@ -657,7 +657,7 @@ class FinalizaFase(View):
     def post(self, request, *args, **kwargs):
         """
 
-        Establece el estado de la solicitud a enviada
+        Establece el estado de la fase a finalizada
 
         """
         #establece el estado de la solicitud a enviada
@@ -703,4 +703,61 @@ class FinalizaFase(View):
             return (False, 'ERROR : Verifique que todos los items esten en línea base' )
         
         return (True , 'EXITO : Fase finalizada correctamente ')
+
+
+class FinalizaProyecto(View):
+    """
+    
+    Vista que permite Finalizar el proyecto.
+    Valida que las fases esten finalizadas.
+    
+    """
+    template_name ='form_confirm_accion.html'
+
+    def post(self, request, *args, **kwargs):
+        """
+
+        Establece el estado del proyecto a finalizado
+
+        """
+        #establece el estado de la solicitud a enviada
+        proyecto_fin = get_object_or_404(Proyecto, pk=self.kwargs['pk'])
+        #serie de validaciones 
+        (validez, mensaje ) = self.valid_finalizar_proyecto(self.kwargs['pk'])
+        
+        if not validez:
+            messages.error(request,mensaje )
+            return redirect(get_url_edicion_actual(request, 0))
+        
+        proyecto_fin.estado = Proyecto.E_FINALIZADO
+        proyecto_fin.save()
+        messages.info(request, mensaje )
+        return redirect(get_url_edicion_actual(request, 0))
+
+    def get(self,request, pk ):
+        """
+
+        Despliega el formulario de confirmacion generico.
+        Con valores particulares para finalizar el proyecto.
+
+        """
+        return render(request, self.template_name, {'action':reverse('finalizar_proyecto',\
+                                                              kwargs={'pk':pk } ),\
+                                             'titulo': 'Finalización del proyecto',\
+                                             'texto': '¿Está seguro que desea finalizar el proyecto?',\
+                                             'value': 'Aceptar' })
+    @classmethod
+    def valid_finalizar_proyecto(self, idproyecto):
+        """
+        
+        Valida la Finalizacion el proyecto.
+        Retorna verdadero si es posible finalizar el proyecto.
+        
+        """
+        lista_fases = Fase.objects.filter(idproyecto_id=idproyecto)
+        for fase_i in lista_fases:
+            if fase_i.estado != Fase.E_FINALIZADO:
+                return (False, 'ERROR : Debe finalizar todas las fases antes de finalizar el proyecto')
+        
+        return (True, 'Proyecto Finalizado correctamente')
     
