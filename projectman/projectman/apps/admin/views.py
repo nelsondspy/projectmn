@@ -14,6 +14,9 @@ from django.views.generic import ListView, View
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.core.urlresolvers import  reverse
 from django.db.models import Q
+
+from datetime import date
+
 #Modelos y formularios propios de la aplicacion
 from models import Proyecto
 from models import Fase 
@@ -58,6 +61,7 @@ class IniciarProyecto(UpdateView):
     def post(self, request, *args, **kwargs):
         proy_iniciar = get_object_or_404(Proyecto, idproyecto=self.kwargs['pk'])
         proy_iniciar.estado = Proyecto.E_INICIADO
+        proy_iniciar.fechainicio = date.today()
         proy_iniciar.save()
         return redirect (reverse('proyectos_asignados'))
          
@@ -729,7 +733,13 @@ class FinalizaProyecto(View):
             messages.error(request,mensaje )
             return redirect(get_url_edicion_actual(request, 0))
         
+        #valida el estado del proyecto 
+        if proyecto_fin.estado != Proyecto.E_INICIADO:
+            messages.error(request, 'ERROR : El proyecto no fue iniciado o ya fue finalizado' )
+            return redirect(get_url_edicion_actual(request, 0))
+        
         proyecto_fin.estado = Proyecto.E_FINALIZADO
+        proyecto_fin.fechafin = date.today()
         proyecto_fin.save()
         messages.info(request, mensaje )
         return redirect(get_url_edicion_actual(request, 0))
