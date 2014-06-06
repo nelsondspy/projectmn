@@ -5,8 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from projectman.apps.admin.models import  Proyecto, Fase
 from ..models import  Item, ItemRelacion
-from ...gestcambio.models import  SolicitudCambio
+from ...gestcambio.models import  SolicitudCambio , SolicitudVoto
 from ...gestcambio.views.view_calcimpacto import calc_complejidad_fase, calc_complejidad_projecto 
+
 
 #nombres de variables de sesion 
 SESS_IDPROYECTO = 'idproyecto'
@@ -56,6 +57,7 @@ def get_url_edicion_actual(request, nivel=0):
         return reverse('editor_componentes',kwargs={'idproyecto': idproyecto })
 
     if nivel == 1:
+        
         idfase = int(request.session[SESS_IDFASE])
         return reverse('expl_nivelfase',kwargs={'idproyecto': idproyecto , 
                                                 'idfase' : idfase})
@@ -105,7 +107,9 @@ def editor_componentes(request, idproyecto=None, idfase=None):
 
         #complejidad
         complejidad_proyecto = calc_complejidad_projecto(idproyecto) 
+        complejidad_proyecto = complejidad_proyecto  if complejidad_proyecto > 0 else 1
         complejidad_fase = calc_complejidad_fase(idfase)
+        
         comp_fase_porcen = "%.2f%%" % ((float(complejidad_fase) / float(complejidad_proyecto)) * 100)
         idfase = int(idfase) # en la plantilla se requier el valor entero no el unicode
 
@@ -153,3 +157,25 @@ class GraficoProyecto(ListView):
     def get_context_data(self, **kwargs):
         context = ListView.get_context_data(self, **kwargs)
         return context
+
+
+def lista_solicitudes(request):
+    """ 
+    
+    Retorna una lista de notificaciones importantes para el usuario.
+    Solicitudes pendientes de voto.
+    Solicitudes pendientes de ejecucion  
+    
+    """
+    #lista las solicitudes pendientes de ejecucion por el usuario
+    qs_pend_ejecucion = SolicitudCambio.objects.filter(solicitante=request.user).\
+                filter(estado=SolicitudCambio.E_APROBADO)
+    
+    #lista las solicitudes pendientes de voto por el usuario
+    solic_votadas = SolicitudVoto.objects.filter(Q(miembro__usuario=request.user)).values('solicitud_id')
+    
+    qs_pend_voto = SolicitudCambio.objects.\
+            filter(estado=SolicitudCambio.E_ENVIADO).\
+            exclude(pk__in=solic_votadas)
+    
+    return {'qs_pend_ejecucion':qs_pend_ejecucion,'qs_pend_voto':qs_pend_voto }
