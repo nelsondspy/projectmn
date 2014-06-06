@@ -121,10 +121,10 @@
      {% endif %}
      
      {% if items_afectados %}{#si el usario tiene solicitudes aprobadas y sin utilizar #}
-	     <div class="alert alert-warning"><span class="glyphicon glyphicon-tag"></span>
+	     <div class="alert alert-success"><span class="glyphicon glyphicon-tag"></span>
 	     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 	     ..<strong>Item cuya modificación está aprobada. Realice los cambios correspondientes.</strong>
-	       <p>Una vez realizado el cambio solicitudo, utilice la opción "Terminar" en la 
+	       <p>Una vez realizado el cambio, utilice la opción "Terminar" en su 
 	       	<a href="{% url 'solicitudes_usuario' proyecto.pk 1 %}" class="alert-link">Lista de solicitudes</a>
 	       </p>
 	     </div>
