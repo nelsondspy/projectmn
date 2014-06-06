@@ -10,6 +10,6 @@ def back_url_proyecto(context, nivel):
     utiliza las variables de sesion para determinar la url.
     
     """
-    url = get_url_edicion_actual(context['request'], nivel=1)
+    url = get_url_edicion_actual(context['request'], nivel)
     return '<ol class="breadcrumb"><li><a href="' + url + '"><span class="glyphicon glyphicon-circle-arrow-left"></span> Volver al explorador</a></li></ol>'
 
