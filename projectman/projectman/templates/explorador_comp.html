@@ -15,7 +15,7 @@
 <div class="panel-body">
 	<div class="btn-group">
 	{# se condiciona que el estafdo #}
-	{% if proyecto.estado != 'INI' %}
+	{% if proyecto.estado == 'NOI' %}
 	 <a class="btn btn-success" data-target="#form_modal"  data-toggle="modal" href="{% url 'projectman.apps.admin.views.fases_abm' 'crear' proyecto.idproyecto %}">
 	 <span class="glyphicon glyphicon-plus-sign"></span> Crear Fase
 	 </a>
