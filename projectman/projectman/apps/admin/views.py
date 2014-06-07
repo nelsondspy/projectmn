@@ -541,6 +541,10 @@ class ListaProyectosUsuario(ListView):
 
     def get_context_data(self, **kwargs):
         context = ListView.get_context_data(self, **kwargs)
+        EST_PROYECTO = {'E_FINALIZADO': Proyecto.E_FINALIZADO, \
+                        'E_INICIADO': Proyecto.E_INICIADO , \
+                        'E_NOINICIADO' : Proyecto.E_NOINICIADO }
+        context['EST_PROYECTO'] = EST_PROYECTO
         return context
 
     def get_queryset(self):

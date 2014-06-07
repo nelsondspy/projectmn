@@ -42,9 +42,22 @@
                 <tr>
                   <td><a href="/desarrollo/componentes/{{ proyecto.idproyecto }}" >{{ proyecto.nombre }}</a></td>
                   <td>{{ proyecto.descripcion }}</td>
-                  <td>{{ proyecto.fechainicio }}</td>
-                  <td>{{ proyecto.fechafin }}</td>
-                  <td>{{ proyecto.estado }}</td>
+                  <td>{{ proyecto.fechainicio | date:'d/m/Y' }}</td>
+                  <td>{{ proyecto.fechafin | date:'d/m/Y' }}</td>
+                  <td>
+                  {% if proyecto.estado == EST_PROYECTO.E_FINALIZADO %}
+                  <span class="glyphicon glyphicon-ok"></span>
+                  {% endif %}
+                  
+                  {% if proyecto.estado == EST_PROYECTO.E_INICIADO %}
+                  <span class="glyphicon glyphicon-play"></span>
+                  {% endif %}
+                  
+                  {% if proyecto.estado == EST_PROYECTO.E_NOINICIADO %}
+                  <span class="glyphicon glyphicon-stop"></span>
+                  {% endif %} 
+                  {{ proyecto.estado }}
+                  </td>
                   <td>
 	                  {% if proyecto_modif %}
 	                  <a data-target="#form_modal"  data-toggle="modal" href="{% url 'proyecto_editar' proyecto.idproyecto %}"><span class="glyphicon glyphicon-edit"></span> Editar</a>
