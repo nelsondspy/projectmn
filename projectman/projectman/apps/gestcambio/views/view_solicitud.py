@@ -13,6 +13,7 @@ from ..models import LineaBase
 from ..models import SolicitudCambio
 from ..forms import SolicitudCambioForm
 from ...desarrollo.models import Item, ItemAtributosValores
+from ...admin.models  import Fase
 
 class CreaSolicitudView(View):
     template_name = 'gestcambio/form_solicitudcambio.html'
@@ -80,6 +81,10 @@ class CreaSolicitudView(View):
         
         if not valido:
             return (valido, mensaje)
+        
+        #valida que la fase se encuentre en estado de desarrollo 
+        if LineaBase.objects.get(pk=idlinebase).fase.estado != Fase.E_DESARROLLO :
+            return (False, 'La fase ya se encuentra finalizada, no puede realizar modificaciones ')
         
         return (True, '')
         
