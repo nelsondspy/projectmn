@@ -6,11 +6,16 @@ from django.core.urlresolvers import reverse
 from django.views.generic import ListView
 from django.db import transaction
 from django.contrib import messages
-from ..models import SolicitudCambio, SolicitudVoto, ComiteProyecto
 from django.db.models import Q
 from django.http import Http404
 
+from ..models import SolicitudCambio, SolicitudVoto, ComiteProyecto
+from ...desarrollo.models import Item
+
 from view_comite import  CrearComiteProyectoView
+from view_solicitud import set_sucesores_item
+
+
 class ListaSolicPendientes(ListView):
     """
     
@@ -91,7 +96,10 @@ class VotaSolicitudView(View):
     @transaction.atomic
     def post(self,request, *args, **kwargs):
         """
-        Guarda el nuevo voto.
+        Procesa el voto del miembro del proyecto.
+        -Guarda el nuevo voto.
+        -Establece el estado de la solicitud como aprobada o rechazada. 
+        -Establece el estado de los items contenidos en la solicitud a revision.
         
         """
         accion = self.kwargs['accion']
@@ -121,10 +129,18 @@ class VotaSolicitudView(View):
             else:
                 solicitud.estado = SolicitudCambio.E_RECHAZADO
                 messages.warning(request,'La solicitud fue RECHAZADA')
-            #
+            #establece el estado de la solicitud
             solicitud.fecha_aprobacion = date.today()
+            #establece el estado de los items de la solicitud
+            lista_items = solicitud.items.all()
+            for item in lista_items:
+                item.estado = Item.E_REVISION
+                item.save()
+                #establece el estado a revision, de los items sucesores
+                set_sucesores_item(item, Item.E_REVISION)
+                
             solicitud.save()
-        
+            #
         
         return redirect( reverse('solicitudes_pend_proy',kwargs={'idproyecto':proyecto_id}))
 

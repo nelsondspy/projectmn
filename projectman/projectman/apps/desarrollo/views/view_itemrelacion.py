@@ -117,6 +117,10 @@ class CreaRelacionView(CreateView):
         return sucesores
 
     @classmethod
+    def lista_sucesores(self,idItem):
+        return CreaRelacionView.__lista_sucesores(idItem)
+
+    @classmethod
     def valid_existe_ciclo(self, idorigen, iddestino):
         """
         

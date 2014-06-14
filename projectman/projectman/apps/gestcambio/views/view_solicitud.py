@@ -13,6 +13,7 @@ from ..models import LineaBase
 from ..models import SolicitudCambio
 from ..forms import SolicitudCambioForm
 from ...desarrollo.models import Item, ItemAtributosValores
+from ...desarrollo.views.view_itemrelacion import CreaRelacionView
 from ...admin.models  import Fase
 
 class CreaSolicitudView(View):
@@ -261,6 +262,10 @@ class SetSolicitudEjecutada(View):
         for item in lista_items:
             item.estado = Item.E_BLOQUEADO
             item.save()
+            
+            #establece el estado a bloqueado de los items sucesores
+            set_sucesores_item(item, Item.E_BLOQUEADO)
+
             #valores actuales del item, afectados por la linea base 
             valores = ItemAtributosValores.objects.filter(iditem=item).\
                 filter(usoactual=True)
@@ -269,6 +274,7 @@ class SetSolicitudEjecutada(View):
             for val_act in valores:
                 val_act.enlineabase =  True
                 val_act.save()
+
 
         #redirecciona a la lista de solicitudes del usuario
         idproyecto = solicitud_aprob.lineabase.fase.idproyecto_id
@@ -289,3 +295,31 @@ class SetSolicitudEjecutada(View):
         
         return render(request, self.template_name, confirm)
 
+
+def set_sucesores_item(item, estado):
+    """
+    
+    Establece el estado de los items antecesores.
+    :param objeto_item: 
+    :param estado: estado al que debe establecer los antecesores del item
+    
+    """
+         
+    sucesores = CreaRelacionView.lista_sucesores(item.pk)
+    print 'sucesores:', sucesores
+    estado_item = estado
+    
+    if len(sucesores) > 0:
+        for suc in sucesores :
+            item_sucesor = get_object_or_404(Item, pk=suc)
+            print 'item_sucesor:', item_sucesor
+            if estado == Item.E_BLOQUEADO:
+                if item_sucesor.tienelb :
+                    estado_item = Item.E_BLOQUEADO
+                else:
+                    estado_item = Item.E_DESAPROBADO
+            
+            item_sucesor.estado = estado_item
+            print 'item_sucesor_POSCAMBIO:', item_sucesor
+            item_sucesor.save()
+        
