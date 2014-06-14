@@ -83,6 +83,7 @@ class Item(models.Model):
     descripcion = models.CharField(max_length=80, null=True, blank=True)
     estado = models.CharField(max_length=3, default=E_DESAPROBADO)
     version = models.IntegerField(default=0)
+    tienelb = models.BooleanField(default=False)
     #relaciones 
     idfase = models.ForeignKey(Fase) #idfase_id 
     idtipoitem = models.ForeignKey(ItemTipos)

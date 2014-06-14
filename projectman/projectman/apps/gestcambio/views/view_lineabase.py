@@ -62,6 +62,7 @@ class CreaLineaBase(View):
             #establece el estado de los items selecionados en la lb a bloqueado
             for item in items:
                 item.estado = Item.E_BLOQUEADO
+                item.tienelb = True
                 item.save()
                 
                 #valores actuales del item, afectados por la linea base 
