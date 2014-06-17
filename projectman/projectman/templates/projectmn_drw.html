@@ -17,7 +17,13 @@
 {% endblock %}
 
 <h1>Gráfico : {{ object_list.proyecto }}</h1>
-<canvas id="proyectCanvas" width="2048" height="300" style="border:1px solid gray;">
+Referencias:
+<ul style="font-size:smaller ;">
+<li style="color:gray ">Desarrollo</li>
+<li style="color:#FF3300 ;">Revision</li>
+<li style="color:black">Bloqueado</li>
+</ul>
+<canvas id="proyectCanvas" width="2048" height="470" style="border:1px solid gray;">
 </canvas> 
 
 
@@ -72,7 +78,7 @@ Line.prototype.drawArrowhead=function(ctx,x,y,radians){
 listafases = [{% for fase in object_list.fases %}
 			 { fase: {{ fase.pk }}, nombre :'{{ fase.nombre }}' ,
 			 items :[ {% for item in fase.items %}
-			 { iditem:{{ item.pk }} , nombre: '{{item.nombre}}' }, {% endfor %} ]
+			 { iditem:{{ item.pk }} , nombre: '{{item.nombre}}', estado: '{{item.estado}}' }, {% endfor %} ]
 			 },
 			 {% endfor %}  ];
 lista_relaciones = [{% for rel in object_list.relaciones %}
@@ -108,18 +114,24 @@ lista_relaciones = [{% for rel in object_list.relaciones %}
 		this.lista_items_coord = [] ;
 		
 		this.dibuja_fases_items = function (ctx, listafases){
-			ANCHO_FASE = 200;    //largo maximo de la fase 
-			ALTO_FASE = 200;    //alto maximo de una fase 
-			X_SEPARACION_ENTRE_FASES = 10;   //distancia x entre fases 
-			Y_SEPARACION_ITEM = 20 ;     //distancia y entre items 
-			RADIO_ITEM = 5               //radio del la cia del item
-			FUENTE_TEXTO= "12px Arial" ; //tamanho y tipo fuente 
 			X_FASE_INICIAL = 5 ;    
 			Y_FASE_INICIAL = 2 ;     
+
+			X_SEPARACION_ENTRE_FASES = 10;   //distancia x entre fases 
+			Y_SEPARACION_ITEM = 25 ;     //distancia y entre items
+			ANCHO_FASE = 200;    //largo maximo de la fase 200 
+			ALTO_FASE = 200 ;    //alto maximo de una fase 
+			RADIO_ITEM = 5               //radio del la cia del item
+			FUENTE_TEXTO= "12px Arial" ; //tamanho y tipo fuente 
 			BACKCOLOR_FASE = "#B8CBE0" ;//color de fondo de la fase 
 			TEXTCOLOR_FASE = "#185B9E";  //color de fuente del nombre de la fase
 			CANT_TRUNCAR = 28; //cantidad de letras a truncar
-			TEXTCOLOR_ITEM = "#484842"; //color del texto del item
+			TEXTCOLOR_ITEM = "#000000"; //color del texto del item
+
+			//COLORES SEGUN LOS ESTADOS POSIBLES 
+			TEXTCOLOR_ITEM_BLOQ = "#000000" ; 
+			TEXTCOLOR_ITEM_DES = "gray";
+			TEXTCOLOR_ITEM_REV = "#FF3300"  ;
 			
 			
 			ctx.font = FUENTE_TEXTO;
@@ -129,7 +141,7 @@ lista_relaciones = [{% for rel in object_list.relaciones %}
 			
 			for(i=0; i<listafases.length ; ++i ){
 				
-				ctx.fillRect(x_fase, y_fase ,ANCHO_FASE, ALTO_FASE );
+				//ctx.fillRect(x_fase, y_fase ,ANCHO_FASE, ALTO_FASE );
 				
 				lista_items = [];
 				
@@ -137,6 +149,8 @@ lista_relaciones = [{% for rel in object_list.relaciones %}
 					lista_items = listafases[i].items;
 					
 				}
+				ALTO_FASE = (lista_items.length + 1) * Y_SEPARACION_ITEM  ;
+				ctx.fillRect(x_fase, y_fase ,ANCHO_FASE, ALTO_FASE );
 				
 				//Establece el nombre de la fase, con el color de fuente de la fase.  
 				ctx.fillStyle = TEXTCOLOR_FASE ; 
@@ -150,13 +164,25 @@ lista_relaciones = [{% for rel in object_list.relaciones %}
 				x_item = x_fase + 10  
 				
 				for(k=0; k < lista_items.length ; ++k ){
-					ctx.beginPath();
-					ctx.arc( x_item  , y_item   , RADIO_ITEM , 0 , 2 * Math.PI );
-					ctx.stroke();
+					
 					this.lista_items_coord[lista_items[k].iditem.toString()]= {x:  x_item, y : y_item  } ;
 					
 					//Establece el nombreo descripcion del item , con el color de fuente 
-					ctx.fillStyle = TEXTCOLOR_ITEM ; 
+					ctx.fillStyle = TEXTCOLOR_ITEM ;
+					if (lista_items[k].estado == 'DES'){
+						ctx.fillStyle = TEXTCOLOR_ITEM_DES ;
+					}
+					if (lista_items[k].estado == 'REV'){
+						ctx.fillStyle = TEXTCOLOR_ITEM_REV ;
+					}
+					if (lista_items[k].estado == 'BLO'){
+						ctx.fillStyle = TEXTCOLOR_ITEM_BLOQ ; 
+					}
+					ctx.beginPath();
+					ctx.arc( x_item  , y_item   , RADIO_ITEM , 0 , 2 * Math.PI );
+					ctx.stroke();
+					ctx.fill();
+					
 					nombre_item = lista_items[k].nombre.substring (0 , CANT_TRUNCAR) +  
 					((lista_items[k].nombre.length>CANT_TRUNCAR)?'...':'') ; 	 
 					
