@@ -1,8 +1,11 @@
 from easy_pdf.views import PDFTemplateView
 from django.views.generic import View
+from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from ..models import SolicitudCambio
 from ..forms import ReporteSolicForm
-from django.shortcuts import render
+from datetime import date 
 
 class ListaSolicitudesPDF(PDFTemplateView):
     """
@@ -23,6 +26,7 @@ class ListaSolicitudesPDF(PDFTemplateView):
                          'E_BORRADOR': SolicitudCambio.E_BORRADOR }
     title= ''
     sub_titulo = ''
+    criterios = ''
     lista_solicitudes = None
 
     def get_context_data(self, **kwargs):
@@ -31,7 +35,9 @@ class ListaSolicitudesPDF(PDFTemplateView):
             title=self.title,
             sub_titulo=self.sub_titulo,
             lista_solicitudes=self.lista_solicitudes,
-            EST_SOLICITUD = self.EST_SOLICITUD
+            criterios=self.criterios, 
+            EST_SOLICITUD = self.EST_SOLICITUD,
+            fecha=date.today()
         )
     
     def post(self, *args, **kwargs):
@@ -48,18 +54,19 @@ class ListaSolicitudesPDF(PDFTemplateView):
         solicitante = self.request.POST.get('solicitante', '')
         if solicitante != '' :
             qs = qs.filter(solicitante=solicitante)
+            usuario_solic = get_object_or_404(User, pk=solicitante)
+            self.criterios = 'Solicitante : ' + usuario_solic.__unicode__()
 
         #filtro por estado 
         estado = self.request.POST.get('estado', '')
         if estado != '' :
             qs = qs.filter(estado=estado)
+            self.criterios += ', estado : ' + estado
         
         if qs.count() > 0 :
             self.title = 'Proyecto ' + qs[0].lineabase.fase.idproyecto.__unicode__()
 
-        
-        
-        
+
         self.lista_solicitudes = qs
         return super(ListaSolicitudesPDF, self).get(self, *args, **kwargs)
     

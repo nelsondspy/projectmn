@@ -21,9 +21,11 @@
 {% block content %}
 
     <div id="content">
+    <div class="header">Fecha : {{ fecha|date:'d/m/Y' }}</div>
         <div class="main">
             <h1>{{ title }} </h1>
             <h2> {{ sub_titulo }}  </h2>
+            <h3>{{ criterios }}</h3>
     
 <table border="1" >
 <tr>
