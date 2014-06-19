@@ -9,7 +9,7 @@ from views.view_itemvalores import AsignaValoresItem ,ValoresItemView ,ListaVers
 from views.view_itemrelacion import CreaRelacionView, ListaRelacionesView, EliminaRelacionView
 from views.view_itemadjuntos import LsCrAdjuntoView
 from views.view_oth import GraficoProyecto
-
+from views.view_reportes import ProyectoInformePDF
 
 urlpatterns = patterns('projectman.apps',
     url(r'^$', 'desarrollo.views.view_oth.mostrar_panel'),
@@ -51,5 +51,9 @@ urlpatterns = patterns('projectman.apps',
     url(r'^adjuntos/(?P<iditem>\d+)$', LsCrAdjuntoView.as_view(), name='itemadjuntos_ls_cr'),
     
     #grafico del proyecto 
-    url(r'^grafico/(?P<idproyecto>\d+)$', GraficoProyecto.as_view(), name='proyecto_grafico')
+    url(r'^grafico/(?P<idproyecto>\d+)$', GraficoProyecto.as_view(), name='proyecto_grafico'),
+    
+    #reporte pdf
+
+    url(r'^reporte_gral/(?P<idproyecto>\d+)$', ProyectoInformePDF.as_view(), name='proyecto_reporte')
 )

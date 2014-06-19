@@ -1,0 +1,58 @@
+{# extends "easy_pdf/base.html" #}
+
+{% block extra_style %}
+    <style type="text/css">
+        
+        body {
+            font-family: "Lato", "Helvetica", "sans-serif";
+            color: #333333;
+            font-size: 12px;
+        }
+        h1 { color:gray; }
+
+        table,th,td ,tr { border-color: gray; border-width: 1px; padding: 1px;}
+        th.pk{ width: 3%; }
+        .fase{ color: blue;}
+
+    </style>
+
+    
+{% endblock %}
+
+{% block content %}
+
+    <div id="content">
+    <div class="header">Fecha : {{ fecha|date:'d/m/Y' }}</div>
+        <div class="main">
+          <h1>{{ title }} </h1>
+          <h2> {{ sub_titulo }}  </h2>
+          <h3>{{ criterios }}</h3>
+	<table border="1">
+	<tr>
+	<th>id</th>
+	<th>Nombre</th>
+	<th>Descripcion</th>
+	<td>Tipo</td>
+	<td>Padre</td>
+	<td>Version</td>
+	<td>Costo</td>
+	</tr>
+	{% for item in  lista_items %}
+	<tr>
+	
+	 {% ifchanged item.fase_nombre %}<tr class="fase"><td colspan="7">{{ item.fase_nombre }}</td></tr>{% endifchanged %}
+	<td>{{ item.pk }}</td>
+	<td>{{ item.nombre }}</td>
+	<td>{{ item.descripcion }}</td>
+	<td>{{ item.idtipoitem }}</td>
+	<td>{{ item.padre }}</td>
+	<td>{{ item.version }}</td>
+	<td>{{ item.complejidad }}</td>
+   </tr>
+	{% endfor %}
+	</table>
+</div>
+</div>
+
+
+{% endblock %}
