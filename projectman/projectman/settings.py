@@ -42,7 +42,8 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'projectman.apps.admin',
     'projectman.apps.desarrollo',
-    'projectman.apps.gestcambio'
+    'projectman.apps.gestcambio',
+    'easy_pdf'
 )
 
 

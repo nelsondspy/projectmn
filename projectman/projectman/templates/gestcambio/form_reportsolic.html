@@ -1,0 +1,20 @@
+{% extends nodefault|default:"__formsolo.html" %}
+
+{# formulario para cargar parametros del listador de solicitudes #}
+
+{% block zonatrabajo %}
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	<h4 class="modal-title">Reporte de Solicitudes </h4>
+</div>
+<div class="modal-body">
+
+<form action="{% url 'solicreport_pdf' %}" method="post">
+{% csrf_token %}
+
+	{{ form }}
+	<input type="hidden" value="{{ idproyecto }}" name="idproyecto">
+	<input type="submit"  class="btn btn-primary" value="Listar">
+</form>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{# extends "easy_pdf/base.html" #}
+
+{% block extra_style %}
+    <style type="text/css">
+        
+        body {
+            font-family: "Lato", "Helvetica", "sans-serif";
+            color: #333333;
+            font-size: 12px;
+        }
+        h1 { color:gray; }
+
+        table,th,td ,tr { border-color: gray; border-width: 1px; padding: 1px;}
+        th.pk{ width: 3%; }
+
+    </style>
+
+    
+{% endblock %}
+
+{% block content %}
+
+    <div id="content">
+        <div class="main">
+            <h1>{{ title }} </h1>
+            <h2> {{ sub_titulo }}  </h2>
+    
+<table border="1" >
+<tr>
+    <th class="pk">id</th>
+    <th>Comentarios</th>
+    <th>Estado</th>
+    <th>Solicitante</th>
+    <th>Linea Base Afectada</th>
+	<th>Fecha Creación </th>
+	<th>Fecha Resolución </th>
+</tr>
+
+ {% for solicitud in lista_solicitudes %}
+<tr>
+	<td>{{ solicitud.pk }}</td>
+	<td>{{ solicitud.comentarios }}</td>
+	<td>
+	{% if solicitud.estado == EST_SOLICITUD.E_APROBADO %}
+  <span class="glyphicon glyphicon-thumbs-up"></span>
+  Aprobado
+	{% endif %}
+
+	{% if solicitud.estado == EST_SOLICITUD.E_RECHAZADO %}
+  <span class="glyphicon glyphicon-thumbs-down"></span>
+  Rechazado
+	{% endif %}
+
+	{% if solicitud.estado == EST_SOLICITUD.E_ENVIADO %}
+	<span class="glyphicon glyphicon-send"></span>
+	Enviado
+	{% endif %}
+
+	{% if solicitud.estado == EST_SOLICITUD.E_TERMINADO %}
+  <span class="glyphicon glyphicon-ok"></span>
+  Terminado
+	{% endif %}
+
+	{% if solicitud.estado == EST_SOLICITUD.E_BORRADOR %}
+	<p class="glyphicon glyphicon-file"></p>
+	Borrador
+	{% endif %}
+	<small>{{ solicitud.estado }}</small>
+	</td>
+	<td>{{ solicitud.solicitante }}</td>
+	<td>{{ solicitud.lineabase }}</td>
+	<td>{{ solicitud.fecha_creacion | date:'d/m/Y'}}</td>
+	<td>{{ solicitud.fecha_aprobacion | date:'d/m/Y'}}</td>
+</tr>
+{% endfor %}
+
+</table>
+</div>
+</div>
+{% endblock %}

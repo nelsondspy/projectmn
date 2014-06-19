@@ -6,6 +6,9 @@ from views.view_lineabase import ListarLineaBaseView
 #from views.view_solicitud import CreaSolicitudView ,ListaSolicitudesView, SetSolicitudEnviada, EditaSolicitudView, EliminaSolicitudView ,DetalleSolicitud , SetSolicitudEjecutada
 from views.view_solicitud import *
 from views.view_solicitudvoto import ListaSolicPendientes, VotaSolicitudView, EstadoVotacionView
+from views.view_reportes import ListaSolicitudesPDF , ListaSolicForm
+
+
 urlpatterns = patterns('projectman.apps',
     #comite
     url(r'^comite/crear/(?P<idproyecto>\d+)$', login_required(CrearComiteProyectoView.as_view()), name="comite_crear"),
@@ -32,5 +35,7 @@ urlpatterns = patterns('projectman.apps',
     url(r'^solicitudes/votar/(?P<pk>\d+)/(?P<accion>[a-z]+)$', login_required(VotaSolicitudView.as_view()) , name="solicitud_votar" ),
     url(r'^solicitud/estadovotacion/(?P<idsolicitud>\d+)$', login_required(EstadoVotacionView.as_view()) , name="solicitud_est_votacion" ),
 
-
+    #reportes:formulario de reportes y listados pdf 
+    url(r'^solicitudes/reporte_pdf$', login_required(ListaSolicitudesPDF.as_view()) , name="solicreport_pdf"),
+    url(r'^solicitudes/reporte/(?P<idproyecto>\d+)$', login_required(ListaSolicForm.as_view()) , name="solicreport_form")
 )

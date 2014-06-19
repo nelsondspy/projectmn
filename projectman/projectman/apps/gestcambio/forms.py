@@ -2,8 +2,10 @@
 from django.forms import HiddenInput
 from django.forms import IntegerField
 from django.forms import CheckboxSelectMultiple 
+from django.forms import Form
 
-from django.forms import ModelForm 
+from django.forms import ModelForm
+from django.forms import Select
 
 from models import ComiteProyecto 
 
@@ -22,6 +24,7 @@ class ComiteProyectoForm(ModelForm):
     class Meta:
         model = ComiteProyecto
         fields = ['proyecto', 'usuario']
+        widgets= {'proyecto': HiddenInput()}
 
 
 class LineaBaseForm(ModelForm):
@@ -44,5 +47,17 @@ class SolicitudCambioForm(ModelForm):
             fields = ['comentarios', 'solicitante', 'items', 'lineabase' ]
             widgets= {'items':CheckboxSelectMultiple(), 
                       'solicitante':HiddenInput(), 'lineabase':HiddenInput() }
-            
+
+
+class ReporteSolicForm(ModelForm):
+    """
+    
+    Formulario que muestra parametros para consulta de solicitudes.
+    
+    """
+    class Meta:
+        model = SolicitudCambio 
+        fields = ['solicitante', 'estado']
+        widgets= { 'estado' : Select(choices=[('','-------')] + \
+                                     [x for x in SolicitudCambio.ESTADOS]) }
 
