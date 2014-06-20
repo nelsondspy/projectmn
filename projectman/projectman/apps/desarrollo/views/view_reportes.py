@@ -11,6 +11,13 @@ from django.shortcuts import get_object_or_404
 class ProyectoInformePDF(PDFTemplateView):
     """
     
+    Permite listar todos los items del proyecto.
+    
+    Ademas de los campos propios del item, tambien se muestran el padre 
+    y la complejidad que son resultados de subconsultas.
+    Se opto por utilizar sql por la dificultad (o falta de conocimiento) para 
+    realizar subconsultas complejas con el ORM de django. 
+    
     """
     template_name = "desarrollo/rpt_lista_detalleproyecto.html"
     title = u'Lista de ítems del proyecto '
@@ -27,7 +34,7 @@ class ProyectoInformePDF(PDFTemplateView):
     WHERE v.usoactual = TRUE AND idatributo_id = %s AND v.iditem_id = i.iditem  ) as complejidad \
 FROM desarrollo_item as i \
 INNER JOIN admin_fase as f ON f.idfase = i.idfase_id \
-WHERE f.idproyecto_id = %s and i.estado != 'ELI' ORDER BY i.idfase_id ; "
+WHERE f.idproyecto_id = %s and i.estado != 'ELI' ORDER BY i.idfase_id ASC , i.iditem ASC ; "
     
     def get_context_data(self, **kwargs):
         self.set_datosconsulta()
