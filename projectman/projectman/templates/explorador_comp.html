@@ -1,4 +1,10 @@
 {% extends "__panel.html" %}
+{% load tags %}
+{# permisos sobre algunas acciones del proyecto #}
+
+{% perm_proy user.pk proyecto.pk 'proyecto_finalizar' as proyecto_finalizar %}
+{% perm_proy user.pk proyecto.pk 'proyecto_reportes' as proyecto_reportes %}
+
 
 {# explorador de componentes internos de un  proyecto #}
 {# lista las fases #}
@@ -41,13 +47,19 @@
 	    Gráfico del proyecto 
 	</a>
 	
+	{% if proyecto_finalizar %}
 	<a class="btn btn-default" data-target="#form_modal"  data-toggle="modal" 
 	   href ="{% url 'finalizar_proyecto' proyecto.idproyecto %}">
 	    <span class="glyphicon glyphicon-ok"></span>
 	    Finalizar Proyecto 
 	</a>
+	{% else %}
+	 <a class="btn btn-default" disabled="disabled" >
+	 <span class="glyphicon glyphicon-ban-circle"></span> Finalizar Proyecto
+	 </a>
+	{% endif %}
 	
-
+{% if proyecto_reportes %}
 <!-- Boton de reportes  -->
 <div class="btn-group">
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -62,6 +74,11 @@
 
   </ul>
 </div>
+{% else %}
+	 <a class="btn btn-default" disabled="disabled" >
+	 <span class="glyphicon glyphicon-ban-circle"></span> Reportes
+	 </a>
+{% endif %}
 <!-- fin de boton de reportes -->	
 	
 	

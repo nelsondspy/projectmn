@@ -70,6 +70,9 @@ LISTA_PERMISOS = [
                   ('relacion_crear', 'Relacionar items', 1),
                   ('relacion_elim', 'Eliminar relaciones entre items', 1),
                   ('comite_gest', 'Gestionar comite de cambios', 1),
+                  ('proyecto_reportes', 'Reportes Ejecutivos del proyecto', 1),
+                  ('proyecto_finalizar', 'Finalizar Proyecto', 1),
+                  
                   #permisos asociados a fases especificas
                   ('fase_modif', 'Modificar Fase', 2), 
                   ('fase_elim', 'Eliminar Fase', 2),
