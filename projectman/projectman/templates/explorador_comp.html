@@ -47,6 +47,24 @@
 	    Finalizar Proyecto 
 	</a>
 	
+
+<!-- Boton de reportes  -->
+<div class="btn-group">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+    <span class="glyphicon glyphicon-list-alt"></span> Reportes <span class="caret"></span>
+  </button> 
+  <ul class="dropdown-menu" role="menu">
+    <li><a href="{% url 'proyecto_reporte' proyecto.idproyecto %}" target="__blank">Detalle Proyecto</a></li>
+
+    <li><a href="{% url 'solicreport_form' proyecto.idproyecto %}" data-target="#form_modal"  data-toggle="modal">
+    	Solicitudes de cambio</a>
+    </li>
+
+  </ul>
+</div>
+<!-- fin de boton de reportes -->	
+	
+	
 	</div>
 </div>
 </div>
