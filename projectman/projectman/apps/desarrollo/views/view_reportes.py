@@ -1,17 +1,20 @@
+# -*- coding: utf-8 -*-
+
 from easy_pdf.views import PDFTemplateView
 
 from datetime import date
 from ..models import Item 
 from ...desarrollo.models import atributo_complejidad
+from ...admin.models import Proyecto
+from django.shortcuts import get_object_or_404
 
 class ProyectoInformePDF(PDFTemplateView):
     """
     
     """
     template_name = "desarrollo/rpt_lista_detalleproyecto.html"
-    title= 'Lista de items del proyecto'
-    sub_titulo = '-'
-    criterios = '-'
+    title = u'Lista de ítems del proyecto '
+    sub_titulo = 'l'
     lista_items = None
     
     #idatributo_comlejidad #idproyecto
@@ -31,15 +34,16 @@ WHERE f.idproyecto_id = %s ORDER BY i.idfase_id ; "
         return super(ProyectoInformePDF, self).get_context_data(
             pagesize="A4",
             title=self.title,
-            sub_titulo=self.sub_titulo,
-            criterios=self.criterios, 
+            sub_titulo=self.sub_titulo, 
             fecha=date.today(),
             lista_items=self.lista_items
         )
     
     def set_datosconsulta(self):
         idproyecto = self.kwargs['idproyecto']
-        
+        proyecto = get_object_or_404(Proyecto, pk=idproyecto)
+        self.title = self.title + proyecto.nombre
+        self.sub_titulo = proyecto.descripcion
         atr_complejidad = atributo_complejidad()
         id_complej =  atr_complejidad[0].pk if atr_complejidad.count()> 0 else 1
 
