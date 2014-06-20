@@ -16,6 +16,10 @@
         
         tr.fase{ color: rgb(68, 110, 155); font-weight: bold;text-align: center;  }
 
+        tr.DES{ color: #473119; }
+        tr.BLO{ color: black ; }
+        tr.REV{ color:#FF3300; }
+
     </style>
 
     
@@ -29,7 +33,15 @@
       <h1>{{ title }} </h1>
       <h2> {{ sub_titulo }}  </h2>
       <h3>{{ criterios }}</h3>
-          
+     	<div>
+     	Referencias:
+		<ul>
+			<li style="color:#473119; ">Desarrollo</li>
+			<li style="color:#FF3300 ;">Revision</li>
+			<li style="color:black;">Bloqueado</li>
+       </ul>
+       </div>
+	
 	<table border="1">
 	<tr>
 	<th class="corto">id</th>
@@ -41,8 +53,9 @@
 	<th class="corto">Costo</th>
 	</tr>
 	{% for item in  lista_items %}
-	<tr>
+	
 	 {% ifchanged item.fase_nombre %}<tr class="fase"><td colspan="7">{{ item.fase_nombre }}</td></tr>{% endifchanged %}
+	<tr class="{{ item.estado }}">
 	<td>{{ item.pk }}</td>
 	<td>{{ item.nombre }}</td>
 	<td>{{ item.descripcion }}</td>
