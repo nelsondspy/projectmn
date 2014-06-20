@@ -10,9 +10,11 @@
         }
         h1 { color:gray; }
 
-        table,th,td ,tr { border-color: gray; border-width: 1px; padding: 1px;}
-        th.pk{ width: 3%; }
-        .fase{ color: blue;}
+        table,th,td ,tr { border-color: gray; border-width: 0.5px; padding: 1px;}
+        
+        th.corto { width: 7%; }
+        
+        tr.fase{ color: rgb(68, 110, 155); font-weight: bold;text-align: center;  }
 
     </style>
 
@@ -23,23 +25,23 @@
 
     <div id="content">
     <div class="header">Fecha : {{ fecha|date:'d/m/Y' }}</div>
-        <div class="main">
-          <h1>{{ title }} </h1>
-          <h2> {{ sub_titulo }}  </h2>
-          <h3>{{ criterios }}</h3>
+     <div class="main">
+      <h1>{{ title }} </h1>
+      <h2> {{ sub_titulo }}  </h2>
+      <h3>{{ criterios }}</h3>
+          
 	<table border="1">
 	<tr>
-	<th>id</th>
+	<th class="corto">id</th>
 	<th>Nombre</th>
 	<th>Descripcion</th>
-	<td>Tipo</td>
-	<td>Padre</td>
-	<td>Version</td>
-	<td>Costo</td>
+	<th>Tipo</th>
+	<th>Item Padre</th>
+	<th class="corto">Versión</th>
+	<th class="corto">Costo</th>
 	</tr>
 	{% for item in  lista_items %}
 	<tr>
-	
 	 {% ifchanged item.fase_nombre %}<tr class="fase"><td colspan="7">{{ item.fase_nombre }}</td></tr>{% endifchanged %}
 	<td>{{ item.pk }}</td>
 	<td>{{ item.nombre }}</td>
