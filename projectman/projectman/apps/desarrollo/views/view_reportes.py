@@ -27,7 +27,7 @@ class ProyectoInformePDF(PDFTemplateView):
     WHERE v.usoactual = TRUE AND idatributo_id = %s AND v.iditem_id = i.iditem  ) as complejidad \
 FROM desarrollo_item as i \
 INNER JOIN admin_fase as f ON f.idfase = i.idfase_id \
-WHERE f.idproyecto_id = %s ORDER BY i.idfase_id ; "
+WHERE f.idproyecto_id = %s and i.estado != 'ELI' ORDER BY i.idfase_id ; "
     
     def get_context_data(self, **kwargs):
         self.set_datosconsulta()
