@@ -30,7 +30,7 @@ class AsignaValoresItem(View):
     
     ValoresFormSet = modelformset_factory(model=ItemAtributosValores, form=ItemValoresForm,extra=0)
 
-    def get(self, request,iditem):
+    def get(self, request,iditem, nodefault=None):
         item = get_object_or_404(Item, pk=iditem)
         #si no existe valor alguno instancia los atributos del supertipo
         tipo_default = ItemTipos.objects.filter(es_supertipo=True)
@@ -51,10 +51,14 @@ class AsignaValoresItem(View):
         lista_valores = ItemAtributosValores.objects.filter(iditem=item).exclude(usoactual=False)
         formset = self.ValoresFormSet(queryset=lista_valores)
         #return render_to_response(TEMPL_FORMASIG,{'formset': formset})
-        
+
+        if nodefault :
+            nodefault = '__panel.html'
+            
         return render(request, TEMPL_FORMASIG, {'formset': formset, \
                                                 'action': reverse('valores_asignar',\
-                                                                  kwargs={'iditem':iditem} ) 
+                                                                  kwargs={'iditem':iditem} ),\
+                                                'nodefault' : nodefault
                                                 })
     @transaction.atomic
     def post(self, request, *args, **kwargs):

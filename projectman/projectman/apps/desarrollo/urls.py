@@ -39,6 +39,8 @@ urlpatterns = patterns('projectman.apps',
     url(r'^atributos/eliminar/(?P<pk>\d+)$', login_required(EliminaItemAtributoView.as_view()),name="itematributo_eliminar") ,
     #gestion de valores de items 
     url(r'^item/asignarvalores/(?P<iditem>\d+)$', login_required(AsignaValoresItem.as_view()), name="valores_asignar") ,
+    url(r'^item/asignarvalores/(?P<iditem>\d+)/(?P<nodefault>\d+)$', login_required(AsignaValoresItem.as_view()), name="valores_asignar_nd") ,
+        
     url(r'^item/listavalores/(?P<iditem>\d+)$', login_required(ValoresItemView.as_view()), name="valores_listar") ,
     url(r'^item/versionesvalores/(?P<iditem>\d+)$', login_required(ListaVersionesValor.as_view()), name="valores_versiones") ,
     url(r'^item/revertirversion/(?P<iditem>\d+)/(?P<version>\d+)/$', login_required(RevertirValoreItem.as_view()), name="valores_reversion"),

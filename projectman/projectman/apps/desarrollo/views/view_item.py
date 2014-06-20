@@ -67,6 +67,7 @@ class CreaItemView(CreateView):
     template_name = 'desarrollo/form_item.html'
     fase_ob = None
     ocurrio_error = False
+    item_nuevo = None
 
     def get_initial(self):
         
@@ -84,6 +85,7 @@ class CreaItemView(CreateView):
     
     def form_valid(self, form):
         form.instance.sigte_numero()
+        self.item_nuevo = form.instance
         return CreateView.form_valid(self, form)
     
     def form_invalid(self, form):
@@ -91,9 +93,11 @@ class CreaItemView(CreateView):
         return CreateView.form_invalid(self, form)
     
     def get_success_url(self):
-        idproyecto = self.fase_ob.idproyecto_id
-        return reverse('expl_nivelfase',kwargs={'idproyecto':idproyecto , 
-                                                'idfase' : self.kwargs['idfase'] })
+        
+        messages.success(self.request, 'ITEM CREADO: Asigne los valores al item')
+        
+        return reverse('valores_asignar_nd',kwargs={'iditem':self.item_nuevo.pk ,
+                                                'nodefault' : 1})
 
     def get_form(self, form_class):
         form = CreateView.get_form(self, form_class)
@@ -153,7 +157,8 @@ class SetEliminadoItemView(UpdateView):
         devuelve true si el item es padre de otro
         
         """
-        return ItemRelacion.objects.filter(origen=item).count() > 0
+        return ItemRelacion.objects.filter(origen=item).\
+            exclude(estado=ItemRelacion.E_ELIMINADO).count() > 0
 
 
 class EditItemView(UpdateView):
@@ -228,8 +233,8 @@ class RevivirItem(View):
         # no este relacionado con items eliminados 
         relac_items = ItemRelacion.objects.filter(Q(origen=item_arevivir) | \
                                                   Q(destino=item_arevivir)).\
-                                                  exclude(origen__estado=ItemRelacion.E_ELIMINADO).\
-                                                  exclude(destino__estado=ItemRelacion.E_ELIMINADO)
+                                                  exclude(origen__estado=Item.E_ELIMINADO).\
+                                                  exclude(destino__estado=Item.E_ELIMINADO)
         for relacion in relac_items:
             
             #valida que la relacion no forme un ciclo
