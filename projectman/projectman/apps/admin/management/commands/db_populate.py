@@ -41,7 +41,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         
         self._crea_permisos()
-        self.crear_componentes_proyecto1()
+        #self.crear_componentes_proyecto1()
     
     def crear_componentes_proyecto1(self):
         #crea usuarios 
