@@ -48,7 +48,7 @@ class ListaSolicitudesPDF(PDFTemplateView):
         
         qs = SolicitudCambio.objects.filter(lineabase__fase__idproyecto_id=idproyecto)
         if qs.count() == 0 :
-            return None
+            return super(ListaSolicitudesPDF, self).get(self, *args, **kwargs)
         
         #filtro por solicitante
         solicitante = self.request.POST.get('solicitante', '')
