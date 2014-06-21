@@ -1,9 +1,6 @@
 {% extends "__panel.html" %}
 {% load tags %}
-{# permisos sobre algunas acciones del proyecto #}
 
-{% perm_proy user.pk proyecto.pk 'proyecto_finalizar' as proyecto_finalizar %}
-{% perm_proy user.pk proyecto.pk 'proyecto_reportes' as proyecto_reportes %}
 
 
 {# explorador de componentes internos de un  proyecto #}
@@ -46,6 +43,10 @@
 	    <span class="glyphicon glyphicon-picture"></span> 
 	    Gráfico del proyecto 
 	</a>
+	
+   {# permisos sobre algunas acciones del proyecto #}
+   {% perm_proy user.pk proyecto.pk 'proyecto_finalizar' as proyecto_finalizar %}
+   {% perm_proy user.pk proyecto.pk 'proyecto_reportes' as proyecto_reportes %}
 	
 	{% if proyecto_finalizar %}
 	<a class="btn btn-default" data-target="#form_modal"  data-toggle="modal" 
