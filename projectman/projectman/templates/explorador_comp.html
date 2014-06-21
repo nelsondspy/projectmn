@@ -153,7 +153,7 @@
      <div class="panel panel-info">
      <div class="panel-heading"><span class="glyphicon glyphicon-tasks"></span> Items de la fase:</div>
 
-     {% if not EST_FASE.E_FINALIZADO == fase.estado %}
+     {% if not EST_FASE.E_FINALIZADO == fase.estado and proyecto.estado != 'NOI' %}
      <a class="btn btn-success btn-sm" data-target="#form_modal"data-toggle="modal" 
      	href="{% url 'item_crear' idfase %}"><span class="glyphicon glyphicon-list-alt"></span> Crear item
      </a>
