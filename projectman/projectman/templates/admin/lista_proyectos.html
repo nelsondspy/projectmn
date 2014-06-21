@@ -70,7 +70,7 @@
 	                  {% endif %}
                   </td>
                   <td>
-	                  {% if proyecto_elim %}
+	                  {% if proyecto_elim and proyecto.estado != EST_PROYECTO.E_INICIADO %}
 	                    <a href="#" data-id="{% url 'proyecto_eliminar' proyecto.idproyecto %}" class="confirm-delete" ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 	                  {% else %}
 	                   	 {% include "_msg_noperm.html" with msg="Eliminar" %}
@@ -78,7 +78,7 @@
                   </td>
                   <td><a href="{% url 'comite_listar' proyecto.idproyecto %}"><span class="glyphicon glyphicon-adjust"></span>Comite</a></td>
                   <td>
-	                  {% if proyecto_ini %}
+	                  {% if proyecto_ini and proyecto.estado != EST_PROYECTO.E_INICIADO%}
 	                    <a data-target="#form_modal"  data-toggle="modal" href="{% url 'iniciar_proyecto' proyecto.idproyecto %}" > Iniciar</a>
 	                  {% else %}
 	                   	 {% include "_msg_noperm.html" with msg="Iniciar" %}
